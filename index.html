@@ -617,6 +617,15 @@
         prices.support = localStorage.getItem('support_user');
       }
 
+      if (urlParams.has('bot')) {
+        prices.bot = urlParams.get('bot');
+        localStorage.setItem('bot_user', prices.bot);
+      } else if (localStorage.getItem('bot_user')) {
+        prices.bot = localStorage.getItem('bot_user');
+      } else {
+        prices.bot = 'uzmfzstarsbot';
+      }
+
       // Real buyurtmalar tarixi
       if (urlParams.has('orders')) {
         const rawOrders = urlParams.get('orders');
@@ -791,12 +800,13 @@
     function syncWithBot() {
       haptic('medium');
       showToast("Kurslar yangilanmoqda...");
-      if (tg) {
-        tg.sendData(JSON.stringify({ action: "sync_request" }));
-      } else {
-        loadDynamicData();
-        showToast("Ma'lumotlar yangilandi!");
-      }
+      try {
+        if (tg && typeof tg.sendData === 'function') {
+          tg.sendData(JSON.stringify({ action: "sync_request" }));
+        }
+      } catch (e) {}
+      loadDynamicData();
+      showToast("Ma'lumotlar yangilandi!");
     }
 
     // Tab switcher
@@ -960,6 +970,7 @@
     // Xaridni tasdiqlash va bajarish
     function executePurchase() {
       haptic('success');
+      const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
 
       if (userState.currentAction === 'stars') {
         userState.balance -= userState.selectedStarsPrice;
@@ -969,15 +980,28 @@
 
         let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
         
-        showToast("🎉 Stars xaridi qabul qilindi!");
-        if (tg) {
-          tg.sendData(JSON.stringify({
-            action: "buy_stars",
-            stars: userState.selectedStars,
-            price: userState.selectedStarsPrice,
-            target_username: targetUser
-          }));
-        }
+        showToast("🎉 Stars xaridi yuborilmoqda...");
+        try {
+          if (tg && typeof tg.sendData === 'function') {
+            tg.sendData(JSON.stringify({
+              action: "buy_stars",
+              stars: userState.selectedStars,
+              price: userState.selectedStarsPrice,
+              target_username: targetUser
+            }));
+          }
+        } catch (e) {}
+
+        const deepLink = `https://t.me/${botUser}?start=stars_${userState.selectedStars}_${targetUser}`;
+        setTimeout(() => {
+          if (tg?.openTelegramLink) {
+            tg.openTelegramLink(deepLink);
+          } else {
+            window.location.href = deepLink;
+          }
+          if (tg?.close) tg.close();
+        }, 250);
+
       } else if (userState.currentAction === 'premium') {
         userState.balance -= userState.premiumPrice;
         localStorage.setItem('user_balance', userState.balance);
@@ -988,15 +1012,27 @@
           ? userState.username
           : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
         
-        showToast("🎉 Premium xaridi qabul qilindi!");
-        if (tg) {
-          tg.sendData(JSON.stringify({
-            action: "buy_premium",
-            months: userState.premiumMonths,
-            price: userState.premiumPrice,
-            target_username: targetUser
-          }));
-        }
+        showToast("🎉 Premium xaridi yuborilmoqda...");
+        try {
+          if (tg && typeof tg.sendData === 'function') {
+            tg.sendData(JSON.stringify({
+              action: "buy_premium",
+              months: userState.premiumMonths,
+              price: userState.premiumPrice,
+              target_username: targetUser
+            }));
+          }
+        } catch (e) {}
+
+        const deepLink = `https://t.me/${botUser}?start=prem_${userState.premiumMonths}_${targetUser}`;
+        setTimeout(() => {
+          if (tg?.openTelegramLink) {
+            tg.openTelegramLink(deepLink);
+          } else {
+            window.location.href = deepLink;
+          }
+          if (tg?.close) tg.close();
+        }, 250);
       }
     }
 
@@ -1042,15 +1078,32 @@
       haptic('success');
       showToast("To'lov cheki bot orqali rasmiylashtirilmoqda...");
 
-      // Botga rasmiy PENDING buyurtma yaratish signalini yuborish
-      if (tg) {
-        tg.sendData(JSON.stringify({
-          action: "create_deposit",
-          amount: depositAmount
-        }));
-      } else {
-        showToast("To'lov chekini yaratish uchun botdan kiring!");
+      const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
+      const deepLink = `https://t.me/${botUser}?start=dep_${depositAmount}`;
+
+      // 1. Agar Reply Keyboard orqali ochilgan bo'lsa, sendData ishlaydi:
+      try {
+        if (tg && typeof tg.sendData === 'function') {
+          tg.sendData(JSON.stringify({
+            action: "create_deposit",
+            amount: depositAmount
+          }));
+        }
+      } catch (err) {
+        console.warn("sendData xatolik berdi:", err);
       }
+
+      // 2. Inline / Menu button orqali ochilganda ishonchli deep link:
+      setTimeout(() => {
+        if (tg?.openTelegramLink) {
+          tg.openTelegramLink(deepLink);
+        } else {
+          window.location.href = deepLink;
+        }
+        if (tg?.close) {
+          tg.close();
+        }
+      }, 250);
     }
   </script>
 </body>
