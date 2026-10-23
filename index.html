@@ -224,11 +224,11 @@
         </div>
       </div>
 
-      <!-- Ixtiyoriy kalkulyator -->
+      <!-- Ixtiyoriy kalkulyator (min. 25 Stars) -->
       <div class="glass-card rounded-2xl p-4 space-y-3 border border-gray-800">
-        <label class="text-xs font-semibold text-gray-300 block">Ixtiyoriy miqdorni hisoblash:</label>
+        <label class="text-xs font-semibold text-gray-300 block">Ixtiyoriy miqdorni hisoblash (min. 25 Stars):</label>
         <div class="flex space-x-2">
-          <input type="number" id="custom-stars-input" placeholder="Min. 50 Stars..." min="50" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-amber-500">
+          <input type="number" id="custom-stars-input" placeholder="Min. 25 Stars..." min="25" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-amber-500">
           <button onclick="applyCustomStars()" class="bg-gray-800 hover:bg-gray-700 text-amber-400 px-4 py-2 rounded-xl text-xs font-bold border border-gray-700 active:scale-95 transition">
             Hisoblash
           </button>
@@ -350,7 +350,7 @@
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-lg font-bold text-white tracking-wide">Hisobni to'ldirish</h1>
-            <p class="text-xs text-gray-400 mt-0.5">Humo va Uzcard orqali avtomat</p>
+            <p class="text-xs text-gray-400 mt-0.5">100% Avtomatik hisobga o'tkazish</p>
           </div>
           <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-lg">
             💳
@@ -358,7 +358,7 @@
         </div>
       </div>
 
-      <!-- Tezkor summalar -->
+      <!-- Summani tanlash -->
       <div class="space-y-2">
         <label class="text-xs font-semibold text-gray-400">Summani tanlang:</label>
         <div class="grid grid-cols-2 gap-2">
@@ -371,100 +371,40 @@
 
       <!-- Boshqa summa -->
       <div class="glass-card rounded-2xl p-3.5 space-y-2">
-        <label class="text-xs font-semibold text-gray-300">Boshqa summa kiritish:</label>
+        <label class="text-xs font-semibold text-gray-300">Boshqa summa kiritish (min. 1 000 so'm):</label>
         <div class="relative">
-          <input type="number" id="deposit-custom-input" placeholder="10 000 dan boshlab..." class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500">
+          <input type="number" id="deposit-custom-input" placeholder="10 000 dan boshlab..." min="1000" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500">
         </div>
+      </div>
+
+      <!-- Tushuntirish qutisi -->
+      <div class="p-3.5 rounded-2xl glass-card border border-gray-800 space-y-1.5 text-xs text-gray-400">
+        <p class="text-white font-semibold flex items-center space-x-1.5">
+          <span>⚡️</span>
+          <span>Avtomat hisobga tushirish qoidasi:</span>
+        </p>
+        <p>1. Tugmani bosganingizda, bot bazasida siz uchun <b>rasmiy buyurtma</b> ochiladi.</p>
+        <p>2. Chatda <b>noyob to'lov cheki</b> (masalan, 25 042 so'm) ko'rsatiladi.</p>
+        <p>3. Pulni o'tkazishingiz bilan balansingiz <b>5-10 soniyada</b> avtomatik to'ladi!</p>
       </div>
 
       <!-- Invoys hosil qilish tugmasi -->
-      <button onclick="generateDepositInvoice()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex items-center justify-center space-x-2">
+      <button onclick="generateDepositInvoice()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex items-center justify-center space-x-2">
         <span>To'lov chekini yaratish 🧾</span>
       </button>
-
-      <!-- AKTIV INVOYS KARTASI (Dinamik) -->
-      <div id="active-invoice-card" class="hidden glass-card rounded-2xl p-4 border border-amber-500/40 space-y-3.5 bg-gradient-to-b from-gray-900 to-amber-950/20">
-        <div class="flex items-center justify-between border-b border-gray-800 pb-2.5">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-            <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">To'lov kutilmoqda</span>
-          </div>
-          <span id="invoice-timer" class="text-xs font-mono font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded-md border border-red-500/20">14:59</span>
-        </div>
-
-        <div class="space-y-2 text-xs">
-          <div>
-            <span class="text-gray-400 text-[11px] block">To'lov kartasi:</span>
-            <div class="flex items-center justify-between bg-gray-900/80 p-2.5 rounded-xl border border-gray-800 mt-1">
-              <span id="card-num-text" class="font-mono font-bold text-white text-sm">9860126632094010</span>
-              <button onclick="copyCardNumber()" class="bg-gray-800 hover:bg-gray-700 text-amber-400 px-2.5 py-1 rounded-lg text-xs font-medium border border-gray-700">Nusxalash</button>
-            </div>
-            <p class="text-[11px] text-gray-400 mt-1">Egasi: <span id="card-holder-text" class="text-gray-200 font-medium">Zafar Mirsaidov</span></p>
-          </div>
-
-          <div class="pt-1">
-            <span class="text-gray-400 text-[11px] block">O'tkaziladigan ANIQ summa:</span>
-            <div class="flex items-center justify-between bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/30 mt-1">
-              <span id="unique-amount-text" class="font-mono font-black text-amber-400 text-base">10,045 so'm</span>
-              <button onclick="copyUniqueAmount()" class="bg-amber-500 text-gray-950 px-2.5 py-1 rounded-lg text-xs font-bold shadow">Nusxalash</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-2.5 rounded-xl bg-gray-950/60 border border-gray-800/80 text-[11px] text-gray-400 space-y-1">
-          <p>⚠️ <b>Muhim eslatma:</b> Avtomatik tushishi uchun aynan ko'rsatilgan summani tiyingacha o'tkazing.</p>
-          <p class="text-emerald-400">✓ To'lovdan so'ng hisobingiz 5-10 soniyada avtomat yangilanadi.</p>
-        </div>
-
-        <!-- BEKOR QILISH TUGMASI (TO'LOVNI CANCEL QILISH) -->
-        <button onclick="cancelDepositInvoice()" class="w-full py-2.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-xs font-bold transition flex items-center justify-center space-x-1.5 active:scale-95 mt-2">
-          <span>❌ To'lovni bekor qilish</span>
-        </button>
-      </div>
     </section>
 
     <!-- ==================== TAB 4: BUYURTMALAR TARIXI ==================== -->
     <section id="tab-history" class="tab-content hidden space-y-3">
       <div class="flex items-center justify-between">
         <h2 class="text-sm font-bold text-white tracking-wide">Buyurtmalar tarixi</h2>
-        <span class="text-xs text-gray-400">So'nggi amallar</span>
+        <span class="text-xs text-gray-400">Real bazadagi amallar</span>
       </div>
 
       <div id="orders-list" class="space-y-2.5">
-        <!-- Namunaviy buyurtma 1 -->
-        <div class="glass-card rounded-2xl p-3.5 border border-gray-800 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-sm">⭐️</div>
-            <div>
-              <div class="flex items-center space-x-1.5">
-                <span class="text-xs font-bold text-white">50 Stars</span>
-                <span class="text-[10px] text-gray-400">#26</span>
-              </div>
-              <p class="text-[11px] text-gray-400">@uzmfz hisobiga</p>
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="text-xs font-bold text-amber-400 font-mono">9,500 so'm</span>
-            <span class="block text-[10px] text-emerald-400 font-medium">✅ Yetkazildi</span>
-          </div>
-        </div>
-
-        <!-- Namunaviy buyurtma 2 -->
-        <div class="glass-card rounded-2xl p-3.5 border border-gray-800 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-sm">💳</div>
-            <div>
-              <div class="flex items-center space-x-1.5">
-                <span class="text-xs font-bold text-white">Hisob to'ldirish</span>
-                <span class="text-[10px] text-gray-400">#25</span>
-              </div>
-              <p class="text-[11px] text-gray-400">Humo / Uzcard</p>
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="text-xs font-bold text-emerald-400 font-mono">+50,000 so'm</span>
-            <span class="block text-[10px] text-emerald-400 font-medium">✅ Bajarildi</span>
-          </div>
+        <!-- Yuklanmoqda holati yoki real buyurtmalar shu yerda chiqadi -->
+        <div class="glass-card rounded-2xl p-4 border border-gray-800 text-center text-xs text-gray-400">
+          Sizda hali buyurtmalar mavjud emas.
         </div>
       </div>
 
@@ -557,13 +497,13 @@
       tg.setBackgroundColor('#0B0F19');
     }
 
-    // Narxlar va Foydalanuvchi holati (Haqiqiy joriy kurslar boshlang'ich qiymat sifatida)
+    // Narxlar va Foydalanuvchi holati
     let userState = {
       username: tg?.initDataUnsafe?.user?.username || 'mijoz',
       firstName: tg?.initDataUnsafe?.user?.first_name || 'Foydalanuvchi',
       userId: tg?.initDataUnsafe?.user?.id || 0,
       balance: 0,
-      starPrice: 190, // Baza kursi
+      starPrice: 190,
       recipientType: 'self',
       premRecipientType: 'self',
       selectedStars: 50,
@@ -661,7 +601,85 @@
         prices.support = localStorage.getItem('support_user');
       }
 
+      // Real buyurtmalar tarixi
+      if (urlParams.has('orders')) {
+        const rawOrders = urlParams.get('orders');
+        localStorage.setItem('user_orders', rawOrders);
+        renderOrdersHistory(rawOrders);
+      } else if (localStorage.getItem('user_orders')) {
+        renderOrdersHistory(localStorage.getItem('user_orders'));
+      }
+
       renderDynamicPrices();
+    }
+
+    // Tarixni chiroyli chiqarish
+    function renderOrdersHistory(raw) {
+      if (!raw) return;
+      const listEl = document.getElementById('orders-list');
+      const items = raw.split(';').filter(Boolean);
+      if (items.length === 0) return;
+
+      const statusMap = {
+        'COMPLETED': { text: '✅ Bajarildi', color: 'text-emerald-400' },
+        'PENDING': { text: '⏳ Kutilmoqda', color: 'text-amber-400' },
+        'PROCESSING': { text: '⚙️ Bajarilmoqda', color: 'text-sky-400' },
+        'CANCELLED': { text: '❌ Bekor qilindi', color: 'text-gray-400' },
+        'EXPIRED': { text: '⏰ Vaqti o\'tgan', color: 'text-red-400' },
+        'FAILED': { text: '⚠️ Xatolik', color: 'text-red-400' }
+      };
+
+      let html = '';
+      items.forEach(item => {
+        const parts = item.split(':');
+        if (parts.length >= 5) {
+          const id = parts[0];
+          const type = parts[1];
+          const qty = parseInt(parts[2]) || 0;
+          const amt = parseInt(parts[3]) || 0;
+          const status = parts[4];
+          const target = parts[5] || '';
+
+          let icon = '⭐️';
+          let title = `${qty} Stars`;
+          let sub = target ? `@${target} hisobiga` : '';
+
+          if (type === 'DEPOSIT') {
+            icon = '💳';
+            title = 'Hisob to\'ldirish';
+            sub = 'Humo / Uzcard orqali';
+          } else if (type === 'PREMIUM') {
+            icon = '💎';
+            title = `${qty} oylik Premium`;
+            sub = target ? `@${target} hisobiga` : '';
+          }
+
+          const stObj = statusMap[status] || { text: status, color: 'text-gray-400' };
+
+          html += `
+            <div class="glass-card rounded-2xl p-3.5 border border-gray-800 flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-gray-800/60 border border-gray-700 flex items-center justify-center text-sm">${icon}</div>
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-white">${title}</span>
+                    <span class="text-[10px] text-gray-400">#${id}</span>
+                  </div>
+                  <p class="text-[11px] text-gray-400">${sub}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-bold text-white font-mono">${amt.toLocaleString('uz-UZ')} so'm</span>
+                <span class="block text-[10px] ${stObj.color} font-medium">${stObj.text}</span>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      if (html) {
+        listEl.innerHTML = html;
+      }
     }
 
     // Barcha narx va ma'lumotlarni interfeysga chiqarish
@@ -690,10 +708,6 @@
       document.getElementById('price-prem-3m').innerText = prices.p3m.toLocaleString('uz-UZ') + " so'm";
       document.getElementById('price-prem-6m').innerText = prices.p6m.toLocaleString('uz-UZ') + " so'm";
       document.getElementById('price-prem-12m').innerText = prices.p12m.toLocaleString('uz-UZ') + " so'm";
-
-      // Karta
-      document.getElementById('card-num-text').innerText = prices.card;
-      document.getElementById('card-holder-text').innerText = prices.holder;
 
       // Asosiy Stars sotib olish tugmasi
       userState.selectedStarsPrice = userState.selectedStars * userState.starPrice;
@@ -822,8 +836,8 @@
 
     function applyCustomStars() {
       const val = parseInt(document.getElementById('custom-stars-input').value);
-      if (isNaN(val) || val < 50) {
-        showToast("Minimal miqdor: 50 Stars");
+      if (isNaN(val) || val < 25) {
+        showToast("Minimal miqdor: 25 Stars");
         return;
       }
       haptic('medium');
@@ -840,6 +854,14 @@
 
     // Confirmation Modal - Stars
     function openStarsConfirmationModal() {
+      // Agar ixtiyoriy maydonda son yozilgan bo'lsa, avtomat qabul qilamiz
+      const customInput = document.getElementById('custom-stars-input');
+      const customVal = parseInt(customInput.value);
+      if (!isNaN(customVal) && customVal >= 25) {
+        userState.selectedStars = customVal;
+        userState.selectedStarsPrice = customVal * userState.starPrice;
+      }
+
       userState.currentAction = 'stars';
       let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
       
@@ -919,9 +941,6 @@
 
         let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
         
-        // Yangi buyurtmani tarixga qo'shish
-        addHistoryItem(`${userState.selectedStars} Stars`, userState.selectedStarsPrice, targetUser, '⭐️');
-
         showToast("🎉 Stars xaridi qabul qilindi!");
         if (tg) {
           tg.sendData(JSON.stringify({
@@ -941,8 +960,6 @@
           ? userState.username
           : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
         
-        addHistoryItem(`${userState.premiumMonths} oy Premium`, userState.premiumPrice, targetUser, '💎');
-
         showToast("🎉 Premium xaridi qabul qilindi!");
         if (tg) {
           tg.sendData(JSON.stringify({
@@ -955,32 +972,8 @@
       }
     }
 
-    function addHistoryItem(title, price, username, icon) {
-      const historyList = document.getElementById('orders-list');
-      const orderHtml = `
-        <div class="glass-card rounded-2xl p-3.5 border border-emerald-500/30 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-sm">${icon}</div>
-            <div>
-              <div class="flex items-center space-x-1.5">
-                <span class="text-xs font-bold text-white">${title}</span>
-                <span class="text-[10px] text-gray-400">#Yangi</span>
-              </div>
-              <p class="text-[11px] text-gray-400">@${username} hisobiga</p>
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="text-xs font-bold text-amber-400 font-mono">${price.toLocaleString()} so'm</span>
-            <span class="block text-[10px] text-emerald-400 font-medium">✅ Yuborilmoqda</span>
-          </div>
-        </div>
-      `;
-      historyList.insertAdjacentHTML('afterbegin', orderHtml);
-    }
-
-    // Depozit Invoys
+    // ==================== HAQIQIY TO'LOV CHEKINI YARATISH ====================
     let depositAmount = 10000;
-    let currentUniqueTotal = 10000;
     function setDepositAmount(amt) {
       haptic('light');
       depositAmount = amt;
@@ -994,73 +987,17 @@
       }
 
       haptic('success');
-      const uniqueOffset = Math.floor(Math.random() * 80) + 10;
-      currentUniqueTotal = depositAmount + uniqueOffset;
+      showToast("To'lov cheki bot orqali rasmiylashtirilmoqda...");
 
-      document.getElementById('unique-amount-text').innerText = currentUniqueTotal.toLocaleString('uz-UZ') + " so'm";
-      document.getElementById('active-invoice-card').classList.remove('hidden');
-
-      showToast("To'lov cheki tayyorlandi!");
-      startInvoiceCountdown(15 * 60);
-    }
-
-    // ==================== TO'LOVNI BEKOR QILISH (CANCEL) ====================
-    function cancelDepositInvoice() {
-      haptic('warning');
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-
-      document.getElementById('active-invoice-card').classList.add('hidden');
-      document.getElementById('deposit-custom-input').value = '';
-      showToast("❌ To'lov cheki bekor qilindi");
-
-      // Botga bekor qilinganini xabar berish
+      // Botga rasmiy PENDING buyurtma yaratish signalini yuborish
       if (tg) {
         tg.sendData(JSON.stringify({
-          action: "cancel_deposit"
+          action: "create_deposit",
+          amount: depositAmount
         }));
+      } else {
+        showToast("To'lov chekini yaratish uchun botdan kiring!");
       }
-    }
-
-    let timerInterval = null;
-    function startInvoiceCountdown(duration) {
-      if (timerInterval) clearInterval(timerInterval);
-      let timer = duration;
-      const display = document.getElementById('invoice-timer');
-
-      timerInterval = setInterval(() => {
-        let minutes = parseInt(timer / 60, 10);
-        let seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-          clearInterval(timerInterval);
-          display.textContent = "Vaqt tugadi";
-        }
-      }, 1000);
-    }
-
-    function copyCardNumber() {
-      copyToClipboard(prices.card, "Karta raqami nusxalandi!");
-    }
-
-    function copyUniqueAmount() {
-      copyToClipboard(currentUniqueTotal.toString(), "To'lov summasi nusxalandi!");
-    }
-
-    function copyToClipboard(text, successMsg) {
-      haptic('light');
-      navigator.clipboard.writeText(text).then(() => {
-        showToast(successMsg);
-      }).catch(() => {
-        showToast("Nusxalandi!");
-      });
     }
   </script>
 </body>
