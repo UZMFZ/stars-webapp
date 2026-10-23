@@ -472,6 +472,70 @@
     </div>
   </div>
 
+  <!-- ==================== TO'LOV CHEKI MODAL (Web App ichidagi chek) ==================== -->
+  <div id="deposit-receipt-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
+    <div class="w-full max-w-sm glass-card rounded-t-3xl sm:rounded-3xl p-5 border border-emerald-500/40 space-y-4 bg-gray-950 shadow-2xl">
+      <!-- Sarlavha -->
+      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-emerald-400 text-lg">🧾</span>
+          <h3 class="font-bold text-white text-sm" id="receipt-modal-title">To'lov cheki #---</h3>
+        </div>
+        <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-white text-lg">✕</button>
+      </div>
+
+      <!-- Karta ma'lumotlari -->
+      <div class="space-y-3 bg-gray-900/80 p-4 rounded-2xl border border-gray-800">
+        <div>
+          <span class="text-[11px] text-gray-400 block mb-1">To'lov qilinadigan karta raqami:</span>
+          <div class="flex items-center justify-between bg-gray-950 p-2.5 rounded-xl border border-gray-700">
+            <span id="receipt-card-number" class="font-mono text-sm font-bold text-white tracking-wider">8600 5704 6393 2593</span>
+            <button onclick="copyToClipboard(document.getElementById('receipt-card-number').innerText, 'Karta raqami nusxalandi!')" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs px-2.5 py-1 rounded-lg font-medium active:scale-95 transition">
+              Nusxalash 📋
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-gray-400">Karta egasi:</span>
+          <span id="receipt-card-holder" class="font-semibold text-gray-200">Sardorbek Mirsaidov</span>
+        </div>
+
+        <div class="border-t border-gray-800 pt-2.5">
+          <span class="text-[11px] text-amber-400 font-semibold block mb-1">⚠️ Aynan o'tkaziladigan summa (Unikal):</span>
+          <div class="flex items-center justify-between bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/30">
+            <span id="receipt-unique-amount" class="font-mono text-base font-black text-amber-300">10 000 so'm</span>
+            <button onclick="copyToClipboard(document.getElementById('receipt-unique-amount').innerText.replace(/[^\d]/g, ''), 'To\'lov summasi nusxalandi!')" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs px-2.5 py-1 rounded-lg font-bold active:scale-95 transition">
+              Nusxalash 📋
+            </button>
+          </div>
+          <p class="text-[10px] text-gray-400 mt-1">To'lov avtomat hisobga o'tishi uchun aynan ushbu summani o'tkazing!</p>
+        </div>
+
+        <div class="flex justify-between items-center text-xs border-t border-gray-800 pt-2 text-gray-400">
+          <span>Qolgan vaqt:</span>
+          <span id="receipt-timer" class="font-mono text-xs text-sky-400 font-bold">15:00</span>
+        </div>
+      </div>
+
+      <!-- Holat ko'rsatkichi -->
+      <div id="receipt-status-indicator" class="flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-gray-900/60 border border-gray-800 text-xs text-amber-400">
+        <div class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
+        <span>To'lov kutilmoqda... Pulni o'tkazing</span>
+      </div>
+
+      <!-- Tugmalar -->
+      <div class="space-y-2 pt-1">
+        <button onclick="checkOrderStatusManual()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-lg shadow-emerald-500/20 active:scale-95 transition">
+          <span>To'lovni tekshirish / Yangilash 🔄</span>
+        </button>
+        <button onclick="closeReceiptModal()" class="w-full py-2.5 rounded-xl border border-gray-800 text-gray-400 hover:text-white text-xs font-semibold">
+          Yopish
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST BILDIRISHNOMA -->
   <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-xl text-xs font-medium shadow-2xl transition-all opacity-0 pointer-events-none duration-300">
     Xabar matni
@@ -624,6 +688,13 @@
         prices.bot = localStorage.getItem('bot_user');
       } else {
         prices.bot = 'uzmfzstarsbot';
+      }
+
+      if (urlParams.has('api')) {
+        prices.api = decodeURIComponent(urlParams.get('api'));
+        localStorage.setItem('api_url', prices.api);
+      } else if (localStorage.getItem('api_url')) {
+        prices.api = localStorage.getItem('api_url');
       }
 
       // Real buyurtmalar tarixi
@@ -967,70 +1038,213 @@
       document.getElementById('confirm-modal').classList.add('hidden');
     }
 
+    let currentReceiptOrderId = null;
+    let receiptTimerInterval = null;
+    let receiptPollInterval = null;
+
+    function copyToClipboard(text, msg) {
+      haptic('medium');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(msg || "Nusxalandi!");
+        }).catch(() => fallbackCopy(text, msg));
+      } else {
+        fallbackCopy(text, msg);
+      }
+    }
+
+    function fallbackCopy(text, msg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(msg || "Nusxalandi!");
+      } catch (e) {
+        showToast("Nusxalandi: " + text);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function openDepositReceiptModal(data) {
+      currentReceiptOrderId = data.order_id;
+      document.getElementById('receipt-modal-title').innerText = `To'lov cheki #${data.order_id}`;
+      document.getElementById('receipt-card-number').innerText = data.card || prices.card || '8600 5704 6393 2593';
+      document.getElementById('receipt-card-holder').innerText = data.holder || prices.holder || 'Sardorbek Mirsaidov';
+      document.getElementById('receipt-unique-amount').innerText = `${data.unique_amount.toLocaleString('uz-UZ')} so'm`;
+      
+      document.getElementById('receipt-status-indicator').innerHTML = `
+        <div class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
+        <span>To'lov kutilmoqda... Pulni o'tkazing</span>
+      `;
+      document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-gray-900/80 border border-amber-500/30 text-xs text-amber-400';
+
+      // 15 daqiqalik taymer
+      let remainingSeconds = (data.timeout_minutes || 15) * 60;
+      clearInterval(receiptTimerInterval);
+      const timerEl = document.getElementById('receipt-timer');
+      const updateTimerDisplay = () => {
+        const m = Math.floor(remainingSeconds / 60);
+        const s = remainingSeconds % 60;
+        timerEl.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        if (remainingSeconds <= 0) {
+          clearInterval(receiptTimerInterval);
+          timerEl.innerText = "00:00 (Muddati tugadi)";
+        }
+        remainingSeconds--;
+      };
+      updateTimerDisplay();
+      receiptTimerInterval = setInterval(updateTimerDisplay, 1000);
+
+      // Polling orqali to'lovni avtomat tekshirib turish (har 3.5 soniyada)
+      clearInterval(receiptPollInterval);
+      receiptPollInterval = setInterval(() => {
+        checkReceiptStatus(data.order_id);
+      }, 3500);
+
+      document.getElementById('deposit-receipt-modal').classList.remove('hidden');
+    }
+
+    function closeReceiptModal() {
+      haptic('light');
+      clearInterval(receiptTimerInterval);
+      clearInterval(receiptPollInterval);
+      document.getElementById('deposit-receipt-modal').classList.add('hidden');
+    }
+
+    async function checkReceiptStatus(orderId) {
+      if (!orderId || !prices.api) return;
+      try {
+        const res = await fetch(`${prices.api}/api/check_order?order_id=${orderId}`);
+        const data = await res.json();
+        if (data && data.success) {
+          if (data.status === 'COMPLETED') {
+            clearInterval(receiptTimerInterval);
+            clearInterval(receiptPollInterval);
+            haptic('success');
+            userState.balance = data.user_balance;
+            localStorage.setItem('user_balance', data.user_balance);
+            renderDynamicPrices();
+
+            document.getElementById('receipt-status-indicator').innerHTML = `
+              <span>🎉</span>
+              <span class="font-bold">TO'LOV QABUL QILINDI! +${data.base_amount.toLocaleString('uz-UZ')} so'm</span>
+            `;
+            document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/50 text-xs text-emerald-300 font-bold';
+            showToast("🎉 Balansingiz muvaffaqiyatli to'ldirildi!");
+          } else if (data.status === 'CANCELLED' || data.status === 'EXPIRED') {
+            clearInterval(receiptTimerInterval);
+            clearInterval(receiptPollInterval);
+            document.getElementById('receipt-status-indicator').innerHTML = `
+              <span>❌</span>
+              <span>To'lov cheki bekor qilindi yoki vaqti o'tdi</span>
+            `;
+            document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-red-500/20 border border-red-500/50 text-xs text-red-400';
+          }
+        }
+      } catch (e) {}
+    }
+
+    function checkOrderStatusManual() {
+      haptic('medium');
+      showToast("To'lov holati tekshirilmoqda...");
+      if (currentReceiptOrderId) {
+        checkReceiptStatus(currentReceiptOrderId);
+      }
+    }
+
     // Xaridni tasdiqlash va bajarish
-    function executePurchase() {
+    async function executePurchase() {
       haptic('success');
-      const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
 
       if (userState.currentAction === 'stars') {
+        let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
+        showToast("Stars xaridi bajarilmoqda...");
+
+        if (prices.api) {
+          try {
+            const res = await fetch(`${prices.api}/api/buy_stars`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                user_id: userState.userId,
+                stars: userState.selectedStars,
+                target_username: targetUser
+              })
+            });
+            const data = await res.json();
+            if (data && data.success) {
+              userState.balance = data.new_balance;
+              localStorage.setItem('user_balance', data.new_balance);
+              renderDynamicPrices();
+              closeConfirmModal();
+              showToast("🎉 Stars xaridi muvaffaqiyatli bajarildi!");
+              return;
+            } else if (data && data.error === 'insufficient_balance') {
+              closeConfirmModal();
+              smartTransferToDeposit(data.missing, `${userState.selectedStars} Stars`);
+              return;
+            }
+          } catch (e) {}
+        }
+
         userState.balance -= userState.selectedStarsPrice;
         localStorage.setItem('user_balance', userState.balance);
         renderDynamicPrices();
         closeConfirmModal();
 
-        let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
-        
-        showToast("🎉 Stars xaridi yuborilmoqda...");
-        try {
-          if (tg && typeof tg.sendData === 'function') {
-            tg.sendData(JSON.stringify({
-              action: "buy_stars",
-              stars: userState.selectedStars,
-              price: userState.selectedStarsPrice,
-              target_username: targetUser
-            }));
-          }
-        } catch (e) {}
-
+        const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
         const deepLink = `https://t.me/${botUser}?start=stars_${userState.selectedStars}_${targetUser}`;
         setTimeout(() => {
-          if (tg?.openTelegramLink) {
-            tg.openTelegramLink(deepLink);
-          } else {
-            window.location.href = deepLink;
-          }
+          if (tg?.openTelegramLink) tg.openTelegramLink(deepLink);
+          else window.location.href = deepLink;
           if (tg?.close) tg.close();
         }, 250);
 
       } else if (userState.currentAction === 'premium') {
+        let targetUser = userState.premRecipientType === 'self'
+          ? userState.username
+          : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
+        showToast("Premium xaridi bajarilmoqda...");
+
+        if (prices.api) {
+          try {
+            const res = await fetch(`${prices.api}/api/buy_premium`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                user_id: userState.userId,
+                months: userState.premiumMonths,
+                target_username: targetUser
+              })
+            });
+            const data = await res.json();
+            if (data && data.success) {
+              userState.balance = data.new_balance;
+              localStorage.setItem('user_balance', data.new_balance);
+              renderDynamicPrices();
+              closeConfirmModal();
+              showToast("🎉 Premium obunasi muvaffaqiyatli faollashtirildi!");
+              return;
+            } else if (data && data.error === 'insufficient_balance') {
+              closeConfirmModal();
+              smartTransferToDeposit(data.missing, `${userState.premiumMonths} oylik Premium`);
+              return;
+            }
+          } catch (e) {}
+        }
+
         userState.balance -= userState.premiumPrice;
         localStorage.setItem('user_balance', userState.balance);
         renderDynamicPrices();
         closeConfirmModal();
 
-        let targetUser = userState.premRecipientType === 'self'
-          ? userState.username
-          : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
-        
-        showToast("🎉 Premium xaridi yuborilmoqda...");
-        try {
-          if (tg && typeof tg.sendData === 'function') {
-            tg.sendData(JSON.stringify({
-              action: "buy_premium",
-              months: userState.premiumMonths,
-              price: userState.premiumPrice,
-              target_username: targetUser
-            }));
-          }
-        } catch (e) {}
-
+        const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
         const deepLink = `https://t.me/${botUser}?start=prem_${userState.premiumMonths}_${targetUser}`;
         setTimeout(() => {
-          if (tg?.openTelegramLink) {
-            tg.openTelegramLink(deepLink);
-          } else {
-            window.location.href = deepLink;
-          }
+          if (tg?.openTelegramLink) tg.openTelegramLink(deepLink);
+          else window.location.href = deepLink;
           if (tg?.close) tg.close();
         }, 250);
       }
@@ -1069,19 +1283,40 @@
       }
     }
 
-    function generateDepositInvoice() {
+    async function generateDepositInvoice() {
       const customVal = parseInt(document.getElementById('deposit-custom-input').value);
       if (customVal && customVal >= 1000) {
         depositAmount = customVal;
       }
 
       haptic('success');
-      showToast("To'lov cheki bot orqali rasmiylashtirilmoqda...");
+      showToast("To'lov cheki tayyorlanmoqda...");
 
+      // 1. Agar API mavjud bo'lsa - WEB APP ICHIDA CHEK OCHILADI (Botga chiqilmaydi!)
+      if (prices.api) {
+        try {
+          const res = await fetch(`${prices.api}/api/create_deposit`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: userState.userId,
+              amount: depositAmount
+            })
+          });
+          const data = await res.json();
+          if (data && data.success) {
+            openDepositReceiptModal(data);
+            return;
+          }
+        } catch (e) {
+          console.warn("API orqali chek ochishda xatolik, botga o'tiladi:", e);
+        }
+      }
+
+      // 2. Agar API ulanmagan bo'lsa (Zaxira / Fallback) - botga o'tkazadi
       const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
       const deepLink = `https://t.me/${botUser}?start=dep_${depositAmount}`;
 
-      // 1. Agar Reply Keyboard orqali ochilgan bo'lsa, sendData ishlaydi:
       try {
         if (tg && typeof tg.sendData === 'function') {
           tg.sendData(JSON.stringify({
@@ -1089,20 +1324,15 @@
             amount: depositAmount
           }));
         }
-      } catch (err) {
-        console.warn("sendData xatolik berdi:", err);
-      }
+      } catch (err) {}
 
-      // 2. Inline / Menu button orqali ochilganda ishonchli deep link:
       setTimeout(() => {
         if (tg?.openTelegramLink) {
           tg.openTelegramLink(deepLink);
         } else {
           window.location.href = deepLink;
         }
-        if (tg?.close) {
-          tg.close();
-        }
+        if (tg?.close) tg.close();
       }, 250);
     }
   </script>
