@@ -84,12 +84,20 @@
       </div>
     </div>
 
-    <!-- Balans tugmasi -->
-    <button onclick="switchTab('tab-deposit')" class="flex items-center space-x-2 bg-gradient-to-r from-emerald-500/15 to-emerald-600/10 hover:from-emerald-500/25 hover:to-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all active:scale-95">
-      <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-      <span class="text-xs font-semibold" id="header-balance">11,500 so'm</span>
-      <span class="bg-emerald-500 text-gray-950 rounded-full w-4 h-4 flex items-center justify-center font-bold text-xs ml-1">+</span>
-    </button>
+    <!-- O'ng tomon: Balans va Yangilash -->
+    <div class="flex items-center space-x-1.5">
+      <!-- Balans tugmasi -->
+      <button onclick="switchTab('tab-deposit')" class="flex items-center space-x-2 bg-gradient-to-r from-emerald-500/15 to-emerald-600/10 hover:from-emerald-500/25 hover:to-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all active:scale-95">
+        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
+        <span class="text-xs font-semibold" id="header-balance">0 so'm</span>
+        <span class="bg-emerald-500 text-gray-950 rounded-full w-4 h-4 flex items-center justify-center font-bold text-xs ml-1">+</span>
+      </button>
+
+      <!-- Sync (Yangilash) tugmasi -->
+      <button onclick="syncWithBot()" title="Narxlar va balansni yangilash" class="w-8 h-8 rounded-xl glass-card border border-gray-700 hover:border-amber-500/50 flex items-center justify-center text-gray-300 hover:text-amber-400 active:scale-90 transition-all">
+        <span class="text-xs">🔄</span>
+      </button>
+    </div>
   </header>
 
   <!-- ASOSIY KONTENT -->
@@ -110,7 +118,7 @@
           </div>
           <div class="text-right">
             <span class="text-[11px] text-gray-400">1 ta Star kursi:</span>
-            <p class="text-sm font-bold text-amber-400 font-mono">200 so'm</p>
+            <p id="star-rate-display" class="text-sm font-bold text-amber-400 font-mono">200 so'm</p>
           </div>
         </div>
       </div>
@@ -150,21 +158,18 @@
               <span class="text-xs font-bold text-white">50 Stars</span>
             </div>
             <div class="mt-3">
-              <span class="text-xs text-gray-400 block text-[11px]">Narxi:</span>
-              <span class="text-sm font-bold text-amber-400 font-mono">10,000 so'm</span>
+              <span id="price-50-stars" class="text-sm font-black text-amber-400 font-mono">10,000 so'm</span>
             </div>
           </div>
 
-          <!-- 100 Stars (TOP) -->
-          <div onclick="selectStarsPackage(100)" class="star-card cursor-pointer relative glass-card border-amber-500/40 bg-amber-500/5 p-3.5 rounded-2xl transition-all active:scale-95 flex flex-col justify-between">
-            <span class="absolute -top-2 right-2 bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 text-[9px] font-black px-2 py-0.5 rounded-full shadow">TOP 🔥</span>
+          <!-- 100 Stars -->
+          <div onclick="selectStarsPackage(100)" class="star-card cursor-pointer glass-card hover:border-amber-500/50 p-3.5 rounded-2xl transition-all border border-gray-800 active:scale-95 flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xl">⭐️</span>
               <span class="text-xs font-bold text-white">100 Stars</span>
             </div>
             <div class="mt-3">
-              <span class="text-xs text-gray-400 block text-[11px]">Narxi:</span>
-              <span class="text-sm font-bold text-amber-400 font-mono">20,000 so'm</span>
+              <span id="price-100-stars" class="text-sm font-black text-amber-400 font-mono">20,000 so'm</span>
             </div>
           </div>
 
@@ -175,20 +180,18 @@
               <span class="text-xs font-bold text-white">250 Stars</span>
             </div>
             <div class="mt-3">
-              <span class="text-xs text-gray-400 block text-[11px]">Narxi:</span>
-              <span class="text-sm font-bold text-amber-400 font-mono">50,000 so'm</span>
+              <span id="price-250-stars" class="text-sm font-black text-amber-400 font-mono">50,000 so'm</span>
             </div>
           </div>
 
           <!-- 500 Stars -->
-          <div onclick="selectStarsPackage(500)" class="star-card cursor-pointer glass-card hover:border-amber-500/50 p-3.5 rounded-2xl transition-all border border-gray-800 active:scale-95 flex flex-col justify-between">
+          <div onclick="selectStarsPackage(500)" class="star-card cursor-pointer glass-card hover:border-amber-500/50 p-3.5 rounded-2xl transition-all border border-amber-500/30 bg-amber-500/5 active:scale-95 flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xl">⭐️</span>
               <span class="text-xs font-bold text-white">500 Stars</span>
             </div>
             <div class="mt-3">
-              <span class="text-xs text-gray-400 block text-[11px]">Narxi:</span>
-              <span class="text-sm font-bold text-amber-400 font-mono">100,000 so'm</span>
+              <span id="price-500-stars" class="text-sm font-black text-amber-400 font-mono">100,000 so'm</span>
             </div>
           </div>
 
@@ -199,8 +202,7 @@
               <span class="text-xs font-bold text-white">1,000 Stars</span>
             </div>
             <div class="mt-3">
-              <span class="text-xs text-gray-400 block text-[11px]">Narxi:</span>
-              <span class="text-sm font-bold text-amber-400 font-mono">200,000 so'm</span>
+              <span id="price-1000-stars" class="text-sm font-black text-amber-400 font-mono">200,000 so'm</span>
             </div>
           </div>
 
@@ -211,82 +213,74 @@
               <span class="text-xs font-bold text-white">2,500 Stars</span>
             </div>
             <div class="mt-3">
-              <span class="text-xs text-gray-400 block text-[11px]">Narxi:</span>
-              <span class="text-sm font-bold text-amber-400 font-mono">500,000 so'm</span>
+              <span id="price-2500-stars" class="text-sm font-black text-amber-400 font-mono">500,000 so'm</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- O'zingiz xohlagan miqdorni kiritish -->
-      <div class="glass-card rounded-2xl p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <label class="text-xs font-semibold text-gray-300">Boshqa miqdor (ixtiyoriy):</label>
-          <span class="text-[11px] text-gray-500">Kamida 50 Stars</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <input type="number" id="custom-stars-input" min="50" step="5" placeholder="50 dan boshlab..." class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-amber-500">
-          <button onclick="applyCustomStars()" class="bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-4 py-2 rounded-xl text-xs transition active:scale-95">Hisoblash</button>
+      <!-- Ixtiyoriy kalkulyator -->
+      <div class="glass-card rounded-2xl p-4 space-y-3 border border-gray-800">
+        <label class="text-xs font-semibold text-gray-300 block">Ixtiyoriy miqdorni hisoblash:</label>
+        <div class="flex space-x-2">
+          <input type="number" id="custom-stars-input" placeholder="Min. 50 Stars..." min="50" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-amber-500">
+          <button onclick="applyCustomStars()" class="bg-gray-800 hover:bg-gray-700 text-amber-400 px-4 py-2 rounded-xl text-xs font-bold border border-gray-700 active:scale-95 transition">
+            Hisoblash
+          </button>
         </div>
       </div>
 
-      <!-- Xarid tugmasi -->
-      <button id="btn-buy-stars" onclick="openStarsConfirmationModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/20 active:scale-[0.98] transition-all flex items-center justify-center space-x-2">
-        <span>⭐️ 50 Stars xarid qilish (10,000 so'm)</span>
-      </button>
+      <!-- Xarid qilish tugmasi -->
+      <div class="pt-2">
+        <button id="btn-buy-stars" onclick="openStarsConfirmationModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/20 active:scale-[0.98] transition flex items-center justify-center space-x-2">
+          <span>⭐️ 50 Stars xarid qilish (10,000 so'm)</span>
+        </button>
+      </div>
     </section>
 
     <!-- ==================== TAB 2: TELEGRAM PREMIUM ==================== -->
     <section id="tab-premium" class="tab-content hidden space-y-4">
       <div class="relative overflow-hidden rounded-2xl glass-card p-4 border border-sky-500/20">
         <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-sky-500/10 rounded-full blur-xl"></div>
-        <div class="flex items-center space-x-2">
-          <span class="text-2xl">💎</span>
+        <div class="flex items-start justify-between">
           <div>
-            <h1 class="text-lg font-bold text-white tracking-wide">Telegram Premium</h1>
-            <p class="text-xs text-gray-400 mt-0.5">Eksklyuziv imkoniyatlar to'plami</p>
+            <div class="flex items-center space-x-2">
+              <span class="text-2xl">💎</span>
+              <h1 class="text-lg font-bold text-white tracking-wide">Telegram Premium</h1>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Rasmiy obunani faollashtirish</p>
           </div>
+          <span class="text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-full font-bold">SOVGA</span>
         </div>
       </div>
 
-      <!-- Premium afzalliklari -->
-      <div class="glass-card rounded-2xl p-3.5 space-y-2 text-xs text-gray-300">
-        <div class="flex items-center space-x-2">
-          <span class="text-sky-400 font-bold">✓</span>
-          <span>4 GB gacha bo'lgan katta fayllarni yuklash</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="text-sky-400 font-bold">✓</span>
-          <span>Reklamasiz toza Telegram interfeysi</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="text-sky-400 font-bold">✓</span>
-          <span>Ovozli xabarlarni matnga aylantirish</span>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="text-sky-400 font-bold">✓</span>
-          <span>Maxsus emoji-statuslar va cheksiz tezlik</span>
+      <!-- Qabul qiluvchi Premium -->
+      <div class="glass-card rounded-2xl p-3.5 space-y-2">
+        <label class="text-xs font-semibold text-gray-300 block">Qabul qiluvchi username:</label>
+        <div class="relative">
+          <span class="absolute left-3 top-2.5 text-gray-400 text-sm">@</span>
+          <input type="text" id="premium-username-input" placeholder="telegram_username" class="w-full bg-gray-900 border border-gray-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
         </div>
       </div>
 
-      <!-- Tariflar ro'yxati -->
+      <!-- Premium Tariflar -->
       <div class="space-y-2.5">
         <!-- 1 Oy -->
-        <div onclick="selectPremiumPlan(1, 45000)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
+        <div onclick="openPremiumConfirmationModal(1)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-lg">💎</div>
             <div>
               <h3 class="font-bold text-sm text-white">1 Oylik obuna</h3>
-              <p class="text-[11px] text-gray-400">Admin orqali tezkor</p>
+              <p class="text-[11px] text-gray-400">Sinov tarifi</p>
             </div>
           </div>
           <div class="text-right">
-            <span class="text-sm font-bold text-sky-400 font-mono">45,000 so'm</span>
+            <span id="price-prem-1m" class="text-sm font-bold text-sky-400 font-mono">45,000 so'm</span>
           </div>
         </div>
 
         <!-- 3 Oy -->
-        <div onclick="selectPremiumPlan(3, 155000)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
+        <div onclick="openPremiumConfirmationModal(3)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-lg">💎</div>
             <div>
@@ -295,12 +289,12 @@
             </div>
           </div>
           <div class="text-right">
-            <span class="text-sm font-bold text-sky-400 font-mono">155,000 so'm</span>
+            <span id="price-prem-3m" class="text-sm font-bold text-sky-400 font-mono">155,000 so'm</span>
           </div>
         </div>
 
         <!-- 6 Oy -->
-        <div onclick="selectPremiumPlan(6, 215000)" class="prem-card cursor-pointer relative glass-card border border-sky-500/40 bg-sky-500/5 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
+        <div onclick="openPremiumConfirmationModal(6)" class="prem-card cursor-pointer relative glass-card border border-sky-500/40 bg-sky-500/5 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
           <span class="absolute -top-2 right-4 bg-sky-500 text-gray-950 text-[9px] font-black px-2 py-0.5 rounded-full shadow">TAVSIYA ETILADI</span>
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-lg">💎</div>
@@ -310,12 +304,12 @@
             </div>
           </div>
           <div class="text-right">
-            <span class="text-sm font-bold text-sky-400 font-mono">215,000 so'm</span>
+            <span id="price-prem-6m" class="text-sm font-bold text-sky-400 font-mono">215,000 so'm</span>
           </div>
         </div>
 
         <!-- 12 Oy -->
-        <div onclick="selectPremiumPlan(12, 380000)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
+        <div onclick="openPremiumConfirmationModal(12)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-lg">💎</div>
             <div>
@@ -324,7 +318,7 @@
             </div>
           </div>
           <div class="text-right">
-            <span class="text-sm font-bold text-sky-400 font-mono">380,000 so'm</span>
+            <span id="price-prem-12m" class="text-sm font-bold text-sky-400 font-mono">380,000 so'm</span>
           </div>
         </div>
       </div>
@@ -383,16 +377,16 @@
             <span class="text-gray-400 text-[11px] block">To'lov kartasi:</span>
             <div class="flex items-center justify-between bg-gray-900/80 p-2.5 rounded-xl border border-gray-800 mt-1">
               <span id="card-num-text" class="font-mono font-bold text-white text-sm">9860126632094010</span>
-              <button onclick="copyToClipboard('9860126632094010', 'Karta raqami nusxalandi!')" class="bg-gray-800 hover:bg-gray-700 text-amber-400 px-2.5 py-1 rounded-lg text-xs font-medium border border-gray-700">Nusxalash</button>
+              <button onclick="copyCardNumber()" class="bg-gray-800 hover:bg-gray-700 text-amber-400 px-2.5 py-1 rounded-lg text-xs font-medium border border-gray-700">Nusxalash</button>
             </div>
-            <p class="text-[11px] text-gray-400 mt-1">Egasi: <span class="text-gray-200 font-medium">Zafar Mirsaidov</span></p>
+            <p class="text-[11px] text-gray-400 mt-1">Egasi: <span id="card-holder-text" class="text-gray-200 font-medium">Zafar Mirsaidov</span></p>
           </div>
 
           <div class="pt-1">
             <span class="text-gray-400 text-[11px] block">O'tkaziladigan ANIQ summa:</span>
             <div class="flex items-center justify-between bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/30 mt-1">
               <span id="unique-amount-text" class="font-mono font-black text-amber-400 text-base">10,045 so'm</span>
-              <button onclick="copyToClipboard('10045', 'To\'lov summasi nusxalandi!')" class="bg-amber-500 text-gray-950 px-2.5 py-1 rounded-lg text-xs font-bold shadow">Nusxalash</button>
+              <button onclick="copyUniqueAmount()" class="bg-amber-500 text-gray-950 px-2.5 py-1 rounded-lg text-xs font-bold shadow">Nusxalash</button>
             </div>
           </div>
         </div>
@@ -401,6 +395,11 @@
           <p>⚠️ <b>Muhim eslatma:</b> Avtomatik tushishi uchun aynan ko'rsatilgan summani tiyingacha o'tkazing.</p>
           <p class="text-emerald-400">✓ To'lovdan so'ng hisobingiz 5-10 soniyada avtomat yangilanadi.</p>
         </div>
+
+        <!-- BEKOR QILISH TUGMASI (TO'LOVNI CANCEL QILISH) -->
+        <button onclick="cancelDepositInvoice()" class="w-full py-2.5 rounded-xl bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/30 text-xs font-bold transition flex items-center justify-center space-x-1.5 active:scale-95 mt-2">
+          <span>❌ To'lovni bekor qilish</span>
+        </button>
       </div>
     </section>
 
@@ -421,7 +420,7 @@
                 <span class="text-xs font-bold text-white">50 Stars</span>
                 <span class="text-[10px] text-gray-400">#26</span>
               </div>
-              <p class="text-[11px] text-gray-400">@durov hisobiga</p>
+              <p class="text-[11px] text-gray-400">@uzmfz hisobiga</p>
             </div>
           </div>
           <div class="text-right">
@@ -439,11 +438,11 @@
                 <span class="text-xs font-bold text-white">Hisob to'ldirish</span>
                 <span class="text-[10px] text-gray-400">#25</span>
               </div>
-              <p class="text-[11px] text-gray-400">HumoCard orqali</p>
+              <p class="text-[11px] text-gray-400">Humo / Uzcard</p>
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-bold text-emerald-400 font-mono">+10,000 so'm</span>
+            <span class="text-xs font-bold text-emerald-400 font-mono">+50,000 so'm</span>
             <span class="block text-[10px] text-emerald-400 font-medium">✅ Bajarildi</span>
           </div>
         </div>
@@ -475,11 +474,11 @@
         </div>
         <div class="border-t border-gray-800 pt-2 flex justify-between">
           <span class="text-gray-400">Hozirgi balans:</span>
-          <span id="modal-current-bal" class="text-gray-300 font-mono">11,500 so'm</span>
+          <span id="modal-current-bal" class="text-gray-300 font-mono">0 so'm</span>
         </div>
         <div class="flex justify-between font-bold">
           <span class="text-gray-300">Xariddan keyin:</span>
-          <span id="modal-remaining-bal" class="text-emerald-400 font-mono">1,500 so'm</span>
+          <span id="modal-remaining-bal" class="text-emerald-400 font-mono">0 so'm</span>
         </div>
       </div>
 
@@ -527,34 +526,151 @@
     if (tg) {
       tg.ready();
       tg.expand();
-      // Theme colors
       tg.setHeaderColor('#0B0F19');
       tg.setBackgroundColor('#0B0F19');
     }
 
-    // Foydalanuvchi ma'lumotlari
+    // Narxlar va Foydalanuvchi holati
     let userState = {
-      username: tg?.initDataUnsafe?.user?.username || 'durov',
+      username: tg?.initDataUnsafe?.user?.username || 'mijoz',
       firstName: tg?.initDataUnsafe?.user?.first_name || 'Foydalanuvchi',
-      userId: tg?.initDataUnsafe?.user?.id || 5915115344,
-      balance: 11500,
+      userId: tg?.initDataUnsafe?.user?.id || 0,
+      balance: 0,
       starPrice: 200,
       recipientType: 'self',
       selectedStars: 50,
-      selectedStarsPrice: 10000
+      selectedStarsPrice: 10000,
+      currentAction: 'stars', // 'stars' yoki 'premium'
+      premiumMonths: 3,
+      premiumPrice: 155000
     };
+
+    let prices = {
+      p1m: 45000,
+      p3m: 155000,
+      p6m: 215000,
+      p12m: 380000,
+      card: "9860126632094010",
+      holder: "Zafar Mirsaidov"
+    };
+
+    // Dinamik ma'lumotlarni o'qish (URL parametrlari va localStorage)
+    function loadDynamicData() {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Star narxi
+      if (urlParams.has('star_price')) {
+        const sp = parseInt(urlParams.get('star_price'));
+        if (!isNaN(sp) && sp > 0) {
+          userState.starPrice = sp;
+          localStorage.setItem('star_price', sp);
+        }
+      } else if (localStorage.getItem('star_price')) {
+        userState.starPrice = parseInt(localStorage.getItem('star_price'));
+      }
+
+      // Foydalanuvchi balansi
+      if (urlParams.has('bal')) {
+        const b = parseInt(urlParams.get('bal'));
+        if (!isNaN(b)) {
+          userState.balance = b;
+          localStorage.setItem('user_balance', b);
+        }
+      } else if (localStorage.getItem('user_balance')) {
+        userState.balance = parseInt(localStorage.getItem('user_balance'));
+      }
+
+      // Premium narxlari
+      if (urlParams.has('p1m')) {
+        prices.p1m = parseInt(urlParams.get('p1m'));
+        localStorage.setItem('p1m', prices.p1m);
+      } else if (localStorage.getItem('p1m')) {
+        prices.p1m = parseInt(localStorage.getItem('p1m'));
+      }
+
+      if (urlParams.has('p3m')) {
+        prices.p3m = parseInt(urlParams.get('p3m'));
+        localStorage.setItem('p3m', prices.p3m);
+      } else if (localStorage.getItem('p3m')) {
+        prices.p3m = parseInt(localStorage.getItem('p3m'));
+      }
+
+      if (urlParams.has('p6m')) {
+        prices.p6m = parseInt(urlParams.get('p6m'));
+        localStorage.setItem('p6m', prices.p6m);
+      } else if (localStorage.getItem('p6m')) {
+        prices.p6m = parseInt(localStorage.getItem('p6m'));
+      }
+
+      if (urlParams.has('p12m')) {
+        prices.p12m = parseInt(urlParams.get('p12m'));
+        localStorage.setItem('p12m', prices.p12m);
+      } else if (localStorage.getItem('p12m')) {
+        prices.p12m = parseInt(localStorage.getItem('p12m'));
+      }
+
+      // Karta ma'lumotlari
+      if (urlParams.has('card')) {
+        prices.card = urlParams.get('card');
+        localStorage.setItem('card_number', prices.card);
+      } else if (localStorage.getItem('card_number')) {
+        prices.card = localStorage.getItem('card_number');
+      }
+
+      if (urlParams.has('holder')) {
+        prices.holder = urlParams.get('holder');
+        localStorage.setItem('card_holder', prices.holder);
+      } else if (localStorage.getItem('card_holder')) {
+        prices.holder = localStorage.getItem('card_holder');
+      }
+
+      renderDynamicPrices();
+    }
+
+    // Barcha narx va ma'lumotlarni interfeysga chiqarish
+    function renderDynamicPrices() {
+      // Header
+      document.getElementById('header-balance').innerText = userState.balance.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('star-rate-display').innerText = userState.starPrice.toLocaleString('uz-UZ') + " so'm";
+
+      // Stars Grid kartalari
+      const p50 = 50 * userState.starPrice;
+      const p100 = 100 * userState.starPrice;
+      const p250 = 250 * userState.starPrice;
+      const p500 = 500 * userState.starPrice;
+      const p1000 = 1000 * userState.starPrice;
+      const p2500 = 2500 * userState.starPrice;
+
+      document.getElementById('price-50-stars').innerText = p50.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-100-stars').innerText = p100.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-250-stars').innerText = p250.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-500-stars').innerText = p500.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-1000-stars').innerText = p1000.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-2500-stars').innerText = p2500.toLocaleString('uz-UZ') + " so'm";
+
+      // Premium tariflari
+      document.getElementById('price-prem-1m').innerText = prices.p1m.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-prem-3m').innerText = prices.p3m.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-prem-6m').innerText = prices.p6m.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('price-prem-12m').innerText = prices.p12m.toLocaleString('uz-UZ') + " so'm";
+
+      // Karta
+      document.getElementById('card-num-text').innerText = prices.card;
+      document.getElementById('card-holder-text').innerText = prices.holder;
+
+      // Asosiy Stars sotib olish tugmasi
+      userState.selectedStarsPrice = userState.selectedStars * userState.starPrice;
+      updateBuyStarsButton();
+    }
 
     // UI Initializer
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('user-name').innerText = userState.firstName;
-      document.getElementById('user-tag').innerText = '@' + userState.username;
-      document.getElementById('user-avatar').innerText = userState.firstName[0].toUpperCase();
-      updateBalanceUI();
+      document.getElementById('user-tag').innerText = userState.username ? '@' + userState.username : 'ID: ' + userState.userId;
+      document.getElementById('user-avatar').innerText = (userState.firstName[0] || 'U').toUpperCase();
+      
+      loadDynamicData();
     });
-
-    function updateBalanceUI() {
-      document.getElementById('header-balance').innerText = userState.balance.toLocaleString('uz-UZ') + " so'm";
-    }
 
     // Haptic feedback helper
     function haptic(type = 'light') {
@@ -578,13 +694,24 @@
       }, 2500);
     }
 
+    // Sync / Yangilash
+    function syncWithBot() {
+      haptic('medium');
+      showToast("Kurslar va ma'lumotlar tekshirilmoqda...");
+      if (tg) {
+        tg.sendData(JSON.stringify({ action: "sync_request" }));
+      } else {
+        loadDynamicData();
+        showToast("Ma'lumotlar yangilandi!");
+      }
+    }
+
     // Tab switcher
     function switchTab(tabId) {
       haptic('light');
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
 
-      // Nav colors
       document.querySelectorAll('.nav-item').forEach(el => {
         el.classList.remove('text-amber-400', 'text-sky-400', 'text-emerald-400');
         el.classList.add('text-gray-400');
@@ -643,8 +770,9 @@
       btn.innerHTML = `<span>⭐️ ${userState.selectedStars.toLocaleString()} Stars xarid qilish (${userState.selectedStarsPrice.toLocaleString()} so'm)</span>`;
     }
 
-    // Confirmation Modal
+    // Confirmation Modal - Stars
     function openStarsConfirmationModal() {
+      userState.currentAction = 'stars';
       let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
       
       if (!targetUser) {
@@ -660,7 +788,7 @@
       }
 
       haptic('medium');
-      document.getElementById('modal-service-name').innerText = `${userState.selectedStars} ⭐️ Stars`;
+      document.getElementById('modal-service-name').innerText = `${userState.selectedStars.toLocaleString()} ⭐️ Stars`;
       document.getElementById('modal-target-username').innerText = '@' + targetUser;
       document.getElementById('modal-service-price').innerText = userState.selectedStarsPrice.toLocaleString() + " so'm";
       document.getElementById('modal-current-bal').innerText = userState.balance.toLocaleString() + " so'm";
@@ -669,64 +797,113 @@
       document.getElementById('confirm-modal').classList.remove('hidden');
     }
 
+    // Confirmation Modal - Premium
+    function openPremiumConfirmationModal(months) {
+      userState.currentAction = 'premium';
+      userState.premiumMonths = months;
+
+      let pr = prices.p3m;
+      if (months === 1) pr = prices.p1m;
+      else if (months === 6) pr = prices.p6m;
+      else if (months === 12) pr = prices.p12m;
+      userState.premiumPrice = pr;
+
+      let targetUser = document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username;
+
+      if (userState.balance < pr) {
+        haptic('warning');
+        showToast("Balansingiz yetarli emas! Avval hisobni to'ldiring.");
+        setTimeout(() => switchTab('tab-deposit'), 600);
+        return;
+      }
+
+      haptic('medium');
+      document.getElementById('modal-service-name').innerText = `${months} oylik Telegram Premium 💎`;
+      document.getElementById('modal-target-username').innerText = '@' + targetUser;
+      document.getElementById('modal-service-price').innerText = pr.toLocaleString() + " so'm";
+      document.getElementById('modal-current-bal').innerText = userState.balance.toLocaleString() + " so'm";
+      document.getElementById('modal-remaining-bal').innerText = (userState.balance - pr).toLocaleString() + " so'm";
+
+      document.getElementById('confirm-modal').classList.remove('hidden');
+    }
+
     function closeConfirmModal() {
+      haptic('light');
       document.getElementById('confirm-modal').classList.add('hidden');
     }
 
+    // Xaridni tasdiqlash va bajarish
     function executePurchase() {
       haptic('success');
-      userState.balance -= userState.selectedStarsPrice;
-      updateBalanceUI();
-      closeConfirmModal();
 
-      let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
-      
-      // Yangi buyurtmani tarixga qo'shish
+      if (userState.currentAction === 'stars') {
+        userState.balance -= userState.selectedStarsPrice;
+        localStorage.setItem('user_balance', userState.balance);
+        renderDynamicPrices();
+        closeConfirmModal();
+
+        let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
+        
+        // Yangi buyurtmani tarixga qo'shish
+        addHistoryItem(`${userState.selectedStars} Stars`, userState.selectedStarsPrice, targetUser, '⭐️');
+
+        showToast("🎉 Stars xaridi qabul qilindi!");
+        if (tg) {
+          tg.sendData(JSON.stringify({
+            action: "buy_stars",
+            stars: userState.selectedStars,
+            price: userState.selectedStarsPrice,
+            target_username: targetUser
+          }));
+        }
+      } else if (userState.currentAction === 'premium') {
+        userState.balance -= userState.premiumPrice;
+        localStorage.setItem('user_balance', userState.balance);
+        renderDynamicPrices();
+        closeConfirmModal();
+
+        let targetUser = document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username;
+        
+        addHistoryItem(`${userState.premiumMonths} oy Premium`, userState.premiumPrice, targetUser, '💎');
+
+        showToast("🎉 Premium xaridi qabul qilindi!");
+        if (tg) {
+          tg.sendData(JSON.stringify({
+            action: "buy_premium",
+            months: userState.premiumMonths,
+            price: userState.premiumPrice,
+            target_username: targetUser
+          }));
+        }
+      }
+    }
+
+    function addHistoryItem(title, price, username, icon) {
       const historyList = document.getElementById('orders-list');
       const orderHtml = `
-        <div class="glass-card rounded-2xl p-3.5 border border-emerald-500/30 flex items-center justify-between animate-fade-in">
+        <div class="glass-card rounded-2xl p-3.5 border border-emerald-500/30 flex items-center justify-between">
           <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-sm">⭐️</div>
+            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-sm">${icon}</div>
             <div>
               <div class="flex items-center space-x-1.5">
-                <span class="text-xs font-bold text-white">${userState.selectedStars} Stars</span>
+                <span class="text-xs font-bold text-white">${title}</span>
                 <span class="text-[10px] text-gray-400">#Yangi</span>
               </div>
-              <p class="text-[11px] text-gray-400">@${targetUser} hisobiga</p>
+              <p class="text-[11px] text-gray-400">@${username} hisobiga</p>
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-bold text-amber-400 font-mono">${userState.selectedStarsPrice.toLocaleString()} so'm</span>
+            <span class="text-xs font-bold text-amber-400 font-mono">${price.toLocaleString()} so'm</span>
             <span class="block text-[10px] text-emerald-400 font-medium">✅ Yuborilmoqda</span>
           </div>
         </div>
       `;
       historyList.insertAdjacentHTML('afterbegin', orderHtml);
-
-      showToast("🎉 Xarid muvaffaqiyatli amalga oshirildi!");
-      if (tg) {
-        tg.sendData(JSON.stringify({
-          action: "buy_stars",
-          stars: userState.selectedStars,
-          price: userState.selectedStarsPrice,
-          target_username: targetUser
-        }));
-      }
-    }
-
-    // Premium Tanlash
-    function selectPremiumPlan(months, price) {
-      haptic('medium');
-      if (userState.balance < price) {
-        showToast("Balansingiz yetarli emas! Avval hisobni to'ldiring.");
-        setTimeout(() => switchTab('tab-deposit'), 600);
-        return;
-      }
-      showToast(`${months} oylik Premium tanlandi`);
     }
 
     // Depozit Invoys
     let depositAmount = 10000;
+    let currentUniqueTotal = 10000;
     function setDepositAmount(amt) {
       haptic('light');
       depositAmount = amt;
@@ -741,13 +918,33 @@
 
       haptic('success');
       const uniqueOffset = Math.floor(Math.random() * 80) + 10;
-      const uniqueTotal = depositAmount + uniqueOffset;
+      currentUniqueTotal = depositAmount + uniqueOffset;
 
-      document.getElementById('unique-amount-text').innerText = uniqueTotal.toLocaleString('uz-UZ') + " so'm";
+      document.getElementById('unique-amount-text').innerText = currentUniqueTotal.toLocaleString('uz-UZ') + " so'm";
       document.getElementById('active-invoice-card').classList.remove('hidden');
 
       showToast("To'lov cheki tayyorlandi!");
       startInvoiceCountdown(15 * 60);
+    }
+
+    // ==================== TO'LOVNI BEKOR QILISH (CANCEL) ====================
+    function cancelDepositInvoice() {
+      haptic('warning');
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+
+      document.getElementById('active-invoice-card').classList.add('hidden');
+      document.getElementById('deposit-custom-input').value = '';
+      showToast("❌ To'lov cheki bekor qilindi");
+
+      // Botga bekor qilinganini xabar berish
+      if (tg) {
+        tg.sendData(JSON.stringify({
+          action: "cancel_deposit"
+        }));
+      }
     }
 
     let timerInterval = null;
@@ -770,6 +967,14 @@
           display.textContent = "Vaqt tugadi";
         }
       }, 1000);
+    }
+
+    function copyCardNumber() {
+      copyToClipboard(prices.card, "Karta raqami nusxalandi!");
+    }
+
+    function copyUniqueAmount() {
+      copyToClipboard(currentUniqueTotal.toString(), "To'lov summasi nusxalandi!");
     }
 
     function copyToClipboard(text, successMsg) {
