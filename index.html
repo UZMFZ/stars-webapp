@@ -69,7 +69,7 @@
 </head>
 <body class="min-h-screen pb-24 overflow-x-hidden">
 
-  <!-- TOP HEADER (Profil & Balans) -->
+  <!-- TOP HEADER (Profil, Balans va Qo'llab-quvvatlash) -->
   <header class="sticky top-0 z-40 glass-card px-4 py-3 border-b border-gray-800 flex items-center justify-between">
     <div class="flex items-center space-x-3">
       <div id="user-avatar" class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-gray-900 font-bold text-lg shadow-md">
@@ -84,13 +84,18 @@
       </div>
     </div>
 
-    <!-- O'ng tomon: Balans va Yangilash -->
+    <!-- O'ng tomon: Balans, Admin va Yangilash -->
     <div class="flex items-center space-x-1.5">
       <!-- Balans tugmasi -->
       <button onclick="switchTab('tab-deposit')" class="flex items-center space-x-2 bg-gradient-to-r from-emerald-500/15 to-emerald-600/10 hover:from-emerald-500/25 hover:to-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all active:scale-95">
         <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
         <span class="text-xs font-semibold" id="header-balance">0 so'm</span>
         <span class="bg-emerald-500 text-gray-950 rounded-full w-4 h-4 flex items-center justify-center font-bold text-xs ml-1">+</span>
+      </button>
+
+      <!-- Admin Lichkasi tugmasi -->
+      <button onclick="openAdminChat()" title="Qo'llab-quvvatlash (Admin)" class="w-8 h-8 rounded-xl glass-card border border-gray-700 hover:border-sky-500/50 flex items-center justify-center text-gray-300 hover:text-sky-400 active:scale-90 transition-all">
+        <span class="text-xs">💬</span>
       </button>
 
       <!-- Sync (Yangilash) tugmasi -->
@@ -118,7 +123,7 @@
           </div>
           <div class="text-right">
             <span class="text-[11px] text-gray-400">1 ta Star kursi:</span>
-            <p id="star-rate-display" class="text-sm font-bold text-amber-400 font-mono">200 so'm</p>
+            <p id="star-rate-display" class="text-sm font-bold text-amber-400 font-mono">190 so'm</p>
           </div>
         </div>
       </div>
@@ -147,7 +152,7 @@
       <div class="space-y-2">
         <label class="text-xs font-semibold text-gray-400 flex items-center justify-between">
           <span>Ommabop paketlar:</span>
-          <span class="text-[11px] text-amber-400">Tezkor rasmiylashtirish</span>
+          <span class="text-[11px] text-amber-400">Tezkor xarid</span>
         </label>
         
         <div class="grid grid-cols-2 gap-2.5">
@@ -158,7 +163,7 @@
               <span class="text-xs font-bold text-white">50 Stars</span>
             </div>
             <div class="mt-3">
-              <span id="price-50-stars" class="text-sm font-black text-amber-400 font-mono">10,000 so'm</span>
+              <span id="price-50-stars" class="text-sm font-black text-amber-400 font-mono">9,500 so'm</span>
             </div>
           </div>
 
@@ -169,7 +174,7 @@
               <span class="text-xs font-bold text-white">100 Stars</span>
             </div>
             <div class="mt-3">
-              <span id="price-100-stars" class="text-sm font-black text-amber-400 font-mono">20,000 so'm</span>
+              <span id="price-100-stars" class="text-sm font-black text-amber-400 font-mono">19,000 so'm</span>
             </div>
           </div>
 
@@ -180,7 +185,7 @@
               <span class="text-xs font-bold text-white">250 Stars</span>
             </div>
             <div class="mt-3">
-              <span id="price-250-stars" class="text-sm font-black text-amber-400 font-mono">50,000 so'm</span>
+              <span id="price-250-stars" class="text-sm font-black text-amber-400 font-mono">47,500 so'm</span>
             </div>
           </div>
 
@@ -191,7 +196,7 @@
               <span class="text-xs font-bold text-white">500 Stars</span>
             </div>
             <div class="mt-3">
-              <span id="price-500-stars" class="text-sm font-black text-amber-400 font-mono">100,000 so'm</span>
+              <span id="price-500-stars" class="text-sm font-black text-amber-400 font-mono">95,000 so'm</span>
             </div>
           </div>
 
@@ -202,7 +207,7 @@
               <span class="text-xs font-bold text-white">1,000 Stars</span>
             </div>
             <div class="mt-3">
-              <span id="price-1000-stars" class="text-sm font-black text-amber-400 font-mono">200,000 so'm</span>
+              <span id="price-1000-stars" class="text-sm font-black text-amber-400 font-mono">190,000 so'm</span>
             </div>
           </div>
 
@@ -213,7 +218,7 @@
               <span class="text-xs font-bold text-white">2,500 Stars</span>
             </div>
             <div class="mt-3">
-              <span id="price-2500-stars" class="text-sm font-black text-amber-400 font-mono">500,000 so'm</span>
+              <span id="price-2500-stars" class="text-sm font-black text-amber-400 font-mono">475,000 so'm</span>
             </div>
           </div>
         </div>
@@ -233,7 +238,7 @@
       <!-- Xarid qilish tugmasi -->
       <div class="pt-2">
         <button id="btn-buy-stars" onclick="openStarsConfirmationModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/20 active:scale-[0.98] transition flex items-center justify-center space-x-2">
-          <span>⭐️ 50 Stars xarid qilish (10,000 so'm)</span>
+          <span>⭐️ 50 Stars xarid qilish (9,500 so'm)</span>
         </button>
       </div>
     </section>
@@ -248,34 +253,49 @@
               <span class="text-2xl">💎</span>
               <h1 class="text-lg font-bold text-white tracking-wide">Telegram Premium</h1>
             </div>
-            <p class="text-xs text-gray-400 mt-1">Rasmiy obunani faollashtirish</p>
+            <p class="text-xs text-gray-400 mt-1">Rasmiy kafolatlangan obuna</p>
           </div>
           <span class="text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-full font-bold">SOVGA</span>
         </div>
       </div>
 
       <!-- Qabul qiluvchi Premium -->
-      <div class="glass-card rounded-2xl p-3.5 space-y-2">
-        <label class="text-xs font-semibold text-gray-300 block">Qabul qiluvchi username:</label>
-        <div class="relative">
-          <span class="absolute left-3 top-2.5 text-gray-400 text-sm">@</span>
-          <input type="text" id="premium-username-input" placeholder="telegram_username" class="w-full bg-gray-900 border border-gray-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
+      <div class="glass-card rounded-2xl p-3.5 space-y-2.5">
+        <label class="text-xs font-semibold text-gray-300 block">Qabul qiluvchi shaxs:</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button id="prem-btn-self" onclick="selectPremRecipientType('self')" class="flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-sky-500/40 bg-sky-500/10 text-sky-300 transition-all">
+            <span>👤 O'zimga</span>
+          </button>
+          <button id="prem-btn-other" onclick="selectPremRecipientType('other')" class="flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-gray-700 bg-gray-800/40 text-gray-400 transition-all">
+            <span>👥 Boshqa shaxsga</span>
+          </button>
+        </div>
+
+        <div id="prem-other-wrapper" class="hidden pt-1">
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-gray-400 text-sm">@</span>
+            <input type="text" id="premium-username-input" placeholder="telegram_username" class="w-full bg-gray-900 border border-gray-700 rounded-xl pl-8 pr-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sky-500">
+          </div>
         </div>
       </div>
 
       <!-- Premium Tariflar -->
       <div class="space-y-2.5">
-        <!-- 1 Oy -->
-        <div onclick="openPremiumConfirmationModal(1)" class="prem-card cursor-pointer glass-card border border-gray-800 hover:border-sky-500/40 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition">
+        <!-- 1 Oy (Lichkaga - Admin orqali) -->
+        <div onclick="openAdminChat()" class="prem-card cursor-pointer glass-card border border-sky-500/30 hover:border-sky-500 p-4 rounded-2xl flex items-center justify-between active:scale-[0.99] transition bg-gradient-to-r from-sky-950/20 to-gray-900">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-lg">💎</div>
             <div>
-              <h3 class="font-bold text-sm text-white">1 Oylik obuna</h3>
-              <p class="text-[11px] text-gray-400">Sinov tarifi</p>
+              <div class="flex items-center space-x-1.5">
+                <h3 class="font-bold text-sm text-white">1 Oylik obuna</h3>
+                <span class="text-[9px] bg-amber-500/15 text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded font-bold">Admin orqali</span>
+              </div>
+              <p class="text-[11px] text-sky-300">Lichkaga o'tish (Savollar & Tezkor xarid)</p>
             </div>
           </div>
           <div class="text-right">
             <span id="price-prem-1m" class="text-sm font-bold text-sky-400 font-mono">45,000 so'm</span>
+            <span class="block text-[10px] text-sky-400 underline mt-0.5 font-semibold">Lichkaga ↗</span>
           </div>
         </div>
 
@@ -285,11 +305,11 @@
             <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-lg">💎</div>
             <div>
               <h3 class="font-bold text-sm text-white">3 Oylik obuna</h3>
-              <p class="text-[11px] text-gray-400">Tejamkor tarif</p>
+              <p class="text-[11px] text-gray-400">Avtomatik Fragment yetkazish</p>
             </div>
           </div>
           <div class="text-right">
-            <span id="price-prem-3m" class="text-sm font-bold text-sky-400 font-mono">155,000 so'm</span>
+            <span id="price-prem-3m" class="text-sm font-bold text-sky-400 font-mono">155,999 so'm</span>
           </div>
         </div>
 
@@ -304,7 +324,7 @@
             </div>
           </div>
           <div class="text-right">
-            <span id="price-prem-6m" class="text-sm font-bold text-sky-400 font-mono">215,000 so'm</span>
+            <span id="price-prem-6m" class="text-sm font-bold text-sky-400 font-mono">209,999 so'm</span>
           </div>
         </div>
 
@@ -318,7 +338,7 @@
             </div>
           </div>
           <div class="text-right">
-            <span id="price-prem-12m" class="text-sm font-bold text-sky-400 font-mono">380,000 so'm</span>
+            <span id="price-prem-12m" class="text-sm font-bold text-sky-400 font-mono">379,999 so'm</span>
           </div>
         </div>
       </div>
@@ -424,7 +444,7 @@
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-bold text-amber-400 font-mono">10,000 so'm</span>
+            <span class="text-xs font-bold text-amber-400 font-mono">9,500 so'm</span>
             <span class="block text-[10px] text-emerald-400 font-medium">✅ Yetkazildi</span>
           </div>
         </div>
@@ -446,6 +466,13 @@
             <span class="block text-[10px] text-emerald-400 font-medium">✅ Bajarildi</span>
           </div>
         </div>
+      </div>
+
+      <!-- Bog'lanish tugmasi -->
+      <div class="pt-3">
+        <button onclick="openAdminChat()" class="w-full py-3 rounded-2xl glass-card border border-sky-500/30 hover:border-sky-500/60 text-sky-400 text-xs font-semibold flex items-center justify-center space-x-2 active:scale-95 transition">
+          <span>📞 Admin bilan bog'lanish (@uzmfz)</span>
+        </button>
       </div>
     </section>
 
@@ -470,7 +497,7 @@
         </div>
         <div class="flex justify-between">
           <span class="text-gray-400">Xizmat narxi:</span>
-          <span id="modal-service-price" class="font-bold text-white font-mono">10,000 so'm</span>
+          <span id="modal-service-price" class="font-bold text-white font-mono">9,500 so'm</span>
         </div>
         <div class="border-t border-gray-800 pt-2 flex justify-between">
           <span class="text-gray-400">Hozirgi balans:</span>
@@ -530,28 +557,30 @@
       tg.setBackgroundColor('#0B0F19');
     }
 
-    // Narxlar va Foydalanuvchi holati
+    // Narxlar va Foydalanuvchi holati (Haqiqiy joriy kurslar boshlang'ich qiymat sifatida)
     let userState = {
       username: tg?.initDataUnsafe?.user?.username || 'mijoz',
       firstName: tg?.initDataUnsafe?.user?.first_name || 'Foydalanuvchi',
       userId: tg?.initDataUnsafe?.user?.id || 0,
       balance: 0,
-      starPrice: 200,
+      starPrice: 190, // Baza kursi
       recipientType: 'self',
+      premRecipientType: 'self',
       selectedStars: 50,
-      selectedStarsPrice: 10000,
-      currentAction: 'stars', // 'stars' yoki 'premium'
+      selectedStarsPrice: 9500,
+      currentAction: 'stars',
       premiumMonths: 3,
-      premiumPrice: 155000
+      premiumPrice: 155999
     };
 
     let prices = {
       p1m: 45000,
-      p3m: 155000,
-      p6m: 215000,
-      p12m: 380000,
+      p3m: 155999,
+      p6m: 209999,
+      p12m: 379999,
       card: "9860126632094010",
-      holder: "Zafar Mirsaidov"
+      holder: "Zafar Mirsaidov",
+      support: "uzmfz"
     };
 
     // Dinamik ma'lumotlarni o'qish (URL parametrlari va localStorage)
@@ -566,7 +595,8 @@
           localStorage.setItem('star_price', sp);
         }
       } else if (localStorage.getItem('star_price')) {
-        userState.starPrice = parseInt(localStorage.getItem('star_price'));
+        const sp = parseInt(localStorage.getItem('star_price'));
+        if (!isNaN(sp) && sp > 0) userState.starPrice = sp;
       }
 
       // Foydalanuvchi balansi
@@ -577,7 +607,7 @@
           localStorage.setItem('user_balance', b);
         }
       } else if (localStorage.getItem('user_balance')) {
-        userState.balance = parseInt(localStorage.getItem('user_balance'));
+        userState.balance = parseInt(localStorage.getItem('user_balance')) || 0;
       }
 
       // Premium narxlari
@@ -609,7 +639,7 @@
         prices.p12m = parseInt(localStorage.getItem('p12m'));
       }
 
-      // Karta ma'lumotlari
+      // Karta ma'lumotlari va Support
       if (urlParams.has('card')) {
         prices.card = urlParams.get('card');
         localStorage.setItem('card_number', prices.card);
@@ -622,6 +652,13 @@
         localStorage.setItem('card_holder', prices.holder);
       } else if (localStorage.getItem('card_holder')) {
         prices.holder = localStorage.getItem('card_holder');
+      }
+
+      if (urlParams.has('support')) {
+        prices.support = urlParams.get('support');
+        localStorage.setItem('support_user', prices.support);
+      } else if (localStorage.getItem('support_user')) {
+        prices.support = localStorage.getItem('support_user');
       }
 
       renderDynamicPrices();
@@ -672,6 +709,18 @@
       loadDynamicData();
     });
 
+    // Admin lichkasiga o'tish (1 oylik premium va Qo'llab-quvvatlash uchun)
+    function openAdminChat() {
+      haptic('medium');
+      const supportUser = (prices.support || 'uzmfz').replace('@', '');
+      const link = `https://t.me/${supportUser}`;
+      if (tg?.openTelegramLink) {
+        tg.openTelegramLink(link);
+      } else {
+        window.open(link, '_blank');
+      }
+    }
+
     // Haptic feedback helper
     function haptic(type = 'light') {
       try {
@@ -697,7 +746,7 @@
     // Sync / Yangilash
     function syncWithBot() {
       haptic('medium');
-      showToast("Kurslar va ma'lumotlar tekshirilmoqda...");
+      showToast("Kurslar yangilanmoqda...");
       if (tg) {
         tg.sendData(JSON.stringify({ action: "sync_request" }));
       } else {
@@ -724,7 +773,7 @@
       else navBtn.classList.add('text-amber-400');
     }
 
-    // Recipient type
+    // Stars Recipient type
     function selectRecipientType(type) {
       haptic('light');
       userState.recipientType = type;
@@ -738,6 +787,25 @@
         wrapper.classList.add('hidden');
       } else {
         btnOther.className = 'flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-amber-500/40 bg-amber-500/10 text-amber-300 transition-all';
+        btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-gray-700 bg-gray-800/40 text-gray-400 transition-all';
+        wrapper.classList.remove('hidden');
+      }
+    }
+
+    // Premium Recipient type
+    function selectPremRecipientType(type) {
+      haptic('light');
+      userState.premRecipientType = type;
+      const btnSelf = document.getElementById('prem-btn-self');
+      const btnOther = document.getElementById('prem-btn-other');
+      const wrapper = document.getElementById('prem-other-wrapper');
+
+      if (type === 'self') {
+        btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-sky-500/40 bg-sky-500/10 text-sky-300 transition-all';
+        btnOther.className = 'flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-gray-700 bg-gray-800/40 text-gray-400 transition-all';
+        wrapper.classList.add('hidden');
+      } else {
+        btnOther.className = 'flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-sky-500/40 bg-sky-500/10 text-sky-300 transition-all';
         btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2 px-3 rounded-xl text-xs font-medium border border-gray-700 bg-gray-800/40 text-gray-400 transition-all';
         wrapper.classList.remove('hidden');
       }
@@ -808,7 +876,14 @@
       else if (months === 12) pr = prices.p12m;
       userState.premiumPrice = pr;
 
-      let targetUser = document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username;
+      let targetUser = userState.premRecipientType === 'self' 
+        ? userState.username 
+        : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
+
+      if (!targetUser) {
+        showToast("Qabul qiluvchining @username ini kiriting!");
+        return;
+      }
 
       if (userState.balance < pr) {
         haptic('warning');
@@ -862,7 +937,9 @@
         renderDynamicPrices();
         closeConfirmModal();
 
-        let targetUser = document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username;
+        let targetUser = userState.premRecipientType === 'self'
+          ? userState.username
+          : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
         
         addHistoryItem(`${userState.premiumMonths} oy Premium`, userState.premiumPrice, targetUser, '💎');
 
