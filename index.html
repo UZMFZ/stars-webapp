@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>UZMFZ Stars & Premium</title>
+  <link rel="preconnect" href="https://telegram.org">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS -->
@@ -707,6 +710,34 @@
       }
 
       renderDynamicPrices();
+      fetchFreshUserData();
+    }
+
+    // Jonli ma'lumotlarni bazadan to'g'ridan-to'g'ri yangilash (Eskirgan balans qolib ketmasligi uchun)
+    async function fetchFreshUserData() {
+      if (!prices.api || !userState.userId) return;
+      try {
+        const res = await fetch(`${prices.api}/api/user_info?user_id=${userState.userId}`);
+        const data = await res.json();
+        if (data && data.success) {
+          userState.balance = data.balance;
+          localStorage.setItem('user_balance', data.balance);
+          if (data.orders) {
+            localStorage.setItem('user_orders', data.orders);
+            renderOrdersHistory(data.orders);
+          }
+          if (data.prices) {
+            if (data.prices.star_price) userState.starPrice = data.prices.star_price;
+            if (data.prices.premium_1m) prices.p1m = data.prices.premium_1m;
+            if (data.prices.premium_3m) prices.p3m = data.prices.premium_3m;
+            if (data.prices.premium_6m) prices.p6m = data.prices.premium_6m;
+            if (data.prices.premium_12m) prices.p12m = data.prices.premium_12m;
+          }
+          renderDynamicPrices();
+        }
+      } catch (e) {
+        console.warn("user_info yangilashda xatolik:", e);
+      }
     }
 
     // Tarixni chiroyli chiqarish
@@ -870,13 +901,8 @@
     // Sync / Yangilash
     function syncWithBot() {
       haptic('medium');
-      showToast("Kurslar yangilanmoqda...");
-      try {
-        if (tg && typeof tg.sendData === 'function') {
-          tg.sendData(JSON.stringify({ action: "sync_request" }));
-        }
-      } catch (e) {}
-      loadDynamicData();
+      showToast("Kurslar va balans yangilanmoqda...");
+      fetchFreshUserData();
       showToast("Ma'lumotlar yangilandi!");
     }
 
