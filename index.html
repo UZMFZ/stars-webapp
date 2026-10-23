@@ -358,6 +358,22 @@
         </div>
       </div>
 
+      <!-- Smart avtomat hisoblangan yetishmovchilik banneri -->
+      <div id="deposit-smart-banner" class="hidden p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-emerald-500/15 to-teal-500/15 border border-amber-500/40 space-y-2 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-amber-300 font-bold flex items-center space-x-1.5">
+            <span>⚡️</span>
+            <span>Yetishmayotgan summa hisoblandi:</span>
+          </span>
+          <span id="deposit-banner-badge" class="bg-amber-500 text-gray-950 font-black text-xs px-2.5 py-0.5 rounded-full shadow">
+            +0 so'm
+          </span>
+        </div>
+        <p class="text-gray-300 text-xs leading-relaxed" id="deposit-banner-text">
+          Xaridingiz uchun balansingizda yetishmayotgan summa avtomatik hisoblandi va to'lovga kiritildi.
+        </p>
+      </div>
+
       <!-- Summani tanlash -->
       <div class="space-y-2">
         <label class="text-xs font-semibold text-gray-400">Summani tanlang:</label>
@@ -389,8 +405,8 @@
       </div>
 
       <!-- Invoys hosil qilish tugmasi -->
-      <button onclick="generateDepositInvoice()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex items-center justify-center space-x-2">
-        <span>To'lov chekini yaratish 🧾</span>
+      <button id="btn-generate-deposit" onclick="generateDepositInvoice()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-gray-950 font-black text-sm tracking-wide shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition flex items-center justify-center space-x-2">
+        <span id="btn-invoice-label">To'lov chekini yaratish 🧾</span>
       </button>
     </section>
 
@@ -720,6 +736,20 @@
       document.getElementById('user-tag').innerText = userState.username ? '@' + userState.username : 'ID: ' + userState.userId;
       document.getElementById('user-avatar').innerText = (userState.firstName[0] || 'U').toUpperCase();
       
+      const customDep = document.getElementById('deposit-custom-input');
+      if (customDep) {
+        customDep.addEventListener('input', (e) => {
+          const v = parseInt(e.target.value);
+          const btnText = document.getElementById('btn-invoice-label');
+          if (!isNaN(v) && v > 0) {
+            depositAmount = v;
+            if (btnText) btnText.innerText = `To'lov chekini yaratish (${v.toLocaleString('uz-UZ')} so'm) 🧾`;
+          } else {
+            if (btnText) btnText.innerText = `To'lov chekini yaratish 🧾`;
+          }
+        });
+      }
+
       loadDynamicData();
     });
 
@@ -871,9 +901,8 @@
       }
 
       if (userState.balance < userState.selectedStarsPrice) {
-        haptic('warning');
-        showToast("Balansingizda yetarli mablag' yo'q! Avval hisobni to'ldiring.");
-        setTimeout(() => switchTab('tab-deposit'), 600);
+        const missing = userState.selectedStarsPrice - userState.balance;
+        smartTransferToDeposit(missing, `${userState.selectedStars.toLocaleString()} Stars`);
         return;
       }
 
@@ -908,9 +937,8 @@
       }
 
       if (userState.balance < pr) {
-        haptic('warning');
-        showToast("Balansingiz yetarli emas! Avval hisobni to'ldiring.");
-        setTimeout(() => switchTab('tab-deposit'), 600);
+        const missing = pr - userState.balance;
+        smartTransferToDeposit(missing, `${months} oylik Telegram Premium`);
         return;
       }
 
@@ -972,12 +1000,37 @@
       }
     }
 
+    // ==================== SMART YETISHMAYOTGAN SUMMANI TO'LOVGA O'TKAZISH ====================
+    function smartTransferToDeposit(missing, serviceName) {
+      haptic('warning');
+      switchTab('tab-deposit');
+      setDepositAmount(missing);
+
+      const banner = document.getElementById('deposit-smart-banner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        document.getElementById('deposit-banner-badge').innerText = `+${missing.toLocaleString('uz-UZ')} so'm`;
+        document.getElementById('deposit-banner-text').innerHTML = `Balansingizda <b>${userState.balance.toLocaleString('uz-UZ')} so'm</b> mavjud.<br><b>${serviceName}</b> xaridi uchun yetishmayotgan <b>${missing.toLocaleString('uz-UZ')} so'm</b> avtomatik hisoblab to'lov qismiga kiritildi. Quyidagi tugmani bosib to'lov chekini oling!`;
+      }
+      showToast(`Yetishmayotgan ${missing.toLocaleString('uz-UZ')} so'm to'lovga kiritildi!`);
+
+      setTimeout(() => {
+        const btn = document.getElementById('btn-generate-deposit');
+        if (btn) btn.scrollIntoView({ behavior: 'smooth' });
+      }, 250);
+    }
+
     // ==================== HAQIQIY TO'LOV CHEKINI YARATISH ====================
     let depositAmount = 10000;
     function setDepositAmount(amt) {
       haptic('light');
       depositAmount = amt;
-      document.getElementById('deposit-custom-input').value = amt;
+      const inp = document.getElementById('deposit-custom-input');
+      if (inp) inp.value = amt;
+      const btnText = document.getElementById('btn-invoice-label');
+      if (btnText) {
+        btnText.innerText = `To'lov chekini yaratish (${amt.toLocaleString('uz-UZ')} so'm) 🧾`;
+      }
     }
 
     function generateDepositInvoice() {
