@@ -489,7 +489,7 @@
         <div>
           <span class="text-[11px] text-gray-400 block mb-1">To'lov qilinadigan karta raqami:</span>
           <div class="flex items-center justify-between bg-gray-950 p-2.5 rounded-xl border border-gray-700">
-            <span id="receipt-card-number" class="font-mono text-sm font-bold text-white tracking-wider">8600 5704 6393 2593</span>
+            <span id="receipt-card-number" class="font-mono text-sm font-bold text-white tracking-wider">9860 1266 3209 4010</span>
             <button onclick="copyToClipboard(document.getElementById('receipt-card-number').innerText, 'Karta raqami nusxalandi!')" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs px-2.5 py-1 rounded-lg font-medium active:scale-95 transition">
               Nusxalash 📋
             </button>
@@ -498,7 +498,7 @@
 
         <div class="flex justify-between items-center text-xs">
           <span class="text-gray-400">Karta egasi:</span>
-          <span id="receipt-card-holder" class="font-semibold text-gray-200">Sardorbek Mirsaidov</span>
+          <span id="receipt-card-holder" class="font-semibold text-gray-200">Zafar Mirsaidov</span>
         </div>
 
         <div class="border-t border-gray-800 pt-2.5">
@@ -1070,8 +1070,10 @@
     function openDepositReceiptModal(data) {
       currentReceiptOrderId = data.order_id;
       document.getElementById('receipt-modal-title').innerText = `To'lov cheki #${data.order_id}`;
-      document.getElementById('receipt-card-number').innerText = data.card || prices.card || '8600 5704 6393 2593';
-      document.getElementById('receipt-card-holder').innerText = data.holder || prices.holder || 'Sardorbek Mirsaidov';
+      const rawCard = String(data.card || prices.card || '9860126632094010').replace(/\s+/g, '');
+      const formattedCard = rawCard.replace(/(\d{4})/g, '$1 ').trim();
+      document.getElementById('receipt-card-number').innerText = formattedCard;
+      document.getElementById('receipt-card-holder').innerText = data.holder || prices.holder || 'Zafar Mirsaidov';
       document.getElementById('receipt-unique-amount').innerText = `${data.unique_amount.toLocaleString('uz-UZ')} so'm`;
       
       document.getElementById('receipt-status-indicator').innerHTML = `
