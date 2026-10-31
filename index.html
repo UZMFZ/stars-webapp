@@ -527,6 +527,16 @@
         <span>To'lov kutilmoqda... Pulni o'tkazing</span>
       </div>
 
+      <!-- Tezkor to'lov tugmalari (Click & Payme) -->
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <a id="receipt-click-btn" href="#" target="_blank" class="py-2.5 px-2 rounded-xl bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 text-white font-bold text-xs flex items-center justify-center space-x-1 shadow-md shadow-blue-500/20 active:scale-95 transition">
+          <span>📲 Click orqali</span>
+        </a>
+        <a id="receipt-payme-btn" href="#" target="_blank" class="py-2.5 px-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-bold text-xs flex items-center justify-center space-x-1 shadow-md shadow-teal-500/20 active:scale-95 transition">
+          <span>🟢 Payme orqali</span>
+        </a>
+      </div>
+
       <!-- Tugmalar -->
       <div class="space-y-2 pt-1">
         <button onclick="checkOrderStatusManual()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-lg shadow-emerald-500/20 active:scale-95 transition">
@@ -1110,6 +1120,16 @@
       document.getElementById('receipt-card-number').innerText = formattedCard;
       document.getElementById('receipt-card-holder').innerText = data.holder || prices.holder || 'Zafar Mirsaidov';
       document.getElementById('receipt-unique-amount').innerText = `${data.unique_amount.toLocaleString('uz-UZ')} so'm`;
+      
+      // Click & Payme tezkor havolalarini ulash
+      const cleanCard = rawCard.replace(/[^\d]/g, '');
+      const uAmount = parseInt(String(data.unique_amount).replace(/[^\d]/g, ''));
+      const clickLink = data.click_url || `https://my.click.uz/clickp2p?card_num=${cleanCard}&amount=${uAmount}`;
+      const paymeLink = data.payme_url || `https://payme.uz/fallback/transfer/${cleanCard}/${uAmount * 100}`;
+      const clickBtn = document.getElementById('receipt-click-btn');
+      const paymeBtn = document.getElementById('receipt-payme-btn');
+      if (clickBtn) clickBtn.href = clickLink;
+      if (paymeBtn) paymeBtn.href = paymeLink;
       
       document.getElementById('receipt-status-indicator').innerHTML = `
         <div class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
