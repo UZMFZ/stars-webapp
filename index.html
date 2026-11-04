@@ -2,123 +2,246 @@
 <html lang="uz" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>UZMFZ Stars & Premium</title>
+  
   <link rel="preconnect" href="https://telegram.org">
   <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
           colors: {
             brand: {
               gold: '#FBBF24',
               goldDark: '#D97706',
               cyan: '#38BDF8',
               cyanDark: '#0284C7',
-              darkBg: '#090D16',
-              darkCard: '#111726',
-              darkBorder: '#1F293D'
+              emerald: '#10B981',
+              emeraldDark: '#059669',
+              purple: '#A855F7',
+              darkBg: '#080C14',
+              darkCard: '#101625',
+              darkPanel: 'rgba(16, 22, 37, 0.75)',
+              darkBorder: '#1F293D',
+            }
+          },
+          animation: {
+            'pulse-subtle': 'pulseSubtle 2.5s infinite ease-in-out',
+            'shimmer': 'shimmer 2.5s infinite linear',
+            'float': 'float 3s infinite ease-in-out',
+          },
+          keyframes: {
+            pulseSubtle: {
+              '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+              '50%': { opacity: '0.85', transform: 'scale(1.02)' },
+            },
+            shimmer: {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(100%)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-4px)' },
             }
           }
         }
       }
     }
   </script>
+
   <style>
-    /* Custom Scrollbar & Aesthetics */
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    /* Reset & Base Styling */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+    
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
     
     body {
-      -webkit-tap-highlight-color: transparent;
       user-select: none;
-      background-color: #090D16;
+      -webkit-user-select: none;
+      background-color: #080C14;
       color: #F3F4F6;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      padding-bottom: env(safe-area-inset-bottom, 20px);
     }
-    
+
+    /* Ambient Glowing Orbs */
+    .ambient-glow-1 {
+      position: fixed;
+      top: -120px;
+      left: -80px;
+      width: 280px;
+      height: 280px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(245, 158, 11, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(40px);
+    }
+    .ambient-glow-2 {
+      position: fixed;
+      top: 30%;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%, rgba(14, 165, 233, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(50px);
+    }
+    .ambient-glow-3 {
+      position: fixed;
+      bottom: 100px;
+      left: 10%;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.14) 0%, rgba(16, 185, 129, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(45px);
+    }
+
+    /* Glassmorphic Panels */
     .glass-panel {
-      background: rgba(17, 23, 38, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(16, 23, 39, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .glass-card {
-      background: rgba(22, 30, 49, 0.6);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(22, 31, 52, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
     }
-    
+
+    .glass-card-interactive {
+      background: rgba(22, 31, 52, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card-interactive:active {
+      transform: scale(0.97);
+    }
+
+    .glass-input {
+      background: rgba(9, 13, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.2s ease;
+    }
+    .glass-input:focus {
+      border-color: #FBBF24;
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.25);
+    }
+
+    /* Glowing borders */
     .glow-gold {
-      box-shadow: 0 0 25px -4px rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 25px -4px rgba(245, 158, 11, 0.35);
     }
-    
-    .glow-cyan {
-      box-shadow: 0 0 25px -4px rgba(56, 189, 248, 0.3);
-    }
-
     .glow-emerald {
-      box-shadow: 0 0 25px -4px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 0 25px -4px rgba(16, 185, 129, 0.35);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px -4px rgba(56, 189, 248, 0.35);
     }
 
-    .glow-purple {
-      box-shadow: 0 0 25px -4px rgba(139, 92, 246, 0.3);
+    /* Active bottom nav indicator */
+    .nav-indicator {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .active-nav {
-      color: #FBBF24 !important;
+    /* Shimmer effect button */
+    .btn-shimmer {
       position: relative;
+      overflow: hidden;
     }
-
-    .active-nav::after {
+    .btn-shimmer::after {
       content: '';
       position: absolute;
-      bottom: -4px;
-      width: 16px;
-      height: 3px;
-      background: #FBBF24;
-      border-radius: 999px;
-      box-shadow: 0 0 8px #FBBF24;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        60deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transform: rotate(30deg);
+      animation: shimmer 3s infinite;
     }
   </style>
 </head>
-<body class="min-h-screen pb-24 overflow-x-hidden selection:bg-amber-500 selection:text-black">
+<body class="min-h-screen pb-28 selection:bg-amber-500 selection:text-black">
 
-  <!-- ==================== TOP HEADER ==================== -->
-  <header class="sticky top-0 z-40 glass-panel px-4 py-3 border-b border-gray-800/80 flex items-center justify-between">
+  <!-- Ambient Light Orbs -->
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+  <div class="ambient-glow-3"></div>
+
+  <!-- ==================== TOP NAVIGATION HEADER ==================== -->
+  <header class="sticky top-0 z-40 glass-panel px-4 py-3 border-b border-white/[0.08] flex items-center justify-between shadow-lg shadow-black/30">
+    <!-- Profil & User Info -->
     <div class="flex items-center space-x-3">
-      <div id="user-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-200 flex items-center justify-center text-gray-950 font-black text-base shadow-md shadow-amber-500/20">
-        U
+      <div class="relative">
+        <div id="user-avatar" class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-200 flex items-center justify-center text-gray-950 font-black text-base shadow-md shadow-amber-500/25 ring-2 ring-amber-500/30">
+          U
+        </div>
+        <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-gray-950"></div>
       </div>
       <div>
         <div class="flex items-center space-x-1.5">
           <span id="user-name" class="font-bold text-sm text-white tracking-tight">Mijoz</span>
-          <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-bold border border-amber-500/30">VIP</span>
+          <span class="text-[9px] px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 font-extrabold border border-amber-500/40 tracking-wider">VIP</span>
         </div>
         <p id="user-tag" class="text-xs text-gray-400 font-mono">@username</p>
       </div>
     </div>
 
-    <!-- O'ng tomon: Balans & Tezkor Tugmalar -->
+    <!-- O'ng tomon: Balans & Tugmalar -->
     <div class="flex items-center space-x-2">
       <!-- Balans Pill (Hamyon tabini ochadi) -->
-      <button onclick="switchTab('tab-wallet')" class="flex items-center space-x-2 bg-gradient-to-r from-emerald-500/15 to-emerald-600/10 hover:from-emerald-500/25 hover:to-emerald-600/20 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl transition-all active:scale-95 shadow-sm">
-        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></div>
-        <span class="text-xs font-bold font-mono" id="header-balance">0 so'm</span>
-        <span class="bg-emerald-500 text-gray-950 rounded-full w-4 h-4 flex items-center justify-center font-bold text-xs ml-0.5">+</span>
+      <button onclick="switchTab('tab-wallet')" class="group flex items-center space-x-2 bg-gradient-to-r from-emerald-500/15 via-emerald-600/10 to-teal-500/15 hover:from-emerald-500/25 hover:to-teal-500/25 text-emerald-400 border border-emerald-500/40 px-3 py-1.5 rounded-2xl transition-all active:scale-95 shadow-sm">
+        <div class="w-2 h-2 rounded-full bg-emerald-400 group-hover:animate-ping"></div>
+        <span class="text-xs font-bold font-mono tracking-tight" id="header-balance">0 so'm</span>
+        <span class="bg-emerald-500 group-hover:bg-emerald-400 text-gray-950 rounded-lg w-5 h-5 flex items-center justify-center font-black text-xs transition">+</span>
+      </button>
+
+      <!-- Tezkor Refresh Tugmasi -->
+      <button onclick="fetchFreshUserData(true)" title="Yangilash" id="btn-header-refresh" class="w-8 h-8 rounded-xl glass-card border border-white/10 hover:border-amber-500/50 flex items-center justify-center text-gray-400 hover:text-amber-400 active:scale-90 transition-all">
+        <svg id="refresh-icon" class="w-4 h-4 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+        </svg>
       </button>
 
       <!-- Admin Lichkasi -->
-      <button onclick="openAdminChat()" title="Qo'llab-quvvatlash (Admin)" class="w-8 h-8 rounded-xl glass-card border border-gray-700/80 hover:border-sky-500/50 flex items-center justify-center text-gray-300 hover:text-sky-400 active:scale-90 transition-all">
+      <button onclick="openAdminChat()" title="Qo'llab-quvvatlash (Admin)" class="w-8 h-8 rounded-xl glass-card border border-white/10 hover:border-sky-500/50 flex items-center justify-center text-gray-400 hover:text-sky-400 active:scale-90 transition-all">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
         </svg>
@@ -127,128 +250,167 @@
   </header>
 
   <!-- ASOSIY KONTENT -->
-  <main class="max-w-md mx-auto p-4 space-y-4">
+  <main class="max-w-md mx-auto p-4 space-y-4 relative z-10">
 
     <!-- ==================== TAB 1: ⭐️ STARS ==================== -->
     <section id="tab-stars" class="tab-content space-y-4">
       
       <!-- Hero Banner -->
-      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-transparent border border-amber-500/30">
+      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-amber-500/25 via-yellow-500/15 to-transparent border border-amber-500/40 shadow-xl glow-gold">
+        <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-amber-400/15 rounded-full blur-2xl pointer-events-none"></div>
         <div class="flex justify-between items-start">
-          <div class="space-y-1">
-            <span class="inline-flex items-center space-x-1 text-[11px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
-              ⚡️ Avtomat & Tezkor
+          <div class="space-y-1.5">
+            <span class="inline-flex items-center space-x-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-300 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              <span>Rasmiy & 100% Avtomat</span>
             </span>
-            <h2 class="text-xl font-black text-white tracking-tight">Telegram Stars</h2>
-            <p class="text-xs text-gray-300">Fragment orqali rasmiy va xavfsiz yetkazish</p>
+            <h2 class="text-2xl font-black text-white tracking-tight flex items-center space-x-1.5">
+              <span>Telegram Stars</span>
+              <span class="text-amber-400">⭐️</span>
+            </h2>
+            <p class="text-xs text-gray-300 leading-relaxed">Fragment blokcheyni orqali 3 soniyada to'g'ridan-to'g'ri yetkaziladi</p>
           </div>
-          <div class="text-right">
-            <span class="text-[10px] text-gray-400 block">Joriy kurs:</span>
-            <span class="text-xs font-black text-amber-300 font-mono bg-black/40 px-2 py-1 rounded-lg border border-amber-500/20" id="star-rate-display">190 so'm</span>
+          <div class="text-right shrink-0 ml-2">
+            <span class="text-[10px] text-gray-400 uppercase tracking-wider block font-semibold">Joriy kurs:</span>
+            <span class="text-xs font-black text-amber-300 font-mono bg-black/50 px-2.5 py-1 rounded-xl border border-amber-500/30 mt-1 inline-block" id="star-rate-display">190 so'm</span>
           </div>
         </div>
       </div>
 
-      <!-- Qabul qiluvchini tanlash -->
-      <div class="glass-panel rounded-2xl p-3 border border-gray-800 space-y-3">
-        <span class="text-xs font-semibold text-gray-300 block">Kimning hisobiga yuboriladi?</span>
+      <!-- Qabul qiluvchini tanlash (O'zimga vs Birovga) -->
+      <div class="glass-panel rounded-3xl p-3.5 border border-white/10 space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-gray-300">Kimning hisobiga yuboriladi?</span>
+          <span class="text-[11px] text-amber-400 font-medium" id="recipient-status-badge">👤 O'z hisobingizga</span>
+        </div>
+
         <div class="grid grid-cols-2 gap-2">
-          <button id="btn-for-self" onclick="selectRecipientType('self')" class="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-bold border border-amber-500/50 bg-amber-500/15 text-amber-300 transition-all shadow-sm">
+          <button id="btn-for-self" onclick="selectRecipientType('self')" class="flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-black border border-amber-500/60 bg-amber-500/20 text-amber-300 transition-all shadow-md active:scale-95">
             <span>👤 O'zimga</span>
           </button>
-          <button id="btn-for-other" onclick="selectRecipientType('other')" class="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold border border-gray-800 bg-gray-900/60 text-gray-400 hover:text-white transition-all">
+          <button id="btn-for-other" onclick="selectRecipientType('other')" class="flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-bold border border-white/10 bg-gray-900/60 text-gray-400 hover:text-white transition-all active:scale-95">
             <span>🎁 Boshqa birovga</span>
           </button>
         </div>
 
-        <div id="other-username-wrapper" class="hidden pt-1">
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-amber-400 text-sm font-mono font-bold">@</span>
-            <input type="text" id="target-username-input" placeholder="username (masalan: durov)" class="w-full pl-8 pr-3 py-2.5 bg-gray-950/80 border border-gray-700/80 focus:border-amber-500 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none transition">
+        <!-- Sovg'a uchun username kiritish (Qulaylik: 1-tap clipboard paste!) -->
+        <div id="other-username-wrapper" class="hidden pt-1 space-y-1.5">
+          <div class="relative flex items-center">
+            <span class="absolute left-3.5 text-amber-400 font-mono font-bold text-sm">@</span>
+            <input type="text" id="target-username-input" placeholder="Telegram username (masalan: durov)" class="w-full pl-9 pr-24 py-3 bg-gray-950/90 border border-gray-700/80 focus:border-amber-400 rounded-2xl text-xs text-white placeholder-gray-500 focus:outline-none transition font-medium" oninput="validateUsernameInput(this.value)">
+            <!-- 1-TAP PASTE BUTTON -->
+            <button onclick="pasteClipboardToTarget('target-username-input')" class="absolute right-2 px-2.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-bold active:scale-95 transition flex items-center space-x-1">
+              <span>📋</span>
+              <span>Qo'yish</span>
+            </button>
           </div>
-          <p class="text-[10px] text-gray-400 mt-1 pl-1">Telegram foydalanuvchi nomini @ siz kiriting.</p>
+          <div class="flex justify-between items-center px-1">
+            <p class="text-[10px] text-gray-400">Telegram loginini kiriting yoki nusxalanganini qo'ying.</p>
+            <span id="username-val-text" class="text-[10px] text-amber-400 font-medium"></span>
+          </div>
         </div>
       </div>
 
       <!-- Stars Tayyor Paketlar (Grid) -->
-      <div class="space-y-2">
+      <div class="space-y-2.5">
         <div class="flex justify-between items-center px-1">
-          <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Tanlang yoki kiriting</span>
-          <span class="text-[11px] text-amber-400">Tezkor yetkazish ⚡️</span>
+          <span class="text-xs font-black text-gray-300 uppercase tracking-wider flex items-center space-x-1">
+            <span>Paketni tanlang</span>
+            <span class="text-amber-400">⚡️</span>
+          </span>
+          <span class="text-[11px] text-amber-400 font-medium">Eng ommabop miqdorlar</span>
         </div>
 
         <div class="grid grid-cols-3 gap-2.5">
           <!-- 50 Stars -->
-          <div onclick="selectStarsPreset(50)" id="preset-50" class="star-preset-card glass-panel rounded-2xl p-3 border border-amber-500/60 bg-amber-500/10 cursor-pointer active:scale-95 transition-all text-center">
-            <div class="text-lg">⭐️</div>
+          <div onclick="selectStarsPreset(50)" id="preset-50" class="star-preset-card relative glass-panel rounded-2xl p-3 border border-amber-500/70 bg-amber-500/15 cursor-pointer active:scale-95 transition-all text-center">
+            <div class="text-xl mb-0.5">⭐️</div>
             <div class="font-black text-sm text-white">50</div>
             <div class="text-[10px] font-bold text-amber-400 font-mono mt-0.5" id="price-50-stars">9,500 so'm</div>
           </div>
 
-          <!-- 100 Stars -->
-          <div onclick="selectStarsPreset(100)" id="preset-100" class="star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center">
-            <div class="text-lg">⭐️</div>
+          <!-- 100 Stars (Ommabop) -->
+          <div onclick="selectStarsPreset(100)" id="preset-100" class="star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center">
+            <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-amber-500 text-gray-950 font-black text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Ommabop</span>
+            <div class="text-xl mb-0.5">⭐️</div>
             <div class="font-black text-sm text-white">100</div>
             <div class="text-[10px] font-bold text-amber-400 font-mono mt-0.5" id="price-100-stars">19,000 so'm</div>
           </div>
 
-          <!-- 250 Stars -->
-          <div onclick="selectStarsPreset(250)" id="preset-250" class="star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center">
-            <div class="text-lg">⭐️</div>
+          <!-- 250 Stars (Tavsiya) -->
+          <div onclick="selectStarsPreset(250)" id="preset-250" class="star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center">
+            <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-emerald-500 text-gray-950 font-black text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Tavsiya</span>
+            <div class="text-xl mb-0.5">⭐️</div>
             <div class="font-black text-sm text-white">250</div>
             <div class="text-[10px] font-bold text-amber-400 font-mono mt-0.5" id="price-250-stars">47,500 so'm</div>
           </div>
 
           <!-- 500 Stars -->
-          <div onclick="selectStarsPreset(500)" id="preset-500" class="star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center">
-            <div class="text-lg">⭐️</div>
+          <div onclick="selectStarsPreset(500)" id="preset-500" class="star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center">
+            <div class="text-xl mb-0.5">⭐️</div>
             <div class="font-black text-sm text-white">500</div>
             <div class="text-[10px] font-bold text-amber-400 font-mono mt-0.5" id="price-500-stars">95,000 so'm</div>
           </div>
 
-          <!-- 1000 Stars -->
-          <div onclick="selectStarsPreset(1000)" id="preset-1000" class="star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center">
-            <div class="text-lg">⭐️</div>
+          <!-- 1000 Stars (VIP) -->
+          <div onclick="selectStarsPreset(1000)" id="preset-1000" class="star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center">
+            <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-indigo-500 text-white font-black text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-tighter">VIP</span>
+            <div class="text-xl mb-0.5">👑</div>
             <div class="font-black text-sm text-white">1,000</div>
             <div class="text-[10px] font-bold text-amber-400 font-mono mt-0.5" id="price-1000-stars">190,000 so'm</div>
           </div>
 
-          <!-- 2500 Stars -->
-          <div onclick="selectStarsPreset(2500)" id="preset-2500" class="star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center">
-            <div class="text-lg">⭐️</div>
+          <!-- 2500 Stars (Maxsus) -->
+          <div onclick="selectStarsPreset(2500)" id="preset-2500" class="star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center">
+            <span class="absolute -top-2 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-300 text-gray-950 font-black text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-tighter">MAXSUS</span>
+            <div class="text-xl mb-0.5">💎</div>
             <div class="font-black text-sm text-white">2,500</div>
             <div class="text-[10px] font-bold text-amber-400 font-mono mt-0.5" id="price-2500-stars">475,000 so'm</div>
           </div>
         </div>
       </div>
 
-      <!-- Boshqa miqdor kiritish (Kalkulyator) -->
-      <div class="glass-panel rounded-2xl p-3.5 border border-gray-800 space-y-2">
+      <!-- Boshqa miqdor kiritish (Kalkulyator + Tezkor Stepper Qulayligi) -->
+      <div class="glass-panel rounded-3xl p-4 border border-white/10 space-y-3">
         <div class="flex justify-between items-center text-xs">
-          <span class="text-gray-400 font-medium">Boshqa miqdor (ixtiyoriy):</span>
-          <span class="text-gray-400 text-[11px]">Min: 50 | Max: 25,000</span>
+          <span class="text-gray-300 font-bold">Boshqa miqdor kiritish:</span>
+          <span class="text-gray-400 text-[11px] font-mono">Min: 25 | Max: 50,000</span>
         </div>
-        <div class="relative">
-          <input type="number" id="custom-stars-input" placeholder="Masalan: 150" min="50" max="25000" class="w-full pl-3 pr-16 py-2.5 bg-gray-950/80 border border-gray-700/80 focus:border-amber-500 rounded-xl text-sm font-bold text-white placeholder-gray-500 focus:outline-none transition">
-          <span class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-xs font-bold text-amber-400">⭐️ Stars</span>
+
+        <div class="relative flex items-center">
+          <input type="number" id="custom-stars-input" placeholder="Masalan: 150" min="25" max="50000" class="w-full pl-4 pr-20 py-3 bg-gray-950/90 border border-gray-700/80 focus:border-amber-400 rounded-2xl text-sm font-black text-white placeholder-gray-500 focus:outline-none transition">
+          <span class="absolute right-4 text-xs font-black text-amber-400 font-mono">⭐️ Stars</span>
+        </div>
+
+        <!-- TEZKOR INCREMENT CHIPLARI (Qulaylik!) -->
+        <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-0.5 no-scrollbar">
+          <button onclick="addCustomStars(25)" class="shrink-0 px-2.5 py-1.5 rounded-xl bg-gray-900 border border-white/10 hover:border-amber-500/50 text-[11px] font-bold text-gray-300 active:scale-95 transition">+25</button>
+          <button onclick="addCustomStars(50)" class="shrink-0 px-2.5 py-1.5 rounded-xl bg-gray-900 border border-white/10 hover:border-amber-500/50 text-[11px] font-bold text-gray-300 active:scale-95 transition">+50</button>
+          <button onclick="addCustomStars(100)" class="shrink-0 px-2.5 py-1.5 rounded-xl bg-gray-900 border border-white/10 hover:border-amber-500/50 text-[11px] font-bold text-gray-300 active:scale-95 transition">+100</button>
+          <button onclick="addCustomStars(500)" class="shrink-0 px-2.5 py-1.5 rounded-xl bg-gray-900 border border-white/10 hover:border-amber-500/50 text-[11px] font-bold text-gray-300 active:scale-95 transition">+500</button>
+          <button onclick="setMaxStarsByBalance()" class="shrink-0 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-[11px] font-black text-amber-300 active:scale-95 transition flex items-center space-x-1">
+            <span>⚡️</span>
+            <span>Maksimal</span>
+          </button>
         </div>
       </div>
 
-      <!-- Xarid qilish Yakuniy Kartasi -->
-      <div class="glass-panel rounded-3xl p-4 border border-amber-500/30 space-y-3 bg-gradient-to-b from-gray-900/80 to-gray-950/90 shadow-xl">
+      <!-- Xarid qilish Yakuniy Smart Kartasi (Agar mablag' yetmasa bir bosishda to'ldiradi!) -->
+      <div class="glass-panel rounded-3xl p-4 border border-amber-500/40 space-y-3 bg-gradient-to-b from-gray-900/90 to-gray-950/95 shadow-2xl">
         <div class="flex justify-between items-center">
           <div>
-            <span class="text-[11px] text-gray-400 block">Jami to'lov miqdori:</span>
-            <span id="stars-total-price" class="text-xl font-black text-amber-300 font-mono">9,500 so'm</span>
+            <span class="text-[11px] text-gray-400 block font-medium">Jami to'lov miqdori:</span>
+            <span id="stars-total-price" class="text-2xl font-black text-amber-300 font-mono tracking-tight">9,500 so'm</span>
           </div>
           <div class="text-right">
-            <span class="text-[11px] text-gray-400 block">Tanlangan:</span>
+            <span class="text-[11px] text-gray-400 block font-medium">Tanlangan:</span>
             <span id="stars-selected-qty" class="text-sm font-black text-white">50 ⭐ Stars</span>
           </div>
         </div>
 
-        <button id="btn-buy-stars" onclick="confirmStarsPurchase()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-gray-950 font-black text-sm flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/25 active:scale-95 transition-all">
-          <span>⭐️ Xarid qilish</span>
+        <!-- Smart CTA Tugmasi (Balans yetarli bo'lsa "Xarid qilish", yetmasa "Balansni to'ldirish (+X so'm)") -->
+        <button id="btn-buy-stars" onclick="handleStarsAction()" class="btn-shimmer w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-gray-950 font-black text-sm flex items-center justify-center space-x-2 shadow-xl shadow-amber-500/30 active:scale-95 transition-all">
+          <span id="btn-buy-stars-text">⭐️ Xarid qilish</span>
         </button>
       </div>
 
@@ -258,32 +420,44 @@
     <section id="tab-premium" class="tab-content hidden space-y-4">
       
       <!-- Hero Banner -->
-      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-indigo-600/25 via-sky-600/15 to-transparent border border-indigo-500/30">
-        <span class="inline-flex items-center space-x-1 text-[11px] font-bold uppercase tracking-wider text-sky-400 bg-sky-500/10 px-2.5 py-0.5 rounded-full border border-sky-500/20 mb-2">
-          💎 Telegram Premium
-        </span>
-        <h2 class="text-xl font-black text-white tracking-tight">Eksklyuziv Imkoniyatlar</h2>
-        <p class="text-xs text-gray-300">Emoji statuslar, 4GB fayl yuklash, tezkor tezlik va boshqalar</p>
+      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-indigo-600/30 via-sky-600/20 to-transparent border border-indigo-500/40 shadow-xl glow-cyan">
+        <div class="space-y-1.5">
+          <span class="inline-flex items-center space-x-1.5 text-[10px] font-extrabold uppercase tracking-wider text-sky-300 bg-sky-500/20 px-3 py-1 rounded-full border border-sky-500/30">
+            <span>💎 Eksklyuziv Obuna</span>
+          </span>
+          <h2 class="text-2xl font-black text-white tracking-tight flex items-center space-x-1.5">
+            <span>Telegram Premium</span>
+          </h2>
+          <p class="text-xs text-gray-300 leading-relaxed">Tezlik 2x, 4GB fayllar, ovozli xabarlarni matnga aylantirish va cheksiz imkoniyatlar</p>
+        </div>
       </div>
 
       <!-- Qabul qiluvchini tanlash -->
-      <div class="glass-panel rounded-2xl p-3 border border-gray-800 space-y-3">
-        <span class="text-xs font-semibold text-gray-300 block">Kimga rasmiylashtiriladi?</span>
+      <div class="glass-panel rounded-3xl p-3.5 border border-white/10 space-y-3">
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-bold text-gray-300">Kimga rasmiylashtiriladi?</span>
+          <span class="text-[11px] text-sky-400 font-medium" id="prem-recipient-status-badge">👤 O'z profilingizga</span>
+        </div>
+
         <div class="grid grid-cols-2 gap-2">
-          <button id="btn-prem-self" onclick="selectPremRecipientType('self')" class="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-bold border border-sky-500/50 bg-sky-500/15 text-sky-300 transition-all shadow-sm">
+          <button id="btn-prem-self" onclick="selectPremRecipientType('self')" class="flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-black border border-sky-500/60 bg-sky-500/20 text-sky-300 transition-all shadow-md active:scale-95">
             <span>👤 O'zimga</span>
           </button>
-          <button id="btn-prem-other" onclick="selectPremRecipientType('other')" class="flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold border border-gray-800 bg-gray-900/60 text-gray-400 hover:text-white transition-all">
+          <button id="btn-prem-other" onclick="selectPremRecipientType('other')" class="flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-bold border border-white/10 bg-gray-900/60 text-gray-400 hover:text-white transition-all active:scale-95">
             <span>🎁 Sovg'a qilish</span>
           </button>
         </div>
 
-        <div id="prem-username-wrapper" class="hidden pt-1">
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-sky-400 text-sm font-mono font-bold">@</span>
-            <input type="text" id="premium-username-input" placeholder="username (masalan: durov)" class="w-full pl-8 pr-3 py-2.5 bg-gray-950/80 border border-gray-700/80 focus:border-sky-500 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none transition">
+        <div id="prem-username-wrapper" class="hidden pt-1 space-y-1.5">
+          <div class="relative flex items-center">
+            <span class="absolute left-3.5 text-sky-400 font-mono font-bold text-sm">@</span>
+            <input type="text" id="premium-username-input" placeholder="Telegram username (masalan: durov)" class="w-full pl-9 pr-24 py-3 bg-gray-950/90 border border-gray-700/80 focus:border-sky-400 rounded-2xl text-xs text-white placeholder-gray-500 focus:outline-none transition font-medium">
+            <button onclick="pasteClipboardToTarget('premium-username-input')" class="absolute right-2 px-2.5 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 text-[10px] font-bold active:scale-95 transition flex items-center space-x-1">
+              <span>📋</span>
+              <span>Qo'yish</span>
+            </button>
           </div>
-          <p class="text-[10px] text-gray-400 mt-1 pl-1">Sovg'a qilinuvchining Telegram usernameni kiriting.</p>
+          <p class="text-[10px] text-gray-400 pl-1">Sovg'a qilinuvchining loginini kiriting yoki nusxalanganini qo'ying.</p>
         </div>
       </div>
 
@@ -291,69 +465,92 @@
       <div class="space-y-3">
         
         <!-- 1 Oylik (Admin orqali) -->
-        <div class="glass-panel rounded-2xl p-4 border border-indigo-500/30 flex items-center justify-between bg-gradient-to-r from-indigo-950/40 to-transparent">
+        <div class="glass-panel rounded-3xl p-4 border border-indigo-500/30 flex items-center justify-between bg-gradient-to-r from-indigo-950/40 to-transparent">
           <div class="space-y-1">
             <div class="flex items-center space-x-2">
-              <span class="text-lg">💎</span>
-              <span class="font-bold text-sm text-white">1 Oylik Premium</span>
-              <span class="text-[9px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded-md font-bold">Admin orqali</span>
+              <span class="text-xl">💎</span>
+              <span class="font-extrabold text-sm text-white">1 Oylik Premium</span>
+              <span class="text-[9px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-md font-bold border border-sky-500/30">Admin orqali</span>
             </div>
-            <p class="text-[11px] text-gray-400">Lichkada tezkor faollashtirib beriladi</p>
+            <p class="text-[11px] text-gray-400">Lichkada bir necha daqiqada faollashtiriladi</p>
             <div class="text-sm font-black text-sky-300 font-mono" id="price-prem-1m">45,000 so'm</div>
           </div>
-          <button onclick="openAdminChat()" class="px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-gray-950 font-black text-xs active:scale-95 transition shadow-md shadow-sky-500/20">
+          <button onclick="openAdminChat()" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-gray-950 font-black text-xs active:scale-95 transition shadow-lg shadow-sky-500/25">
             Olish 💬
           </button>
         </div>
 
         <!-- 3 Oylik -->
-        <div class="glass-panel rounded-2xl p-4 border border-gray-800 flex items-center justify-between hover:border-gray-700 transition">
+        <div class="glass-panel rounded-3xl p-4 border border-white/10 flex items-center justify-between hover:border-white/20 transition">
           <div class="space-y-1">
             <div class="flex items-center space-x-2">
-              <span class="text-lg">💎</span>
-              <span class="font-bold text-sm text-white">3 Oylik Premium</span>
-              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-md font-bold">Avtomat</span>
+              <span class="text-xl">💎</span>
+              <span class="font-extrabold text-sm text-white">3 Oylik Premium</span>
+              <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-md font-bold border border-emerald-500/30">Avtomat</span>
             </div>
-            <p class="text-[11px] text-gray-400">Bot orqali darhol taqdim etiladi</p>
+            <p class="text-[11px] text-gray-400">Oyiga ~52,000 so'm • Darhol ulanadi</p>
             <div class="text-sm font-black text-white font-mono" id="price-prem-3m">155,999 so'm</div>
           </div>
-          <button onclick="confirmPremiumPurchase(3)" class="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-sky-500 hover:text-gray-950 text-white font-bold text-xs border border-gray-700 active:scale-95 transition">
+          <button onclick="handlePremiumAction(3)" class="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-sky-500 hover:text-gray-950 text-white font-black text-xs border border-gray-700 active:scale-95 transition">
             Xarid qilish ⚡️
           </button>
         </div>
 
-        <!-- 6 Oylik -->
-        <div class="glass-panel rounded-2xl p-4 border border-gray-800 flex items-center justify-between hover:border-gray-700 transition">
+        <!-- 6 Oylik (-15% Chegirma) -->
+        <div class="glass-panel rounded-3xl p-4 border border-amber-500/40 flex items-center justify-between bg-gradient-to-r from-amber-950/20 to-transparent">
           <div class="space-y-1">
             <div class="flex items-center space-x-2">
-              <span class="text-lg">💎</span>
-              <span class="font-bold text-sm text-white">6 Oylik Premium</span>
-              <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded-md font-bold">-15% Chegirma</span>
+              <span class="text-xl">💎</span>
+              <span class="font-extrabold text-sm text-white">6 Oylik Premium</span>
+              <span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md font-bold border border-amber-500/30">-15% Chegirma</span>
             </div>
-            <p class="text-[11px] text-gray-400">6 oy davomida to'liq xotirjamlik</p>
-            <div class="text-sm font-black text-white font-mono" id="price-prem-6m">209,999 so'm</div>
+            <p class="text-[11px] text-gray-400">Oyiga ~35,000 so'm • Eng ommabop tanlov</p>
+            <div class="text-sm font-black text-amber-300 font-mono" id="price-prem-6m">209,999 so'm</div>
           </div>
-          <button onclick="confirmPremiumPurchase(6)" class="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-sky-500 hover:text-gray-950 text-white font-bold text-xs border border-gray-700 active:scale-95 transition">
-            Xarid qilish ⚡️
+          <button onclick="handlePremiumAction(6)" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-xs active:scale-95 transition shadow-lg shadow-amber-500/25">
+            Xarid qilish 🔥
           </button>
         </div>
 
-        <!-- 12 Oylik (Yillik) -->
-        <div class="glass-panel rounded-2xl p-4 border border-amber-500/40 flex items-center justify-between bg-gradient-to-r from-amber-950/20 to-transparent">
+        <!-- 12 Oylik (Yillik -30%) -->
+        <div class="glass-panel rounded-3xl p-4 border border-amber-500/50 flex items-center justify-between bg-gradient-to-r from-amber-950/30 to-gray-900 shadow-xl">
           <div class="space-y-1">
             <div class="flex items-center space-x-2">
-              <span class="text-lg">👑</span>
-              <span class="font-bold text-sm text-white">12 Oylik Premium</span>
-              <span class="text-[9px] bg-amber-500 text-gray-950 px-1.5 py-0.5 rounded-md font-black">TOP TEJAMKOR</span>
+              <span class="text-xl">👑</span>
+              <span class="font-extrabold text-sm text-white">12 Oylik Premium</span>
+              <span class="text-[9px] bg-amber-500 text-gray-950 px-2 py-0.5 rounded-md font-black tracking-wider">TOP TEJAMKOR</span>
             </div>
-            <p class="text-[11px] text-gray-400">1 yillik obuna, eng arzon oylik narx</p>
-            <div class="text-sm font-black text-amber-300 font-mono" id="price-prem-12m">379,999 so'm</div>
+            <p class="text-[11px] text-gray-300">Oyiga bor-yo'g'i ~31,600 so'm • 1 yil erkinlik</p>
+            <div class="text-base font-black text-amber-300 font-mono" id="price-prem-12m">379,999 so'm</div>
           </div>
-          <button onclick="confirmPremiumPurchase(12)" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-xs active:scale-95 transition shadow-md shadow-amber-500/20">
+          <button onclick="handlePremiumAction(12)" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 text-gray-950 font-black text-xs active:scale-95 transition shadow-xl shadow-amber-500/30">
             Xarid qilish 👑
           </button>
         </div>
 
+      </div>
+
+      <!-- Imkoniyatlar ro'yxati (Interactive Features Accordion) -->
+      <div class="glass-panel rounded-3xl p-4 border border-white/10 space-y-3">
+        <span class="text-xs font-black text-gray-300 uppercase tracking-wider block">Premium bilan sizga nima beriladi?</span>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-gray-900/60 p-2.5 rounded-xl border border-white/5 space-y-0.5">
+            <span class="text-sky-400 font-bold block">🚀 4 GB Fayl Yuklash</span>
+            <p class="text-[10px] text-gray-400">Oddiylarga 2GB, sizga esa 4GB gacha</p>
+          </div>
+          <div class="bg-gray-900/60 p-2.5 rounded-xl border border-white/5 space-y-0.5">
+            <span class="text-sky-400 font-bold block">⚡️ 2x Yuklab Olish</span>
+            <p class="text-[10px] text-gray-400">Tezlik cheklovisiz fayllar</p>
+          </div>
+          <div class="bg-gray-900/60 p-2.5 rounded-xl border border-white/5 space-y-0.5">
+            <span class="text-sky-400 font-bold block">🎙 Ovozdan Matnga</span>
+            <p class="text-[10px] text-gray-400">Ovozli xabarlarni o'qish imkoni</p>
+          </div>
+          <div class="bg-gray-900/60 p-2.5 rounded-xl border border-white/5 space-y-0.5">
+            <span class="text-sky-400 font-bold block">✨ Status & Emojilar</span>
+            <p class="text-[10px] text-gray-400">Ism yoniga animatsion belgilar</p>
+          </div>
+        </div>
       </div>
 
     </section>
@@ -362,44 +559,72 @@
     <section id="tab-top" class="tab-content hidden space-y-4">
       
       <!-- Sarlavha Banner -->
-      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-amber-500/20 via-yellow-500/10 to-transparent border border-amber-500/30">
+      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-amber-500/25 via-yellow-500/15 to-transparent border border-amber-500/40 shadow-xl glow-gold">
         <div class="flex justify-between items-start">
           <div class="space-y-1">
-            <span class="inline-flex items-center space-x-1 text-[11px] font-bold uppercase tracking-wider text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
-              🏆 Liderlar Ro'yxati
+            <span class="inline-flex items-center space-x-1.5 text-[10px] font-extrabold uppercase tracking-wider text-amber-300 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-500/30">
+              <span>🏆 Faxriy Liderlar</span>
             </span>
-            <h2 class="text-xl font-black text-white tracking-tight">TOP 10 Xaridorlar</h2>
-            <p class="text-xs text-gray-300">Bot ochilganidan buyon eng ko'p xarid qilganlar</p>
+            <h2 class="text-2xl font-black text-white tracking-tight">TOP 10 Xaridorlar</h2>
+            <p class="text-xs text-gray-300 leading-relaxed">Botimizning eng faol va sodiq mijozlari reytingi</p>
           </div>
-          <button onclick="loadTopSpenders()" class="w-8 h-8 rounded-xl glass-card border border-amber-500/30 flex items-center justify-center text-amber-300 active:scale-90 transition">
+          <button onclick="loadTopSpenders()" title="Yangilash" class="w-9 h-9 rounded-2xl glass-card border border-amber-500/40 flex items-center justify-center text-amber-300 active:scale-90 transition">
             🔄
           </button>
         </div>
       </div>
 
       <!-- Shaxsiy O'rin Kartasi -->
-      <div id="my-top-card" class="glass-panel rounded-2xl p-4 border border-amber-500/30 bg-gradient-to-r from-amber-950/30 via-gray-900 to-gray-950 flex items-center justify-between">
+      <div id="my-top-card" class="glass-panel rounded-3xl p-4 border border-amber-500/40 bg-gradient-to-r from-amber-950/30 via-gray-900 to-gray-950 flex items-center justify-between shadow-lg">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-sm" id="my-top-rank-badge">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-base shadow-inner" id="my-top-rank-badge">
             -
           </div>
           <div>
-            <span class="text-[11px] text-gray-400 block">Sizning reytingingiz:</span>
-            <span class="text-sm font-bold text-white" id="my-top-rank-text">Yuklanmoqda...</span>
+            <span class="text-[11px] text-gray-400 block font-medium">Sizning reytingingiz:</span>
+            <span class="text-sm font-black text-white" id="my-top-rank-text">Yuklanmoqda...</span>
           </div>
         </div>
         <div class="text-right">
-          <span class="text-[10px] text-gray-400 block">Jami xaridingiz:</span>
+          <span class="text-[10px] text-gray-400 uppercase tracking-wider block font-semibold">Jami xaridingiz:</span>
           <span class="text-sm font-black text-amber-300 font-mono" id="my-top-spent-text">0 so'm</span>
         </div>
       </div>
 
-      <!-- TOP 10 Ro'yxat -->
+      <!-- OLYMPIC PODIUM (1st, 2nd, 3rd) -->
+      <div id="top-podium-wrapper" class="hidden pt-2 pb-1">
+        <div class="grid grid-cols-3 gap-2 items-end">
+          <!-- 2nd Place (Silver) -->
+          <div id="podium-2" class="glass-panel rounded-2xl p-3 border border-slate-400/40 bg-gradient-to-t from-slate-900/80 to-slate-800/40 text-center space-y-1">
+            <span class="text-2xl block">🥈</span>
+            <span class="text-xs font-bold text-slate-200 block truncate" id="podium-2-name">-</span>
+            <span class="text-[10px] font-mono text-slate-400 font-bold block" id="podium-2-spent">0 so'm</span>
+            <div class="h-10 bg-slate-500/20 rounded-xl flex items-center justify-center font-black text-slate-300 text-xs mt-1">#2</div>
+          </div>
+
+          <!-- 1st Place (Gold Center) -->
+          <div id="podium-1" class="glass-panel rounded-3xl p-3.5 border border-amber-400/60 bg-gradient-to-t from-amber-950/60 to-yellow-900/30 text-center space-y-1 shadow-lg shadow-amber-500/20">
+            <span class="text-3xl block animate-bounce">👑</span>
+            <span class="text-xs font-black text-amber-300 block truncate" id="podium-1-name">-</span>
+            <span class="text-[11px] font-mono text-amber-400 font-black block" id="podium-1-spent">0 so'm</span>
+            <div class="h-14 bg-amber-500/25 rounded-2xl flex items-center justify-center font-black text-amber-300 text-sm mt-1 border border-amber-500/30">#1</div>
+          </div>
+
+          <!-- 3rd Place (Bronze) -->
+          <div id="podium-3" class="glass-panel rounded-2xl p-3 border border-amber-700/40 bg-gradient-to-t from-orange-950/80 to-amber-900/40 text-center space-y-1">
+            <span class="text-2xl block">🥉</span>
+            <span class="text-xs font-bold text-amber-200 block truncate" id="podium-3-name">-</span>
+            <span class="text-[10px] font-mono text-amber-500 font-bold block" id="podium-3-spent">0 so'm</span>
+            <div class="h-7 bg-amber-800/20 rounded-xl flex items-center justify-center font-black text-amber-400 text-xs mt-1">#3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOP 10 Ro'yxat (4-10) -->
       <div class="space-y-2" id="top-spenders-list">
-        <!-- Ro'yxat JS orqali to'ldiriladi -->
-        <div class="glass-panel rounded-2xl p-6 text-center text-xs text-gray-400 border border-gray-800">
-          <div class="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-          TOP xaridorlar ro'yxati yuklanmoqda...
+        <div class="glass-panel rounded-3xl p-6 text-center text-xs text-gray-400 border border-white/10">
+          <div class="w-6 h-6 border-2 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          Liderlar ro'yxati yuklanmoqda...
         </div>
       </div>
 
@@ -409,51 +634,52 @@
     <section id="tab-proofs" class="tab-content hidden space-y-4">
       
       <!-- Sarlavha Banner -->
-      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-transparent border border-emerald-500/30">
-        <div class="space-y-1">
-          <span class="inline-flex items-center space-x-1 text-[11px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 mb-1">
-            🛡 100% Halol va Shaffof
+      <div class="relative overflow-hidden rounded-3xl p-5 bg-gradient-to-br from-emerald-500/25 via-teal-500/15 to-transparent border border-emerald-500/40 shadow-xl glow-emerald">
+        <div class="space-y-1.5">
+          <span class="inline-flex items-center space-x-1.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">
+            <span>🛡 100% Shaffof & Ochiq</span>
           </span>
-          <h2 class="text-xl font-black text-white tracking-tight">To'lov Isbotlari & Cheklar</h2>
-          <p class="text-xs text-gray-300">Har bir xarid avtomatik tarzda rasmiy kanalda e'lon qilinadi</p>
+          <h2 class="text-2xl font-black text-white tracking-tight">To'lov Isbotlari & Cheklar</h2>
+          <p class="text-xs text-gray-300 leading-relaxed">Har bitta xarid va tranzaksiya ochiq kanalda avtomatik e'lon qilinadi</p>
         </div>
       </div>
 
       <!-- Kanal Kartasi -->
-      <div class="glass-panel rounded-3xl p-5 border border-emerald-500/30 bg-gradient-to-b from-gray-900 to-gray-950 space-y-4 shadow-xl">
+      <div class="glass-panel rounded-3xl p-5 border border-emerald-500/40 bg-gradient-to-b from-gray-900 to-gray-950 space-y-4 shadow-xl">
         <div class="flex items-center space-x-3.5">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-300 flex items-center justify-center text-2xl shadow-lg shadow-emerald-500/20">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-300 flex items-center justify-center text-3xl shadow-lg shadow-emerald-500/25">
             🧾
           </div>
           <div>
-            <h3 class="font-black text-base text-white">@uzmfzstarschek</h3>
-            <p class="text-xs text-emerald-400 font-medium">Rasmiy to'lov cheklari kanali</p>
+            <div class="flex items-center space-x-1.5">
+              <h3 class="font-black text-base text-white">@uzmfzstarschek</h3>
+              <span class="text-emerald-400 text-xs">✓</span>
+            </div>
+            <p class="text-xs text-emerald-400 font-semibold">Rasmiy to'lov cheklari va isbotlar</p>
           </div>
         </div>
 
         <p class="text-xs text-gray-300 leading-relaxed">
-          Mijozlarimiz bot orqali har qanday <b>Stars</b> yoki <b>Telegram Premium</b> xarid qilishganda, tizim bir soniya ichida to'lov cheki va <b>Fragment tranzaksiya havolasini (TX Hash)</b> kanalga yuboradi.
+          Mijozlarimiz bot orqali har qanday <b>Stars</b> yoki <b>Telegram Premium</b> xarid qilishganda, tizim bir soniya ichida to'lov cheki va <b>Fragment blokcheyn havolasini (TX Hash)</b> kanalga joylaydi.
         </p>
 
-        <!-- Kafolatlar -->
-        <div class="space-y-2 pt-1">
-          <div class="flex items-center space-x-2 text-xs text-gray-300">
-            <span class="text-emerald-400 text-sm">✅</span>
-            <span>Haqiqiy Fragment blokcheyn tranzaksiya isboti</span>
+        <!-- Statistika va Kafolatlar -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <div class="bg-gray-900/80 p-3 rounded-2xl border border-white/5 space-y-1">
+            <span class="text-base">⚡️</span>
+            <span class="text-xs font-bold text-white block">3-5 Soniyada</span>
+            <p class="text-[10px] text-gray-400">Avtomat yetkazib berish</p>
           </div>
-          <div class="flex items-center space-x-2 text-xs text-gray-300">
-            <span class="text-emerald-400 text-sm">✅</span>
-            <span>Hech qanday bot firibgarligisiz toza xizmat</span>
-          </div>
-          <div class="flex items-center space-x-2 text-xs text-gray-300">
-            <span class="text-emerald-400 text-sm">✅</span>
-            <span>24/7 uzluksiz avtomat yetkazish</span>
+          <div class="bg-gray-900/80 p-3 rounded-2xl border border-white/5 space-y-1">
+            <span class="text-base">🔒</span>
+            <span class="text-xs font-bold text-white block">100% Xavfsiz</span>
+            <p class="text-[10px] text-gray-400">Telegram paroli so'ralmaydi</p>
           </div>
         </div>
 
         <!-- Kanalga o'tish tugmasi -->
         <div class="pt-2">
-          <button onclick="openProofChannel()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-300 hover:from-emerald-400 hover:to-teal-200 text-gray-950 font-black text-sm flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/25 active:scale-95 transition-all">
+          <button onclick="openProofChannel()" class="btn-shimmer w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-300 hover:from-emerald-400 hover:to-teal-200 text-gray-950 font-black text-sm flex items-center justify-center space-x-2 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all">
             <span>🌟 Cheklar kanaliga o'tish (@uzmfzstarschek)</span>
           </button>
         </div>
@@ -464,73 +690,101 @@
     <!-- ==================== TAB 5: 💳 HAMYON VA TARIX ==================== -->
     <section id="tab-wallet" class="tab-content hidden space-y-4">
       
-      <!-- Katta Balans Kartasi -->
-      <div class="glass-panel rounded-3xl p-5 border border-emerald-500/30 bg-gradient-to-br from-emerald-950/40 via-gray-900 to-gray-950 shadow-xl space-y-2">
-        <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider block">Hisob Balansingiz</span>
-        <div class="text-3xl font-black text-white font-mono tracking-tight" id="wallet-big-balance">0 so'm</div>
-        <p class="text-[11px] text-gray-400">Balans orqali istalgan vaqtda Stars va Premium xarid qilishingiz mumkin</p>
+      <!-- Virtual Cyber Card Dizayni (Zamonaviy Bank Kartasi Ko'rinishi) -->
+      <div class="relative overflow-hidden rounded-3xl p-5 border border-emerald-500/50 bg-gradient-to-br from-emerald-950/60 via-gray-900 to-slate-950 shadow-2xl space-y-4 glow-emerald">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-emerald-400">UZMFZ DIGITAL WALLET</span>
+            <h3 class="text-xs text-gray-300 font-medium mt-0.5" id="wallet-card-user">Mijoz Hisobi</h3>
+          </div>
+          <span class="text-xs font-black px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">FAOL</span>
+        </div>
+
+        <div class="py-1">
+          <span class="text-[11px] text-gray-400 block font-medium">Mavjud Balans:</span>
+          <div class="text-3xl font-black text-white font-mono tracking-tight" id="wallet-big-balance">0 so'm</div>
+        </div>
+
+        <div class="flex justify-between items-center text-[11px] text-gray-400 border-t border-white/10 pt-3 font-mono">
+          <span id="wallet-card-id">ID: 00000000</span>
+          <span>HUMO / UZCARD</span>
+        </div>
       </div>
 
-      <!-- Smart Transfer Banner (Agar xaridda mablag' yetmasa) -->
-      <div id="deposit-smart-banner" class="hidden glass-panel rounded-2xl p-4 border border-amber-500/40 bg-amber-500/10 space-y-2">
+      <!-- Smart Transfer Banner (Agar xaridda mablag' yetmasa bir bosishda to'ldiradi) -->
+      <div id="deposit-smart-banner" class="hidden glass-panel rounded-3xl p-4 border border-amber-500/50 bg-amber-500/10 space-y-2 shadow-lg">
         <div class="flex items-center space-x-2">
-          <span class="text-amber-400 text-base">⚠️</span>
-          <span class="text-xs font-bold text-amber-300">Xarid uchun mablag' yetarli emas!</span>
-          <span id="deposit-banner-badge" class="ml-auto text-[10px] font-mono bg-amber-500 text-gray-950 px-2 py-0.5 rounded-full font-bold">+0 so'm</span>
+          <span class="text-amber-400 text-lg">⚠️</span>
+          <span class="text-xs font-extrabold text-amber-300">Xarid uchun mablag' yetarli emas!</span>
+          <span id="deposit-banner-badge" class="ml-auto text-[10px] font-mono bg-amber-500 text-gray-950 px-2.5 py-0.5 rounded-full font-black">+0 so'm</span>
         </div>
         <p id="deposit-banner-text" class="text-xs text-gray-300 leading-relaxed"></p>
       </div>
 
       <!-- Balans to'ldirish bo'limi -->
-      <div class="glass-panel rounded-3xl p-4 border border-gray-800 space-y-3.5">
+      <div class="glass-panel rounded-3xl p-4 border border-white/10 space-y-3.5">
         <div class="flex justify-between items-center px-1">
-          <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Hisobni to'ldirish</span>
-          <span class="text-[11px] text-emerald-400">Humo & Uzcard</span>
+          <span class="text-xs font-black text-gray-300 uppercase tracking-wider">Hisobni to'ldirish</span>
+          <span class="text-[11px] text-emerald-400 font-medium">Avtomat qabul qilish ⚡️</span>
         </div>
 
-        <!-- Tayyor summalar -->
+        <!-- Tayyor summalar (Grid) -->
         <div class="grid grid-cols-3 gap-2">
-          <button onclick="setDepositAmount(10000)" class="py-2.5 px-2 rounded-xl border border-gray-800 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
+          <button onclick="setDepositAmount(10000)" class="py-2.5 px-2 rounded-xl border border-white/10 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
             10,000 so'm
           </button>
-          <button onclick="setDepositAmount(25000)" class="py-2.5 px-2 rounded-xl border border-gray-800 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
+          <button onclick="setDepositAmount(25000)" class="py-2.5 px-2 rounded-xl border border-white/10 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
             25,000 so'm
           </button>
-          <button onclick="setDepositAmount(50000)" class="py-2.5 px-2 rounded-xl border border-gray-800 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
+          <button onclick="setDepositAmount(50000)" class="py-2.5 px-2 rounded-xl border border-white/10 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
             50,000 so'm
           </button>
-          <button onclick="setDepositAmount(100000)" class="py-2.5 px-2 rounded-xl border border-gray-800 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
+          <button onclick="setDepositAmount(100000)" class="py-2.5 px-2 rounded-xl border border-white/10 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
             100,000 so'm
           </button>
-          <button onclick="setDepositAmount(200000)" class="py-2.5 px-2 rounded-xl border border-gray-800 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
+          <button onclick="setDepositAmount(200000)" class="py-2.5 px-2 rounded-xl border border-white/10 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
             200,000 so'm
           </button>
-          <button onclick="setDepositAmount(500000)" class="py-2.5 px-2 rounded-xl border border-gray-800 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
+          <button onclick="setDepositAmount(500000)" class="py-2.5 px-2 rounded-xl border border-white/10 bg-gray-900/60 hover:border-emerald-500/50 text-xs font-bold text-white active:scale-95 transition">
             500,000 so'm
           </button>
         </div>
 
-        <!-- O'zi kiritish -->
-        <div class="space-y-1">
-          <span class="text-[11px] text-gray-400 pl-1">Boshqa summa (so'mda):</span>
-          <input type="number" id="deposit-custom-input" placeholder="Masalan: 35000" min="1000" class="w-full px-3.5 py-2.5 bg-gray-950/80 border border-gray-700 focus:border-emerald-500 rounded-xl text-sm font-bold text-white placeholder-gray-500 focus:outline-none transition">
+        <!-- Boshqa summa kiritish + Tezkor qo'shish chiplari -->
+        <div class="space-y-1.5">
+          <span class="text-[11px] text-gray-400 pl-1 font-medium">Boshqa summa kiritish:</span>
+          <div class="relative flex items-center">
+            <input type="number" id="deposit-custom-input" placeholder="Masalan: 35000" min="1000" class="w-full pl-4 pr-16 py-3 bg-gray-950/90 border border-gray-700/80 focus:border-emerald-400 rounded-2xl text-sm font-black text-white placeholder-gray-500 focus:outline-none transition">
+            <span class="absolute right-4 text-xs font-black text-emerald-400 font-mono">so'm</span>
+          </div>
+
+          <!-- Qulaylik: +10k, +50k, +100k qo'shish -->
+          <div class="flex items-center space-x-1.5 pt-1 overflow-x-auto pb-0.5 no-scrollbar">
+            <button onclick="addDepositAmount(10000)" class="shrink-0 px-2.5 py-1 rounded-xl bg-gray-900 border border-white/10 text-[11px] font-bold text-gray-300 active:scale-95 transition">+10,000</button>
+            <button onclick="addDepositAmount(50000)" class="shrink-0 px-2.5 py-1 rounded-xl bg-gray-900 border border-white/10 text-[11px] font-bold text-gray-300 active:scale-95 transition">+50,000</button>
+            <button onclick="addDepositAmount(100000)" class="shrink-0 px-2.5 py-1 rounded-xl bg-gray-900 border border-white/10 text-[11px] font-bold text-gray-300 active:scale-95 transition">+100,000</button>
+          </div>
         </div>
 
         <!-- Chek yaratish tugmasi -->
-        <button id="btn-generate-deposit" onclick="generateDepositInvoice()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-lg shadow-emerald-500/25 active:scale-95 transition">
+        <button id="btn-generate-deposit" onclick="generateDepositInvoice()" class="btn-shimmer w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-300 hover:from-emerald-400 hover:to-teal-200 text-gray-950 font-black text-xs flex items-center justify-center space-x-2 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all">
           <span id="btn-invoice-label">To'lov chekini yaratish 🧾</span>
         </button>
       </div>
 
-      <!-- Buyurtmalar Tarixi -->
-      <div class="space-y-2 pt-2">
+      <!-- Buyurtmalar Tarixi & Filtrlar -->
+      <div class="space-y-2.5 pt-2">
         <div class="flex justify-between items-center px-1">
-          <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Buyurtmalar tarixi</span>
-          <button onclick="fetchFreshUserData()" class="text-[11px] text-sky-400 hover:underline">Yangilash 🔄</button>
+          <span class="text-xs font-black text-gray-300 uppercase tracking-wider">Buyurtmalar tarixi</span>
+          <button onclick="fetchFreshUserData(true)" class="text-[11px] text-sky-400 hover:underline flex items-center space-x-1">
+            <span>Yangilash</span>
+            <span>🔄</span>
+          </button>
         </div>
 
+        <!-- Buyurtmalar ro'yxati -->
         <div id="orders-list" class="space-y-2">
-          <div class="glass-panel rounded-2xl p-4 border border-gray-800 text-center text-xs text-gray-400">
+          <div class="glass-panel rounded-2xl p-5 border border-white/10 text-center text-xs text-gray-400">
             Sizda hali buyurtmalar mavjud emas.
           </div>
         </div>
@@ -540,163 +794,197 @@
 
   </main>
 
-  <!-- ==================== XARIDNI TASDIQLASH MODAL ==================== -->
-  <div id="confirm-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-    <div class="w-full max-w-sm glass-panel rounded-t-3xl sm:rounded-3xl p-5 border border-gray-700/80 space-y-4 bg-gray-950 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-        <h3 class="font-bold text-white text-sm">Xaridni tasdiqlang 🛒</h3>
-        <button onclick="closeConfirmModal()" class="text-gray-400 hover:text-white text-lg">✕</button>
+  <!-- ==================== XARIDNI TASDIQLASH BOTTOM SHEET MODAL ==================== -->
+  <div id="confirm-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all duration-300">
+    <div class="w-full max-w-sm glass-panel rounded-t-3xl sm:rounded-3xl p-5 border border-white/15 space-y-4 bg-gray-950 shadow-2xl transform transition-transform">
+      <div class="w-12 h-1 bg-gray-700 rounded-full mx-auto sm:hidden"></div>
+
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="font-black text-white text-sm flex items-center space-x-1.5">
+          <span>Xaridni tasdiqlang</span>
+          <span>🛒</span>
+        </h3>
+        <button onclick="closeConfirmModal()" class="w-7 h-7 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white text-xs">✕</button>
       </div>
 
-      <div class="space-y-2.5 text-xs bg-gray-900/60 p-3.5 rounded-2xl border border-gray-800">
-        <div class="flex justify-between">
+      <div class="space-y-2.5 text-xs bg-gray-900/80 p-4 rounded-2xl border border-white/10">
+        <div class="flex justify-between items-center">
           <span class="text-gray-400">Xizmat:</span>
           <span id="modal-service-name" class="font-bold text-white">50 ⭐️ Stars</span>
         </div>
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <span class="text-gray-400">Qabul qiluvchi:</span>
-          <span id="modal-target-username" class="font-mono text-amber-400">@username</span>
+          <span id="modal-target-username" class="font-mono text-amber-400 font-bold">@username</span>
         </div>
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <span class="text-gray-400">Xizmat narxi:</span>
-          <span id="modal-service-price" class="font-bold text-white font-mono">9,500 so'm</span>
+          <span id="modal-service-price" class="font-black text-white font-mono">9,500 so'm</span>
         </div>
-        <div class="border-t border-gray-800 pt-2 flex justify-between">
+        <div class="border-t border-white/10 pt-2 flex justify-between items-center">
           <span class="text-gray-400">Hozirgi balans:</span>
           <span id="modal-current-bal" class="text-gray-300 font-mono">0 so'm</span>
         </div>
-        <div class="flex justify-between font-bold">
+        <div class="flex justify-between items-center font-bold">
           <span class="text-gray-300">Xariddan keyin:</span>
-          <span id="modal-remaining-bal" class="text-emerald-400 font-mono">0 so'm</span>
+          <span id="modal-remaining-bal" class="text-emerald-400 font-mono font-black">0 so'm</span>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-2 pt-1">
-        <button onclick="closeConfirmModal()" class="py-3 rounded-xl border border-gray-700 text-gray-300 text-xs font-semibold hover:bg-gray-800">Bekor qilish</button>
-        <button id="btn-modal-confirm" onclick="executePurchase()" class="py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 text-xs font-black shadow-md shadow-amber-500/20 active:scale-95 transition">Tasdiqlash ✅</button>
+        <button onclick="closeConfirmModal()" class="py-3 rounded-2xl border border-white/10 text-gray-300 text-xs font-bold hover:bg-gray-800 active:scale-95 transition">Bekor qilish</button>
+        <button id="btn-modal-confirm" onclick="executePurchase()" class="btn-shimmer py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 text-xs font-black shadow-lg shadow-amber-500/25 active:scale-95 transition">Tasdiqlash ✅</button>
       </div>
     </div>
   </div>
 
-  <!-- ==================== TO'LOV CHEKI MODAL ==================== -->
-  <div id="deposit-receipt-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all">
-    <div class="w-full max-w-sm glass-panel rounded-t-3xl sm:rounded-3xl p-5 border border-emerald-500/40 space-y-4 bg-gray-950 shadow-2xl">
+  <!-- ==================== TO'LOV CHEKI (INVOICE) MODAL (CLICK & PAYME DIRECT LINKS) ==================== -->
+  <div id="deposit-receipt-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-end sm:items-center justify-center p-0 sm:p-4 transition-all duration-300">
+    <div class="w-full max-w-sm glass-panel rounded-t-3xl sm:rounded-3xl p-5 border border-emerald-500/50 space-y-4 bg-gray-950 shadow-2xl">
+      <div class="w-12 h-1 bg-gray-700 rounded-full mx-auto sm:hidden"></div>
+
       <!-- Sarlavha -->
-      <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center space-x-2">
           <span class="text-emerald-400 text-lg">🧾</span>
-          <h3 class="font-bold text-white text-sm" id="receipt-modal-title">To'lov cheki #---</h3>
+          <h3 class="font-black text-white text-sm" id="receipt-modal-title">To'lov cheki #---</h3>
         </div>
-        <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-white text-lg">✕</button>
+        <button onclick="closeReceiptModal()" class="w-7 h-7 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white text-xs">✕</button>
       </div>
 
       <!-- Karta ma'lumotlari -->
-      <div class="space-y-3 bg-gray-900/80 p-4 rounded-2xl border border-gray-800">
+      <div class="space-y-3 bg-gray-900/90 p-4 rounded-2xl border border-white/10">
+        <!-- Karta raqami -->
         <div>
-          <span class="text-[11px] text-gray-400 block mb-1">To'lov qilinadigan karta raqami:</span>
-          <div class="flex items-center justify-between bg-gray-950 p-2.5 rounded-xl border border-gray-700">
-            <span id="receipt-card-number" class="font-mono text-sm font-bold text-white tracking-wider">9860 1266 3209 4010</span>
-            <button onclick="copyToClipboard(document.getElementById('receipt-card-number').innerText, 'Karta raqami nusxalandi!')" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs px-2.5 py-1 rounded-lg font-medium active:scale-95 transition">
-              Nusxalash 📋
+          <span class="text-[11px] text-gray-400 block mb-1 font-medium">To'lov qilinadigan karta raqami:</span>
+          <div class="flex items-center justify-between bg-gray-950 p-2.5 rounded-xl border border-white/10">
+            <span id="receipt-card-number" class="font-mono text-sm font-black text-white tracking-wider">9860 1266 3209 4010</span>
+            <button onclick="copyToClipboard(document.getElementById('receipt-card-number').innerText.replace(/\s+/g, ''), 'Karta raqami nusxalandi!')" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs px-2.5 py-1.5 rounded-lg font-bold active:scale-95 transition flex items-center space-x-1">
+              <span>📋</span>
+              <span>Nusxa</span>
             </button>
           </div>
         </div>
 
         <div class="flex justify-between items-center text-xs">
-          <span class="text-gray-400">Karta egasi:</span>
-          <span id="receipt-card-holder" class="font-semibold text-gray-200">Zafar Mirsaidov</span>
+          <span class="text-gray-400 font-medium">Karta egasi:</span>
+          <span id="receipt-card-holder" class="font-bold text-gray-200">Zafar Mirsaidov</span>
         </div>
 
-        <div class="border-t border-gray-800 pt-2.5">
-          <span class="text-[11px] text-amber-400 font-semibold block mb-1">⚠️ Aynan o'tkaziladigan summa (Unikal):</span>
-          <div class="flex items-center justify-between bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/30">
+        <!-- Unikal Summa -->
+        <div class="border-t border-white/10 pt-2.5">
+          <span class="text-[11px] text-amber-400 font-bold block mb-1">⚠️ Aynan o'tkaziladigan summa (Unikal):</span>
+          <div class="flex items-center justify-between bg-amber-500/15 p-2.5 rounded-xl border border-amber-500/40">
             <span id="receipt-unique-amount" class="font-mono text-base font-black text-amber-300">10 000 so'm</span>
-            <button onclick="copyToClipboard(document.getElementById('receipt-unique-amount').innerText.replace(/[^\d]/g, ''), 'To\'lov summasi nusxalandi!')" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs px-2.5 py-1 rounded-lg font-bold active:scale-95 transition">
-              Nusxalash 📋
+            <button onclick="copyToClipboard(document.getElementById('receipt-unique-amount').innerText.replace(/[^\d]/g, ''), 'To\'lov summasi nusxalandi!')" class="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs px-2.5 py-1.5 rounded-lg font-black active:scale-95 transition flex items-center space-x-1">
+              <span>📋</span>
+              <span>Nusxa</span>
             </button>
           </div>
           <p class="text-[10px] text-gray-400 mt-1">To'lov avtomat hisobga o'tishi uchun aynan ushbu summani o'tkazing!</p>
         </div>
 
-        <div class="flex justify-between items-center text-xs border-t border-gray-800 pt-2 text-gray-400">
+        <!-- Qulaylik: 1-Tap To'lov Ilovalariga o'tish (Click & Payme) -->
+        <div class="border-t border-white/10 pt-2.5 space-y-2">
+          <span class="text-[11px] text-gray-300 font-bold block">Tezkor to'lov ilovalari:</span>
+          <div class="grid grid-cols-2 gap-2">
+            <a id="btn-open-click" href="#" target="_blank" class="py-2.5 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition shadow-md shadow-sky-500/20">
+              <span>🔵</span>
+              <span>Click orqali</span>
+            </a>
+            <a id="btn-open-payme" href="#" target="_blank" class="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition shadow-md shadow-emerald-500/20">
+              <span>🟢</span>
+              <span>Payme orqali</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs border-t border-white/10 pt-2 text-gray-400">
           <span>Qolgan vaqt:</span>
-          <span id="receipt-timer" class="font-mono text-xs text-sky-400 font-bold">15:00</span>
+          <span id="receipt-timer" class="font-mono text-xs text-sky-400 font-black">15:00</span>
         </div>
       </div>
 
       <!-- Holat ko'rsatkichi -->
-      <div id="receipt-status-indicator" class="flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-gray-900/60 border border-gray-800 text-xs text-amber-400">
-        <div class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
-        <span>To'lov kutilmoqda... Pulni o'tkazing</span>
+      <div id="receipt-status-indicator" class="flex items-center justify-center space-x-2 py-2.5 px-3 rounded-2xl bg-gray-900/80 border border-amber-500/40 text-xs text-amber-400">
+        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></div>
+        <span class="font-bold">To'lov kutilmoqda... Pulni o'tkazing</span>
       </div>
 
       <!-- Tugmalar -->
       <div class="space-y-2 pt-1">
-        <button onclick="checkOrderStatusManual()" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-lg shadow-emerald-500/20 active:scale-95 transition">
+        <button onclick="checkOrderStatusManual()" class="btn-shimmer w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-gray-950 font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-emerald-500/25 active:scale-95 transition">
           <span>To'lovni tekshirish / Yangilash 🔄</span>
         </button>
-        <button onclick="closeReceiptModal()" class="w-full py-2.5 rounded-xl border border-gray-800 text-gray-400 hover:text-white text-xs font-semibold">
+        <button onclick="closeReceiptModal()" class="w-full py-2.5 rounded-2xl border border-white/10 text-gray-400 hover:text-white text-xs font-semibold">
           Yopish
         </button>
       </div>
     </div>
   </div>
 
-  <!-- TOAST BILDIRISHNOMA -->
-  <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-gray-900 border border-gray-700 text-white px-4 py-2 rounded-xl text-xs font-medium shadow-2xl transition-all opacity-0 pointer-events-none duration-300">
-    Xabar matni
+  <!-- TOAST BILDIRISHNOMA (Interaktiv va Zamonaviy) -->
+  <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-gray-950/95 border border-white/20 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-2 backdrop-blur-xl">
+    <span id="toast-icon">⚡️</span>
+    <span id="toast-text">Xabar matni</span>
   </div>
 
-  <!-- ==================== BOTTOM NAVIGATION (TAB BAR) ==================== -->
-  <nav class="fixed bottom-0 inset-x-0 z-40 glass-panel border-t border-gray-800/80 max-w-md mx-auto">
-    <div class="grid grid-cols-5 py-2">
-      <!-- Stars -->
-      <button onclick="switchTab('tab-stars')" id="nav-stars" class="nav-item flex flex-col items-center justify-center space-y-1 text-amber-400">
-        <span class="text-base">⭐️</span>
-        <span class="text-[10px] font-bold">Stars</span>
-      </button>
+  <!-- ==================== FLOATING BOTTOM DOCK NAVIGATION ==================== -->
+  <nav class="fixed bottom-3 inset-x-3 z-40 max-w-md mx-auto">
+    <div class="glass-panel rounded-3xl p-1.5 border border-white/15 shadow-2xl bg-gray-950/90 backdrop-blur-2xl">
+      <div class="grid grid-cols-5 relative">
+        <!-- Stars -->
+        <button onclick="switchTab('tab-stars')" id="nav-stars" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl transition-all text-amber-400 active:scale-90">
+          <span class="text-lg">⭐️</span>
+          <span class="text-[10px] font-black mt-0.5 tracking-tight">Stars</span>
+        </button>
 
-      <!-- Premium -->
-      <button onclick="switchTab('tab-premium')" id="nav-premium" class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white">
-        <span class="text-base">💎</span>
-        <span class="text-[10px] font-semibold">Premium</span>
-      </button>
+        <!-- Premium -->
+        <button onclick="switchTab('tab-premium')" id="nav-premium" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl transition-all text-gray-400 hover:text-white active:scale-90">
+          <span class="text-lg">💎</span>
+          <span class="text-[10px] font-bold mt-0.5 tracking-tight">Premium</span>
+        </button>
 
-      <!-- TOP 10 -->
-      <button onclick="switchTab('tab-top')" id="nav-top" class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white">
-        <span class="text-base">🏆</span>
-        <span class="text-[10px] font-semibold">TOP 10</span>
-      </button>
+        <!-- TOP 10 -->
+        <button onclick="switchTab('tab-top')" id="nav-top" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl transition-all text-gray-400 hover:text-white active:scale-90">
+          <span class="text-lg">🏆</span>
+          <span class="text-[10px] font-bold mt-0.5 tracking-tight">TOP 10</span>
+        </button>
 
-      <!-- Cheklar -->
-      <button onclick="switchTab('tab-proofs')" id="nav-proofs" class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white">
-        <span class="text-base">🌟</span>
-        <span class="text-[10px] font-semibold">Cheklar</span>
-      </button>
+        <!-- Cheklar -->
+        <button onclick="switchTab('tab-proofs')" id="nav-proofs" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl transition-all text-gray-400 hover:text-white active:scale-90">
+          <span class="text-lg">🌟</span>
+          <span class="text-[10px] font-bold mt-0.5 tracking-tight">Cheklar</span>
+        </button>
 
-      <!-- Hamyon -->
-      <button onclick="switchTab('tab-wallet')" id="nav-wallet" class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-white">
-        <span class="text-base">💳</span>
-        <span class="text-[10px] font-semibold">Hamyon</span>
-      </button>
+        <!-- Hamyon -->
+        <button onclick="switchTab('tab-wallet')" id="nav-wallet" class="nav-item flex flex-col items-center justify-center py-2 rounded-2xl transition-all text-gray-400 hover:text-white active:scale-90">
+          <span class="text-lg">💳</span>
+          <span class="text-[10px] font-bold mt-0.5 tracking-tight">Hamyon</span>
+        </button>
+      </div>
     </div>
   </nav>
 
-  <!-- ==================== INTERAKTIV JAVASCRIPT ==================== -->
+  <!-- ==================== JAVASCRIPT ==================== -->
   <script>
-    // Telegram WebApp Init
+    // 1. Telegram WebApp Init
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
-      tg.setHeaderColor('#090D16');
-      tg.setBackgroundColor('#090D16');
+      try {
+        if (typeof tg.enableClosingConfirmation === 'function') {
+          tg.enableClosingConfirmation();
+        }
+        tg.setHeaderColor('#080C14');
+        tg.setBackgroundColor('#080C14');
+      } catch (e) {}
     }
 
     // Foydalanuvchi holati
     let userState = {
-      username: tg?.initDataUnsafe?.user?.username || 'mijoz',
-      firstName: tg?.initDataUnsafe?.user?.first_name || 'Foydalanuvchi',
+      username: tg?.initDataUnsafe?.user?.username || '',
+      firstName: tg?.initDataUnsafe?.user?.first_name || 'Mijoz',
       userId: tg?.initDataUnsafe?.user?.id || 0,
       balance: 0,
       starPrice: 190,
@@ -717,6 +1005,7 @@
       card: "9860126632094010",
       holder: "Zafar Mirsaidov",
       support: "uzmfz",
+      bot: "uzmfzstarsbot",
       proof_channel: "@uzmfzstarschek"
     };
 
@@ -730,21 +1019,26 @@
           if (type === 'medium') tg.HapticFeedback.impactOccurred('medium');
           if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
           if (type === 'warning') tg.HapticFeedback.notificationOccurred('warning');
+          if (type === 'error') tg.HapticFeedback.notificationOccurred('error');
         }
       } catch (e) {}
     }
 
     // Toast
-    function showToast(msg) {
+    function showToast(msg, icon = '⚡️') {
       const toast = document.getElementById('toast');
-      toast.innerText = msg;
+      const text = document.getElementById('toast-text');
+      const iconEl = document.getElementById('toast-icon');
+      if (!toast) return;
+      text.innerText = msg;
+      iconEl.innerText = icon;
       toast.classList.remove('opacity-0', 'pointer-events-none');
       setTimeout(() => {
         toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 2500);
+      }, 2600);
     }
 
-    // Dinamik ma'lumotlarni o'qish (URL params + localStorage)
+    // 2. Dinamik ma'lumotlarni o'qish
     function loadDynamicData() {
       const urlParams = new URLSearchParams(window.location.search);
 
@@ -783,7 +1077,6 @@
       if (urlParams.has('holder')) prices.holder = urlParams.get('holder');
       if (urlParams.has('support')) prices.support = urlParams.get('support');
       if (urlParams.has('bot')) prices.bot = urlParams.get('bot');
-      else prices.bot = 'uzmfzstarsbot';
 
       if (urlParams.has('api')) {
         prices.api = decodeURIComponent(urlParams.get('api'));
@@ -805,7 +1098,14 @@
     }
 
     // Jonli ma'lumotlarni API orqali yangilash
-    async function fetchFreshUserData() {
+    async function fetchFreshUserData(manual = false) {
+      if (manual) {
+        haptic('light');
+        const icon = document.getElementById('refresh-icon');
+        if (icon) icon.classList.add('rotate-180');
+        setTimeout(() => { if (icon) icon.classList.remove('rotate-180'); }, 500);
+      }
+
       if (!prices.api || !userState.userId) return;
       try {
         const res = await fetch(`${prices.api}/api/user_info?user_id=${userState.userId}`);
@@ -825,13 +1125,14 @@
             if (data.prices.premium_12m) prices.p12m = data.prices.premium_12m;
           }
           renderDynamicPrices();
+          if (manual) showToast("Ma'lumotlar yangilandi!", "✅");
         }
       } catch (e) {
-        console.warn("user_info yangilashda xatolik:", e);
+        console.warn("user_info fetch error:", e);
       }
     }
 
-    // Barcha narx va ma'lumotlarni render qilish
+    // Barcha narx va ko'rsatkichlarni render qilish
     function renderDynamicPrices() {
       const balStr = userState.balance.toLocaleString('uz-UZ') + " so'm";
       document.getElementById('header-balance').innerText = balStr;
@@ -853,9 +1154,28 @@
       userState.selectedStarsPrice = userState.selectedStars * userState.starPrice;
       document.getElementById('stars-total-price').innerText = userState.selectedStarsPrice.toLocaleString('uz-UZ') + " so'm";
       document.getElementById('stars-selected-qty').innerText = `${userState.selectedStars.toLocaleString('uz-UZ')} ⭐ Stars`;
+
+      // Smart CTA tugmasi matnini yangilash
+      updateStarsCtaButton();
     }
 
-    // Tab o'zgartirish
+    function updateStarsCtaButton() {
+      const btn = document.getElementById('btn-buy-stars');
+      const text = document.getElementById('btn-buy-stars-text');
+      if (!btn || !text) return;
+
+      const cost = userState.selectedStarsPrice;
+      if (userState.balance >= cost) {
+        text.innerText = `⭐️ Xarid qilish (${cost.toLocaleString('uz-UZ')} so'm)`;
+        btn.className = 'btn-shimmer w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-300 hover:from-amber-400 hover:to-yellow-200 text-gray-950 font-black text-sm flex items-center justify-center space-x-2 shadow-xl shadow-amber-500/30 active:scale-95 transition-all';
+      } else {
+        const missing = cost - userState.balance;
+        text.innerText = `💳 Balansni to'ldirish (+${missing.toLocaleString('uz-UZ')} so'm)`;
+        btn.className = 'btn-shimmer w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-300 hover:from-emerald-400 text-gray-950 font-black text-sm flex items-center justify-center space-x-2 shadow-xl shadow-emerald-500/30 active:scale-95 transition-all';
+      }
+    }
+
+    // 3. Tab almashinuvi
     function switchTab(tabId) {
       haptic('light');
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -876,121 +1196,102 @@
         else navBtn.classList.add('text-amber-400');
       }
 
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       if (tabId === 'tab-top') {
         loadTopSpenders();
       }
     }
 
-    // TOP 10 Xaridorlarni API orqali yuklash
-    async function loadTopSpenders() {
-      const listEl = document.getElementById('top-spenders-list');
-      if (!prices.api) {
-        listEl.innerHTML = `
-          <div class="glass-panel rounded-2xl p-4 text-center text-xs text-gray-400 border border-gray-800">
-            Jonli reytingni ko'rish uchun bot orqali kiring.
-          </div>
-        `;
-        return;
-      }
-
-      try {
-        const uid = userState.userId || 0;
-        const res = await fetch(`${prices.api}/api/top_spenders?user_id=${uid}`);
-        const data = await res.json();
-        if (data && data.success) {
-          // Shaxsiy statistika
-          if (data.my_stats) {
-            document.getElementById('my-top-rank-badge').innerText = data.my_stats.rank || '-';
-            document.getElementById('my-top-rank-text').innerText = `${data.my_stats.rank}-o'rinda (${data.my_stats.order_count} ta xarid)`;
-            document.getElementById('my-top-spent-text').innerText = `${data.my_stats.total_spent.toLocaleString('uz-UZ')} so'm`;
-          }
-
-          // Ro'yxat
-          const medals = ['🥇', '🥈', '🥉'];
-          let html = '';
-          if (!data.top || data.top.length === 0) {
-            html = `
-              <div class="glass-panel rounded-2xl p-6 text-center text-xs text-gray-400 border border-gray-800">
-                Hozircha xaridlar mavjud emas. Birinchi bo'ling!
-              </div>
-            `;
-          } else {
-            data.top.forEach((u, idx) => {
-              const medal = idx < 3 ? medals[idx] : `<span class="font-bold font-mono text-gray-400 text-xs">#${idx+1}</span>`;
-              const isFirst = idx === 0;
-              const borderClass = isFirst ? 'border-amber-500/50 bg-gradient-to-r from-amber-950/30 via-gray-900 to-gray-950 shadow-md' : 'border-gray-800 bg-gray-900/40';
-              const nameColor = isFirst ? 'text-amber-300 font-black' : 'text-white font-bold';
-              const isMe = u.telegram_id === userState.userId ? ' <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-bold">Siz</span>' : '';
-              const unameStr = u.username ? `<span class="text-[11px] text-gray-400 font-mono">@${u.username}</span>` : '';
-
-              html += `
-                <div class="glass-panel rounded-2xl p-3.5 border ${borderClass} flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 rounded-xl bg-gray-800/80 flex items-center justify-center text-base">
-                      ${medal}
-                    </div>
-                    <div>
-                      <div class="flex items-center space-x-1.5">
-                        <span class="text-xs ${nameColor}">${u.name}</span>
-                        ${isMe}
-                      </div>
-                      ${unameStr}
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <div class="text-xs font-black font-mono text-amber-300">${u.total_spent.toLocaleString('uz-UZ')} so'm</div>
-                    <span class="text-[10px] text-gray-400">${u.order_count} ta xarid</span>
-                  </div>
-                </div>
-              `;
-            });
-          }
-          listEl.innerHTML = html;
-        }
-      } catch (e) {
-        listEl.innerHTML = `
-          <div class="glass-panel rounded-2xl p-4 text-center text-xs text-red-400 border border-red-500/30">
-            Reytingni yuklashda xatolik yuz berdi.
-          </div>
-        `;
-      }
-    }
-
-    // Stars Qabul qiluvchini tanlash
+    // 4. Stars Qabul qiluvchini tanlash & Qulayliklar
     function selectRecipientType(type) {
       haptic('light');
       userState.recipientType = type;
       const btnSelf = document.getElementById('btn-for-self');
       const btnOther = document.getElementById('btn-for-other');
       const wrapper = document.getElementById('other-username-wrapper');
+      const badge = document.getElementById('recipient-status-badge');
 
       if (type === 'self') {
-        btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-bold border border-amber-500/50 bg-amber-500/15 text-amber-300 transition-all shadow-sm';
-        btnOther.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold border border-gray-800 bg-gray-900/60 text-gray-400 hover:text-white transition-all';
+        btnSelf.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-black border border-amber-500/60 bg-amber-500/20 text-amber-300 transition-all shadow-md active:scale-95';
+        btnOther.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-bold border border-white/10 bg-gray-900/60 text-gray-400 hover:text-white transition-all active:scale-95';
         wrapper.classList.add('hidden');
+        if (badge) badge.innerText = "👤 O'z hisobingizga";
       } else {
-        btnOther.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-bold border border-amber-500/50 bg-amber-500/15 text-amber-300 transition-all shadow-sm';
-        btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold border border-gray-800 bg-gray-900/60 text-gray-400 hover:text-white transition-all';
+        btnOther.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-black border border-amber-500/60 bg-amber-500/20 text-amber-300 transition-all shadow-md active:scale-95';
+        btnSelf.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-bold border border-white/10 bg-gray-900/60 text-gray-400 hover:text-white transition-all active:scale-95';
         wrapper.classList.remove('hidden');
+        if (badge) badge.innerText = "🎁 Boshqa hisobga";
+        setTimeout(() => {
+          document.getElementById('target-username-input')?.focus();
+        }, 150);
       }
     }
 
-    // Premium Qabul qiluvchini tanlash
     function selectPremRecipientType(type) {
       haptic('light');
       userState.premRecipientType = type;
       const btnSelf = document.getElementById('btn-prem-self');
       const btnOther = document.getElementById('btn-prem-other');
       const wrapper = document.getElementById('prem-username-wrapper');
+      const badge = document.getElementById('prem-recipient-status-badge');
 
       if (type === 'self') {
-        btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-bold border border-sky-500/50 bg-sky-500/15 text-sky-300 transition-all shadow-sm';
-        btnOther.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold border border-gray-800 bg-gray-900/60 text-gray-400 hover:text-white transition-all';
+        btnSelf.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-black border border-sky-500/60 bg-sky-500/20 text-sky-300 transition-all shadow-md active:scale-95';
+        btnOther.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-bold border border-white/10 bg-gray-900/60 text-gray-400 hover:text-white transition-all active:scale-95';
         wrapper.classList.add('hidden');
+        if (badge) badge.innerText = "👤 O'z profilingizga";
       } else {
-        btnOther.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-bold border border-sky-500/50 bg-sky-500/15 text-sky-300 transition-all shadow-sm';
-        btnSelf.className = 'flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold border border-gray-800 bg-gray-900/60 text-gray-400 hover:text-white transition-all';
+        btnOther.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-black border border-sky-500/60 bg-sky-500/20 text-sky-300 transition-all shadow-md active:scale-95';
+        btnSelf.className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl text-xs font-bold border border-white/10 bg-gray-900/60 text-gray-400 hover:text-white transition-all active:scale-95';
         wrapper.classList.remove('hidden');
+        if (badge) badge.innerText = "🎁 Sovg'a sifatida";
+        setTimeout(() => {
+          document.getElementById('premium-username-input')?.focus();
+        }, 150);
+      }
+    }
+
+    // 1-Tap Clipboarddan Username Qo'yish (Qulaylik!)
+    async function pasteClipboardToTarget(inputId) {
+      haptic('medium');
+      try {
+        let text = '';
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          text = await navigator.clipboard.readText();
+        }
+        if (text) {
+          cleanAndSetUsername(inputId, text);
+          showToast("Username qo'yildi!", "📋");
+        } else {
+          showToast("Qo'lda kiriting", "✍️");
+        }
+      } catch (err) {
+        showToast("Ruxsat berilmadi, qo'lda kiriting", "✍️");
+      }
+    }
+
+    function cleanAndSetUsername(inputId, raw) {
+      const clean = raw.trim().replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').replace(/[^a-zA-Z0-9_]/g, '');
+      const inp = document.getElementById(inputId);
+      if (inp) {
+        inp.value = clean;
+        validateUsernameInput(clean);
+      }
+    }
+
+    function validateUsernameInput(val) {
+      const clean = val.replace(/^@/, '').trim();
+      const valText = document.getElementById('username-val-text');
+      if (!valText) return;
+      if (!clean) {
+        valText.innerText = '';
+      } else if (clean.length < 3) {
+        valText.innerText = '⚠️ Kamida 3 ta belgi';
+        valText.className = 'text-[10px] text-amber-400 font-medium';
+      } else {
+        valText.innerText = '✅ To\'g\'ri format';
+        valText.className = 'text-[10px] text-emerald-400 font-bold';
       }
     }
 
@@ -1001,98 +1302,82 @@
       document.getElementById('custom-stars-input').value = '';
 
       document.querySelectorAll('.star-preset-card').forEach(el => {
-        el.className = 'star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center';
+        el.className = 'star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center';
       });
 
       const activeEl = document.getElementById(`preset-${qty}`);
       if (activeEl) {
-        activeEl.className = 'star-preset-card glass-panel rounded-2xl p-3 border border-amber-500/60 bg-amber-500/10 cursor-pointer active:scale-95 transition-all text-center';
+        activeEl.className = 'star-preset-card relative glass-panel rounded-2xl p-3 border border-amber-500/70 bg-amber-500/15 cursor-pointer active:scale-95 transition-all text-center';
       }
 
       renderDynamicPrices();
     }
 
-    // Stars Custom Input listener
-    document.addEventListener('DOMContentLoaded', () => {
-      const customInp = document.getElementById('custom-stars-input');
-      if (customInp) {
-        customInp.addEventListener('input', (e) => {
-          const val = parseInt(e.target.value);
-          if (!isNaN(val) && val >= 50) {
-            userState.selectedStars = val;
-            document.querySelectorAll('.star-preset-card').forEach(el => {
-              el.className = 'star-preset-card glass-panel rounded-2xl p-3 border border-gray-800 bg-gray-900/40 cursor-pointer hover:border-gray-700 active:scale-95 transition-all text-center';
-            });
-            renderDynamicPrices();
-          }
-        });
-      }
+    // Stars Custom Stepper Chiplari (+25, +50, +100, Maksimal)
+    function addCustomStars(amount) {
+      haptic('light');
+      const cur = userState.selectedStars || 50;
+      userState.selectedStars = cur + amount;
+      document.getElementById('custom-stars-input').value = userState.selectedStars;
+      
+      document.querySelectorAll('.star-preset-card').forEach(el => {
+        el.className = 'star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center';
+      });
 
-      const customDep = document.getElementById('deposit-custom-input');
-      if (customDep) {
-        customDep.addEventListener('input', (e) => {
-          const v = parseInt(e.target.value);
-          const btnText = document.getElementById('btn-invoice-label');
-          if (!isNaN(v) && v > 0) {
-            depositAmount = v;
-            if (btnText) btnText.innerText = `To'lov chekini yaratish (${v.toLocaleString('uz-UZ')} so'm) 🧾`;
-          } else {
-            if (btnText) btnText.innerText = `To'lov chekini yaratish 🧾`;
-          }
-        });
-      }
-
-      document.getElementById('user-name').innerText = userState.firstName;
-      document.getElementById('user-tag').innerText = userState.username ? '@' + userState.username : 'ID: ' + userState.userId;
-      document.getElementById('user-avatar').innerText = (userState.firstName[0] || 'U').toUpperCase();
-
-      loadDynamicData();
-    });
-
-    // Admin chatini ochish
-    function openAdminChat() {
-      haptic('medium');
-      const supportUser = (prices.support || 'uzmfz').replace('@', '');
-      const link = `https://t.me/${supportUser}`;
-      if (tg?.openTelegramLink) tg.openTelegramLink(link);
-      else window.open(link, '_blank');
+      renderDynamicPrices();
     }
 
-    // Cheklar kanaliga o'tish
-    function openProofChannel() {
+    function setMaxStarsByBalance() {
       haptic('medium');
-      const ch = (prices.proof_channel || '@uzmfzstarschek').replace('@', '');
-      const link = `https://t.me/${ch}`;
-      if (tg?.openTelegramLink) tg.openTelegramLink(link);
-      else window.open(link, '_blank');
+      if (userState.balance <= 0) {
+        showToast("Balansingiz 0 so'm. To'ldirishni tanlang!", "💳");
+        switchTab('tab-wallet');
+        return;
+      }
+      const maxQty = Math.floor(userState.balance / userState.starPrice);
+      if (maxQty < 25) {
+        showToast(`Balansingiz kamida 25 Stars uchun yetarli emas`, "⚠️");
+        return;
+      }
+      userState.selectedStars = maxQty;
+      document.getElementById('custom-stars-input').value = maxQty;
+
+      document.querySelectorAll('.star-preset-card').forEach(el => {
+        el.className = 'star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center';
+      });
+
+      renderDynamicPrices();
+      showToast(`Maksimal ${maxQty} Stars tanlandi!`, "⚡️");
     }
 
-    // Stars Xaridni Tasdiqlash oynasini ochish
+    // 5. Stars Xarid harakati (Balans yetarli bo'lsa xarid, yetmasa to'ldirishga yo'naltirish)
+    function handleStarsAction() {
+      const cost = userState.selectedStarsPrice;
+      if (userState.balance < cost) {
+        const missing = cost - userState.balance;
+        smartTransferToDeposit(missing, `${userState.selectedStars} Stars`);
+      } else {
+        confirmStarsPurchase();
+      }
+    }
+
     function confirmStarsPurchase() {
       let targetUser = userState.recipientType === 'self'
-        ? userState.username
+        ? (userState.username || 'o\'zim')
         : document.getElementById('target-username-input').value.trim().replace('@', '');
 
-      if (!targetUser) {
+      if (userState.recipientType === 'other' && !targetUser) {
         haptic('warning');
-        showToast("Iltimos, Telegram username kiriting!");
-        const inp = document.getElementById('target-username-input');
-        if (inp) inp.focus();
+        showToast("Telegram username kiriting!", "⚠️");
+        document.getElementById('target-username-input')?.focus();
         return;
       }
 
       userState.currentAction = 'stars';
       const cost = userState.selectedStarsPrice;
 
-      // Balans yetadimi?
-      if (userState.balance < cost) {
-        const missing = cost - userState.balance;
-        smartTransferToDeposit(missing, `${userState.selectedStars} Stars`);
-        return;
-      }
-
       haptic('medium');
-      document.getElementById('modal-service-name').innerText = `${userState.selectedStars} ⭐️ Stars`;
+      document.getElementById('modal-service-name').innerText = `${userState.selectedStars.toLocaleString('uz-UZ')} ⭐️ Stars`;
       document.getElementById('modal-target-username').innerText = '@' + targetUser;
       document.getElementById('modal-service-price').innerText = cost.toLocaleString('uz-UZ') + " so'm";
       document.getElementById('modal-current-bal').innerText = userState.balance.toLocaleString('uz-UZ') + " so'm";
@@ -1101,7 +1386,21 @@
       document.getElementById('confirm-modal').classList.remove('hidden');
     }
 
-    // Premium Xaridni Tasdiqlash
+    // 6. Premium Xarid harakati
+    function handlePremiumAction(months) {
+      let pr = prices.p3m;
+      if (months === 1) pr = prices.p1m;
+      else if (months === 6) pr = prices.p6m;
+      else if (months === 12) pr = prices.p12m;
+
+      if (userState.balance < pr) {
+        const missing = pr - userState.balance;
+        smartTransferToDeposit(missing, `${months} oylik Telegram Premium`);
+      } else {
+        confirmPremiumPurchase(months);
+      }
+    }
+
     function confirmPremiumPurchase(months) {
       userState.currentAction = 'premium';
       userState.premiumMonths = months;
@@ -1113,20 +1412,13 @@
       userState.premiumPrice = pr;
 
       let targetUser = userState.premRecipientType === 'self'
-        ? userState.username
+        ? (userState.username || 'o\'zim')
         : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
 
-      if (!targetUser) {
+      if (userState.premRecipientType === 'other' && !targetUser) {
         haptic('warning');
-        showToast("Iltimos, Telegram username kiriting!");
-        const inp = document.getElementById('premium-username-input');
-        if (inp) inp.focus();
-        return;
-      }
-
-      if (userState.balance < pr) {
-        const missing = pr - userState.balance;
-        smartTransferToDeposit(missing, `${months} oylik Telegram Premium`);
+        showToast("Telegram username kiriting!", "⚠️");
+        document.getElementById('premium-username-input')?.focus();
         return;
       }
 
@@ -1152,7 +1444,7 @@
       document.getElementById('confirm-modal').classList.add('hidden');
     }
 
-    // Xaridni amalga oshirish
+    // 7. Xaridni amalga oshirish
     async function executePurchase() {
       if (isExecutingPurchase) return;
       isExecutingPurchase = true;
@@ -1168,7 +1460,7 @@
 
       if (userState.currentAction === 'stars') {
         let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('target-username-input').value.trim().replace('@', '');
-        showToast("Stars xaridi bajarilmoqda...");
+        showToast("Stars xaridi bajarilmoqda...", "⏳");
 
         if (prices.api) {
           try {
@@ -1187,7 +1479,8 @@
               localStorage.setItem('user_balance', data.new_balance);
               renderDynamicPrices();
               closeConfirmModal();
-              showToast("🎉 Stars xaridi muvaffaqiyatli bajarildi!");
+              showToast("🎉 Stars muvaffaqiyatli yetkazildi!", "✅");
+              fetchFreshUserData();
               return;
             } else if (data && data.error === 'insufficient_balance') {
               closeConfirmModal();
@@ -1214,7 +1507,7 @@
         let targetUser = userState.premRecipientType === 'self'
           ? userState.username
           : (document.getElementById('premium-username-input').value.trim().replace('@', '') || userState.username);
-        showToast("Premium xaridi bajarilmoqda...");
+        showToast("Premium faollashtirilmoqda...", "⏳");
 
         if (prices.api) {
           try {
@@ -1233,7 +1526,8 @@
               localStorage.setItem('user_balance', data.new_balance);
               renderDynamicPrices();
               closeConfirmModal();
-              showToast("🎉 Premium obunasi muvaffaqiyatli faollashtirildi!");
+              showToast("🎉 Premium muvaffaqiyatli ulandi!", "✅");
+              fetchFreshUserData();
               return;
             } else if (data && data.error === 'insufficient_balance') {
               closeConfirmModal();
@@ -1258,7 +1552,7 @@
       }
     }
 
-    // Yetishmayotgan summani Hamyon to'loviga avtomatik o'tkazish
+    // 8. Smart Transfer (Yetishmayotgan summani Depozitga avtomatik o'tkazish)
     function smartTransferToDeposit(missing, serviceName) {
       haptic('warning');
       switchTab('tab-wallet');
@@ -1270,41 +1564,15 @@
         document.getElementById('deposit-banner-badge').innerText = `+${missing.toLocaleString('uz-UZ')} so'm`;
         document.getElementById('deposit-banner-text').innerHTML = `Balansingizda <b>${userState.balance.toLocaleString('uz-UZ')} so'm</b> mavjud.<br><b>${serviceName}</b> xaridi uchun yetishmayotgan <b>${missing.toLocaleString('uz-UZ')} so'm</b> avtomatik kiritildi. Quyidagi tugmani bosib to'lov chekini oling!`;
       }
-      showToast(`Yetishmayotgan ${missing.toLocaleString('uz-UZ')} so'm to'lovga kiritildi!`);
+      showToast(`Yetishmayotgan ${missing.toLocaleString('uz-UZ')} so'm kiritildi!`, "💳");
 
       setTimeout(() => {
         const btn = document.getElementById('btn-generate-deposit');
         if (btn) btn.scrollIntoView({ behavior: 'smooth' });
-      }, 250);
+      }, 300);
     }
 
-    // Nusxalash
-    function copyToClipboard(text, msg) {
-      haptic('medium');
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast(msg || "Nusxalandi!");
-        }).catch(() => fallbackCopy(text, msg));
-      } else {
-        fallbackCopy(text, msg);
-      }
-    }
-
-    function fallbackCopy(text, msg) {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand('copy');
-        showToast(msg || "Nusxalandi!");
-      } catch (e) {
-        showToast("Nusxalandi: " + text);
-      }
-      document.body.removeChild(ta);
-    }
-
-    // Chek yaratish va tekshirish
+    // 9. Depozit & Chek Yaratish (Click & Payme integratsiyasi)
     let depositAmount = 10000;
     let currentReceiptOrderId = null;
     let receiptTimerInterval = null;
@@ -1321,6 +1589,12 @@
       }
     }
 
+    function addDepositAmount(extra) {
+      haptic('light');
+      const cur = parseInt(document.getElementById('deposit-custom-input').value) || depositAmount || 0;
+      setDepositAmount(cur + extra);
+    }
+
     async function generateDepositInvoice() {
       const customVal = parseInt(document.getElementById('deposit-custom-input').value);
       if (customVal && customVal >= 1000) {
@@ -1328,7 +1602,7 @@
       }
 
       haptic('success');
-      showToast("To'lov cheki tayyorlanmoqda...");
+      showToast("To'lov cheki ochilmoqda...", "⏳");
 
       if (prices.api) {
         try {
@@ -1346,21 +1620,12 @@
             return;
           }
         } catch (e) {
-          console.warn("API orqali chek ochishda xatolik:", e);
+          console.warn("create_deposit error:", e);
         }
       }
 
       const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
       const deepLink = `https://t.me/${botUser}?start=dep_${depositAmount}`;
-
-      try {
-        if (tg && typeof tg.sendData === 'function') {
-          tg.sendData(JSON.stringify({
-            action: "create_deposit",
-            amount: depositAmount
-          }));
-        }
-      } catch (err) {}
 
       setTimeout(() => {
         if (tg?.openTelegramLink) tg.openTelegramLink(deepLink);
@@ -1378,11 +1643,21 @@
       document.getElementById('receipt-card-holder').innerText = data.holder || prices.holder || 'Zafar Mirsaidov';
       document.getElementById('receipt-unique-amount').innerText = `${data.unique_amount.toLocaleString('uz-UZ')} so'm`;
       
+      // Click & Payme direct links
+      const cleanCard = rawCard;
+      const clickUrl = data.click_url || `https://my.click.uz/clickp2p?card_num=${cleanCard}&amount=${data.unique_amount}`;
+      const paymeUrl = data.payme_url || `https://payme.uz/fallback/transfer/${cleanCard}/${data.unique_amount * 100}`;
+      
+      const btnClick = document.getElementById('btn-open-click');
+      const btnPayme = document.getElementById('btn-open-payme');
+      if (btnClick) btnClick.href = clickUrl;
+      if (btnPayme) btnPayme.href = paymeUrl;
+
       document.getElementById('receipt-status-indicator').innerHTML = `
-        <div class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
-        <span>To'lov kutilmoqda... Pulni o'tkazing</span>
+        <div class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></div>
+        <span class="font-bold">To'lov kutilmoqda... Pulni o'tkazing</span>
       `;
-      document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-gray-900/80 border border-amber-500/30 text-xs text-amber-400';
+      document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2.5 px-3 rounded-2xl bg-gray-900/80 border border-amber-500/40 text-xs text-amber-400';
 
       let remainingSeconds = (data.timeout_minutes || 15) * 60;
       clearInterval(receiptTimerInterval);
@@ -1431,18 +1706,19 @@
 
             document.getElementById('receipt-status-indicator').innerHTML = `
               <span>🎉</span>
-              <span class="font-bold">TO'LOV QABUL QILINDI! +${data.base_amount.toLocaleString('uz-UZ')} so'm</span>
+              <span class="font-black">TO'LOV QABUL QILINDI! +${data.base_amount.toLocaleString('uz-UZ')} so'm</span>
             `;
-            document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2.5 px-3 rounded-xl bg-emerald-500/20 border border-emerald-500/50 text-xs text-emerald-300 font-bold';
-            showToast("🎉 Balansingiz muvaffaqiyatli to'ldirildi!");
+            document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-3 px-3 rounded-2xl bg-emerald-500/25 border border-emerald-500/60 text-xs text-emerald-300 font-black';
+            showToast("🎉 Balansingiz to'ldirildi!", "✅");
+            fetchFreshUserData();
           } else if (data.status === 'CANCELLED' || data.status === 'EXPIRED') {
             clearInterval(receiptTimerInterval);
             clearInterval(receiptPollInterval);
             document.getElementById('receipt-status-indicator').innerHTML = `
               <span>❌</span>
-              <span>To'lov cheki bekor qilindi yoki vaqti o'tdi</span>
+              <span class="font-bold">To'lov cheki bekor qilindi yoki muddati o'tdi</span>
             `;
-            document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2 px-3 rounded-xl bg-red-500/20 border border-red-500/50 text-xs text-red-400';
+            document.getElementById('receipt-status-indicator').className = 'flex items-center justify-center space-x-2 py-2.5 px-3 rounded-2xl bg-red-500/20 border border-red-500/50 text-xs text-red-400';
           }
         }
       } catch (e) {}
@@ -1450,13 +1726,103 @@
 
     function checkOrderStatusManual() {
       haptic('medium');
-      showToast("To'lov holati tekshirilmoqda...");
+      showToast("To'lov tekshirilmoqda...", "⏳");
       if (currentReceiptOrderId) {
         checkReceiptStatus(currentReceiptOrderId);
       }
     }
 
-    // Buyurtmalar tarixini chiqarish
+    // 10. TOP 10 Liderlar
+    async function loadTopSpenders() {
+      const listEl = document.getElementById('top-spenders-list');
+      const podiumWrapper = document.getElementById('top-podium-wrapper');
+
+      if (!prices.api) {
+        listEl.innerHTML = `
+          <div class="glass-panel rounded-3xl p-5 text-center text-xs text-gray-400 border border-white/10">
+            Jonli reytingni ko'rish uchun bot orqali kiring.
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const uid = userState.userId || 0;
+        const res = await fetch(`${prices.api}/api/top_spenders?user_id=${uid}`);
+        const data = await res.json();
+        if (data && data.success) {
+          // Shaxsiy statistika
+          if (data.my_stats) {
+            document.getElementById('my-top-rank-badge').innerText = data.my_stats.rank || '-';
+            document.getElementById('my-top-rank-text').innerText = `${data.my_stats.rank}-o'rinda (${data.my_stats.order_count} ta xarid)`;
+            document.getElementById('my-top-spent-text').innerText = `${data.my_stats.total_spent.toLocaleString('uz-UZ')} so'm`;
+          }
+
+          if (!data.top || data.top.length === 0) {
+            if (podiumWrapper) podiumWrapper.classList.add('hidden');
+            listEl.innerHTML = `
+              <div class="glass-panel rounded-3xl p-6 text-center text-xs text-gray-400 border border-white/10">
+                Hozircha xaridlar mavjud emas. Birinchi bo'ling! 🚀
+              </div>
+            `;
+            return;
+          }
+
+          // Podium (1st, 2nd, 3rd)
+          if (data.top.length >= 3 && podiumWrapper) {
+            podiumWrapper.classList.remove('hidden');
+            document.getElementById('podium-1-name').innerText = data.top[0].name;
+            document.getElementById('podium-1-spent').innerText = `${data.top[0].total_spent.toLocaleString('uz-UZ')} so'm`;
+            
+            document.getElementById('podium-2-name').innerText = data.top[1].name;
+            document.getElementById('podium-2-spent').innerText = `${data.top[1].total_spent.toLocaleString('uz-UZ')} so'm`;
+
+            document.getElementById('podium-3-name').innerText = data.top[2].name;
+            document.getElementById('podium-3-spent').innerText = `${data.top[2].total_spent.toLocaleString('uz-UZ')} so'm`;
+          }
+
+          // Qolganlar (4-10)
+          let html = '';
+          data.top.forEach((u, idx) => {
+            const isMe = u.telegram_id === userState.userId;
+            const meBadge = isMe ? ' <span class="text-[9px] bg-amber-500/25 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-black">Siz</span>' : '';
+            const unameStr = u.username ? `<span class="text-[11px] text-gray-400 font-mono">@${u.username}</span>` : '';
+            const rankStr = idx === 0 ? '🥇' : (idx === 1 ? '🥈' : (idx === 2 ? '🥉' : `#${idx+1}`));
+            const borderClass = isMe ? 'border-amber-500/60 bg-amber-500/10 shadow-lg' : 'border-white/10 bg-gray-900/50';
+
+            html += `
+              <div class="glass-panel rounded-2xl p-3.5 border ${borderClass} flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="w-8 h-8 rounded-xl bg-gray-800 flex items-center justify-center text-xs font-black font-mono text-gray-300">
+                    ${rankStr}
+                  </div>
+                  <div>
+                    <div class="flex items-center space-x-1.5">
+                      <span class="text-xs font-bold text-white">${u.name}</span>
+                      ${meBadge}
+                    </div>
+                    ${unameStr}
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs font-black font-mono text-amber-300">${u.total_spent.toLocaleString('uz-UZ')} so'm</div>
+                  <span class="text-[10px] text-gray-400">${u.order_count} ta xarid</span>
+                </div>
+              </div>
+            `;
+          });
+          listEl.innerHTML = html;
+        }
+      } catch (e) {
+        listEl.innerHTML = `
+          <div class="glass-panel rounded-3xl p-5 text-center text-xs text-red-400 border border-red-500/30">
+            Reytingni yuklashda xatolik yuz berdi.
+          </div>
+        `;
+      }
+    }
+
+    // 11. Buyurtmalar Tarixi Render
     function renderOrdersHistory(raw) {
       if (!raw) return;
       const listEl = document.getElementById('orders-list');
@@ -1490,7 +1856,7 @@
           if (type === 'DEPOSIT') {
             icon = '💳';
             title = 'Hisob to\'ldirish';
-            sub = 'Humo / Uzcard orqali';
+            sub = 'Humo / Uzcard';
           } else if (type === 'PREMIUM') {
             icon = '💎';
             title = `${qty} oylik Premium`;
@@ -1500,30 +1866,109 @@
           const stObj = statusMap[status] || { text: status, color: 'text-gray-400' };
 
           html += `
-            <div class="glass-panel rounded-2xl p-3 border border-gray-800 flex items-center justify-between">
+            <div class="glass-panel rounded-2xl p-3 border border-white/10 flex items-center justify-between">
               <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-xl bg-gray-800/60 border border-gray-700 flex items-center justify-center text-sm">${icon}</div>
+                <div class="w-8 h-8 rounded-xl bg-gray-800/80 border border-white/5 flex items-center justify-center text-sm">${icon}</div>
                 <div>
                   <div class="flex items-center space-x-1.5">
                     <span class="text-xs font-bold text-white">${title}</span>
-                    <span class="text-[10px] text-gray-500">#${id}</span>
+                    <span class="text-[10px] text-gray-500 font-mono">#${id}</span>
                   </div>
-                  <p class="text-[11px] text-gray-400">${sub}</p>
+                  <p class="text-[10px] text-gray-400">${sub}</p>
                 </div>
               </div>
               <div class="text-right">
-                <span class="text-xs font-bold text-white font-mono">${amt.toLocaleString('uz-UZ')} so'm</span>
-                <span class="block text-[10px] ${stObj.color} font-medium">${stObj.text}</span>
+                <span class="text-xs font-black text-white font-mono">${amt.toLocaleString('uz-UZ')} so'm</span>
+                <span class="block text-[10px] ${stObj.color} font-bold">${stObj.text}</span>
               </div>
             </div>
           `;
         }
       });
 
-      if (html) {
-        listEl.innerHTML = html;
+      if (html) listEl.innerHTML = html;
+    }
+
+    // 12. Havolalar va Nusxalash
+    function copyToClipboard(text, msg) {
+      haptic('medium');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(msg || "Nusxalandi!", "📋");
+        }).catch(() => fallbackCopy(text, msg));
+      } else {
+        fallbackCopy(text, msg);
       }
     }
+
+    function fallbackCopy(text, msg) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(msg || "Nusxalandi!", "📋");
+      } catch (e) {
+        showToast("Nusxalandi: " + text, "📋");
+      }
+      document.body.removeChild(ta);
+    }
+
+    function openAdminChat() {
+      haptic('medium');
+      const supportUser = (prices.support || 'uzmfz').replace('@', '');
+      const link = `https://t.me/${supportUser}`;
+      if (tg?.openTelegramLink) tg.openTelegramLink(link);
+      else window.open(link, '_blank');
+    }
+
+    function openProofChannel() {
+      haptic('medium');
+      const ch = (prices.proof_channel || '@uzmfzstarschek').replace('@', '');
+      const link = `https://t.me/${ch}`;
+      if (tg?.openTelegramLink) tg.openTelegramLink(link);
+      else window.open(link, '_blank');
+    }
+
+    // 13. DOMContentLoaded boshlanishi
+    document.addEventListener('DOMContentLoaded', () => {
+      const customInp = document.getElementById('custom-stars-input');
+      if (customInp) {
+        customInp.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value);
+          if (!isNaN(val) && val >= 25) {
+            userState.selectedStars = val;
+            document.querySelectorAll('.star-preset-card').forEach(el => {
+              el.className = 'star-preset-card relative glass-panel rounded-2xl p-3 border border-white/10 bg-gray-900/40 cursor-pointer hover:border-amber-500/40 active:scale-95 transition-all text-center';
+            });
+            renderDynamicPrices();
+          }
+        });
+      }
+
+      const customDep = document.getElementById('deposit-custom-input');
+      if (customDep) {
+        customDep.addEventListener('input', (e) => {
+          const v = parseInt(e.target.value);
+          const btnText = document.getElementById('btn-invoice-label');
+          if (!isNaN(v) && v > 0) {
+            depositAmount = v;
+            if (btnText) btnText.innerText = `To'lov chekini yaratish (${v.toLocaleString('uz-UZ')} so'm) 🧾`;
+          } else {
+            if (btnText) btnText.innerText = `To'lov chekini yaratish 🧾`;
+          }
+        });
+      }
+
+      document.getElementById('user-name').innerText = userState.firstName;
+      document.getElementById('user-tag').innerText = userState.username ? '@' + userState.username : (userState.userId ? 'ID: ' + userState.userId : '');
+      document.getElementById('user-avatar').innerText = (userState.firstName[0] || 'U').toUpperCase();
+      document.getElementById('wallet-card-user').innerText = userState.firstName + (userState.username ? ` (@${userState.username})` : '');
+      document.getElementById('wallet-card-id').innerText = userState.userId ? `ID: ${userState.userId}` : 'ID: 5915115344';
+
+      loadDynamicData();
+    });
   </script>
 </body>
 </html>
