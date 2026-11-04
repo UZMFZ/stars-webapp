@@ -846,16 +846,9 @@
           <p class="text-[9px] text-gray-400">To'lov avtomat tasdiqlanishi uchun ushbu aniq summani o'tkazing.</p>
         </div>
 
-        <!-- Click & Payme direct buttons -->
-        <div class="grid grid-cols-2 gap-2">
-          <a id="link-click" href="#" target="_blank" class="py-2.5 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition">
-            <span>🔵</span>
-            <span>Click orqali</span>
-          </a>
-          <a id="link-payme" href="#" target="_blank" class="py-2.5 px-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 active:scale-95 transition">
-            <span>🟢</span>
-            <span>Payme orqali</span>
-          </a>
+        <!-- Yo'riqnoma -->
+        <div class="bg-black/40 p-2.5 rounded-xl border border-white/5 text-[10px] text-gray-400 text-center">
+          <span>Karta raqami va aniq summadan nusxa olib, bank ilovangiz orqali o'tkazma qiling.</span>
         </div>
 
         <!-- Taymer va Holat -->
@@ -2039,13 +2032,6 @@
       document.getElementById('receipt-card-num').innerText = formattedCard;
       document.getElementById('receipt-card-holder').innerText = data.holder || prices.holder || 'Zafar Mirsaidov';
       document.getElementById('receipt-unique-amt').innerText = `${data.unique_amount.toLocaleString('uz-UZ')} so'm`;
-
-      // Click & Payme direct links
-      const cleanCard = rawCard;
-      const clickUrl = data.click_url || `https://my.click.uz/clickp2p?card_num=${cleanCard}&amount=${data.unique_amount}`;
-      const paymeUrl = data.payme_url || `https://payme.uz/fallback/transfer/${cleanCard}/${data.unique_amount * 100}`;
-      document.getElementById('link-click').href = clickUrl;
-      document.getElementById('link-payme').href = paymeUrl;
 
       // Status pill reset
       const pill = document.getElementById('receipt-status-pill');
