@@ -2194,114 +2194,182 @@
     function closeConfirmModal() {
       playSound('pop');
       triggerHaptic('light');
+      const confirmBtn = document.getElementById('btn-modal-confirm');
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+      }
       document.getElementById('confirm-modal').classList.add('hidden');
     }
 
-    async function executePurchase() {
-      playSound('success');
-      triggerHaptic('success');
+    async function ensureApiUrl() {
+      // 1. Agar prices.api allaqachon mavjud bo'lsa va jonli ishlayotgan bo'lsa
+      if (prices.api) {
+        try {
+          const controller = new AbortController();
+          const tid = setTimeout(() => controller.abort(), 2000);
+          const r = await fetch(`${prices.api}/api/ping`, { signal: controller.signal, cache: 'no-store' });
+          clearTimeout(tid);
+          if (r.ok) return prices.api;
+        } catch (e) {}
+      }
 
+      // 2. Agar mavjud bo'lmasa yoki eskirgan bo'lsa, GitHub Pages dan yangi api.json ni olamiz
+      try {
+        const r = await fetch(`https://uzmfz.github.io/stars-webapp/api.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (r.ok) {
+          const d = await r.json();
+          if (d && d.api_url) {
+            prices.api = d.api_url;
+            localStorage.setItem('api_url', prices.api);
+            return prices.api;
+          }
+        }
+      } catch (e) {}
+
+      // 3. Zaxira sifatida localStorage
+      if (!prices.api && localStorage.getItem('api_url')) {
+        prices.api = localStorage.getItem('api_url');
+      }
+      return prices.api;
+    }
+
+    async function executePurchase() {
       const confirmBtn = document.getElementById('btn-modal-confirm');
       confirmBtn.disabled = true;
       confirmBtn.innerHTML = '<span>⏳ Bajarilmoqda...</span>';
 
-      if (userState.currentAction === 'stars') {
-        let targetUser = userState.recipientType === 'self' ? userState.username : document.getElementById('stars-target-user-input').value.trim().replace('@', '');
-        showToast("Stars yetkazilmoqda...", "⏳");
+      const apiUrl = await ensureApiUrl();
+      if (!apiUrl) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+        showToast("⚠️ Server bilan aloqa yo'q. Qaytadan urinib ko'ring.", "⚠️");
+        return;
+      }
 
-        if (prices.api) {
-          try {
-            const res = await fetch(`${prices.api}/api/buy_stars`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                user_id: userState.userId,
-                stars: userState.selectedStars,
-                target_username: targetUser
-              })
-            });
-            const data = await res.json();
-            if (data && data.success) {
-              userState.balance = data.new_balance;
-              localStorage.setItem('user_balance', data.new_balance);
-              renderDynamicPrices();
-              closeConfirmModal();
-              showToast("🎉 Stars muvaffaqiyatli yetkazildi!", "✅");
-              fetchFreshUserData();
-              return;
-            } else if (data && data.error === 'subscription_required') {
-              closeConfirmModal();
-              showMandatorySubModal(data.unsubscribed || []);
-              showToast("Avval homiy kanallarga a'zo bo'ling! ⚠️", "⚠️");
-              return;
-            } else if (data && data.error === 'insufficient_balance') {
-              closeConfirmModal();
-              openDepositModal(data.missing);
-              return;
-            }
-          } catch (e) {}
+      if (userState.currentAction === 'stars') {
+        let targetUser = userState.recipientType === 'self' 
+          ? userState.username 
+          : document.getElementById('stars-target-user-input').value.trim().replace('@', '');
+
+        if (!targetUser) {
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+          showToast("Qabul qiluvchi username kiritilmadi! ⚠️", "⚠️");
+          return;
         }
 
-        userState.balance -= userState.selectedStarsPrice;
-        localStorage.setItem('user_balance', userState.balance);
-        renderDynamicPrices();
-        closeConfirmModal();
-        const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
-        const deepLink = `https://t.me/${botUser}?start=stars_${userState.selectedStars}_${targetUser}`;
-        setTimeout(() => {
-          if (tg?.openTelegramLink) tg.openTelegramLink(deepLink);
-          else window.location.href = deepLink;
-        }, 200);
+        showToast("Stars yetkazilmoqda...", "⏳");
+
+        try {
+          const res = await fetch(`${apiUrl}/api/buy_stars`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: userState.userId,
+              stars: userState.selectedStars,
+              target_username: targetUser
+            })
+          });
+          const data = await res.json();
+
+          if (data && data.success) {
+            userState.balance = data.new_balance;
+            localStorage.setItem('user_balance', data.new_balance);
+            renderDynamicPrices();
+            closeConfirmModal();
+            playSound('success');
+            triggerHaptic('success');
+            showToast(`🎉 ${userState.selectedStars} Stars @${targetUser} ga muvaffaqiyatli yetkazildi!`, "✅");
+            fetchFreshUserData(true);
+            return;
+          } else if (data && data.error === 'subscription_required') {
+            closeConfirmModal();
+            showMandatorySubModal(data.unsubscribed || []);
+            showToast("Avval homiy kanallarga a'zo bo'ling! ⚠️", "⚠️");
+            return;
+          } else if (data && data.error === 'insufficient_balance') {
+            closeConfirmModal();
+            userState.balance = data.balance;
+            localStorage.setItem('user_balance', data.balance);
+            renderDynamicPrices();
+            showToast(`⚠️ Balansingiz yetarli emas! Mavjud: ${data.balance.toLocaleString('uz-UZ')} so'm`, "⚠️");
+            openDepositModal(data.missing);
+            return;
+          } else {
+            showToast(`⚠️ Xatolik: ${data.error || "Xarid amalga oshmadi"}`, "❌");
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+            return;
+          }
+        } catch (err) {
+          showToast("⚠️ Tarmoq xatosi yoki server javob bermadi.", "❌");
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+          return;
+        }
 
       } else if (userState.currentAction === 'premium') {
         let targetUser = userState.premRecipientType === 'self'
           ? userState.username
           : (document.getElementById('prem-target-user-input').value.trim().replace('@', '') || userState.username);
-        showToast("Premium faollashtirilmoqda...", "⏳");
 
-        if (prices.api) {
-          try {
-            const res = await fetch(`${prices.api}/api/buy_premium`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                user_id: userState.userId,
-                months: userState.premiumMonths,
-                target_username: targetUser
-              })
-            });
-            const data = await res.json();
-            if (data && data.success) {
-              userState.balance = data.new_balance;
-              localStorage.setItem('user_balance', data.new_balance);
-              renderDynamicPrices();
-              closeConfirmModal();
-              showToast("🎉 Premium faollashtirildi!", "✅");
-              fetchFreshUserData();
-              return;
-            } else if (data && data.error === 'subscription_required') {
-              closeConfirmModal();
-              showMandatorySubModal(data.unsubscribed || []);
-              showToast("Avval homiy kanallarga a'zo bo'ling! ⚠️", "⚠️");
-              return;
-            } else if (data && data.error === 'insufficient_balance') {
-              closeConfirmModal();
-              openDepositModal(data.missing);
-              return;
-            }
-          } catch (e) {}
+        if (!targetUser) {
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+          showToast("Qabul qiluvchi username kiritilmadi! ⚠️", "⚠️");
+          return;
         }
 
-        userState.balance -= userState.premiumPrice;
-        localStorage.setItem('user_balance', userState.balance);
-        renderDynamicPrices();
-        closeConfirmModal();
-        const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
-        const deepLink = `https://t.me/${botUser}?start=prem_${userState.premiumMonths}_${targetUser}`;
-        setTimeout(() => {
-          if (tg?.openTelegramLink) tg.openTelegramLink(deepLink);
-          else window.location.href = deepLink;
-        }, 200);
+        showToast("Premium faollashtirilmoqda...", "⏳");
+
+        try {
+          const res = await fetch(`${apiUrl}/api/buy_premium`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: userState.userId,
+              months: userState.premiumMonths,
+              target_username: targetUser
+            })
+          });
+          const data = await res.json();
+
+          if (data && data.success) {
+            userState.balance = data.new_balance;
+            localStorage.setItem('user_balance', data.new_balance);
+            renderDynamicPrices();
+            closeConfirmModal();
+            playSound('success');
+            triggerHaptic('success');
+            showToast(`🎉 ${userState.premiumMonths} oylik Premium @${targetUser} ga muvaffaqiyatli faollashtirildi!`, "✅");
+            fetchFreshUserData(true);
+            return;
+          } else if (data && data.error === 'subscription_required') {
+            closeConfirmModal();
+            showMandatorySubModal(data.unsubscribed || []);
+            showToast("Avval homiy kanallarga a'zo bo'ling! ⚠️", "⚠️");
+            return;
+          } else if (data && data.error === 'insufficient_balance') {
+            closeConfirmModal();
+            userState.balance = data.balance;
+            localStorage.setItem('user_balance', data.balance);
+            renderDynamicPrices();
+            showToast(`⚠️ Balansingiz yetarli emas! Mavjud: ${data.balance.toLocaleString('uz-UZ')} so'm`, "⚠️");
+            openDepositModal(data.missing);
+            return;
+          } else {
+            showToast(`⚠️ Xatolik: ${data.error || "Xarid amalga oshmadi"}`, "❌");
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+            return;
+          }
+        } catch (err) {
+          showToast("⚠️ Tarmoq xatosi yoki server javob bermadi.", "❌");
+          confirmBtn.disabled = false;
+          confirmBtn.innerHTML = '<span>Tasdiqlash ✅</span>';
+          return;
+        }
       }
     }
 
@@ -2389,9 +2457,10 @@
       const orderToCancel = currentOrderId;
       showToast("Chek bekor qilinmoqda...", "⏳");
 
-      if (prices.api) {
+      const apiUrl = await ensureApiUrl();
+      if (apiUrl) {
         try {
-          await fetch(`${prices.api}/api/cancel_order`, {
+          await fetch(`${apiUrl}/api/cancel_order`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2494,9 +2563,10 @@
       triggerHaptic('success');
       showToast("To'lov cheki tayyorlanmoqda...", "⏳");
 
-      if (prices.api) {
+      const apiUrl = await ensureApiUrl();
+      if (apiUrl) {
         try {
-          const res = await fetch(`${prices.api}/api/create_deposit`, {
+          const res = await fetch(`${apiUrl}/api/create_deposit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -2526,12 +2596,7 @@
       } else {
         btn.disabled = false;
         btn.innerHTML = origText;
-        const botUser = (prices.bot || 'uzmfzstarsbot').replace('@', '');
-        const deepLink = `https://t.me/${botUser}?start=dep_${depositAmount}`;
-        setTimeout(() => {
-          if (tg?.openTelegramLink) tg.openTelegramLink(deepLink);
-          else window.location.href = deepLink;
-        }, 200);
+        showToast("⚠️ Server bilan aloqa yo'q. Qaytadan urinib ko'ring.", "❌");
       }
     }
 
@@ -2598,9 +2663,11 @@
     }
 
     async function checkReceiptStatus(orderId) {
-      if (!orderId || !prices.api) return;
+      if (!orderId) return;
+      const apiUrl = await ensureApiUrl();
+      if (!apiUrl) return;
       try {
-        const res = await fetch(`${prices.api}/api/check_order?order_id=${orderId}&_t=${Date.now()}`, {
+        const res = await fetch(`${apiUrl}/api/check_order?order_id=${orderId}&_t=${Date.now()}`, {
           cache: 'no-store',
           headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
         });
@@ -2678,11 +2745,12 @@
     async function loadLeaderboard() {
       const listEl = document.getElementById('ranking-list');
       const podiumSection = document.getElementById('podium-section');
-      if (!prices.api) return;
+      const apiUrl = await ensureApiUrl();
+      if (!apiUrl) return;
 
       try {
         const uid = userState.userId || 0;
-        const res = await fetch(`${prices.api}/api/top_spenders?user_id=${uid}&period=${currentRankingPeriod}&_t=${Date.now()}`, {
+        const res = await fetch(`${apiUrl}/api/top_spenders?user_id=${uid}&period=${currentRankingPeriod}&_t=${Date.now()}`, {
           cache: 'no-store',
           headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
         });
@@ -3446,9 +3514,11 @@
 
     // 18. Jonli Ma'lumotlarni API orqali olish (Doimiy Keshdan himoyalangan)
     async function fetchFreshUserData(manual = false) {
-      if (!prices.api || !userState.userId) return;
+      if (!userState.userId) return;
+      const apiUrl = await ensureApiUrl();
+      if (!apiUrl) return;
       try {
-        const res = await fetch(`${prices.api}/api/user_info?user_id=${userState.userId}&_t=${Date.now()}`, {
+        const res = await fetch(`${apiUrl}/api/user_info?user_id=${userState.userId}&_t=${Date.now()}`, {
           cache: 'no-store',
           headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
         });
@@ -3547,7 +3617,8 @@
         btn.innerHTML = '<span>Tekshirilmoqda... ⏳</span>';
       }
       try {
-        const res = await fetch(`${prices.api}/api/check_sub?user_id=${userState.userId}&_t=${Date.now()}`, {
+        const apiUrl = await ensureApiUrl();
+        const res = await fetch(`${apiUrl}/api/check_sub?user_id=${userState.userId}&_t=${Date.now()}`, {
           cache: 'no-store',
           headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
         });
@@ -3573,7 +3644,7 @@
     }
 
     // 19. Start & Initialization
-    function loadDynamicData() {
+    async function loadDynamicData() {
       const urlParams = new URLSearchParams(window.location.search);
 
       if (urlParams.has('star_price')) {
@@ -3581,13 +3652,14 @@
         if (!isNaN(sp) && sp > 0) userState.starPrice = sp;
       }
 
-      // Kesh/URL muammosini yo'qotish: Avvalgi saqlangan eng so'nggi real balansni yuklash
+      // Kesh/URL muammosini yo'qotish: Dastlabki qiymat
+      if (urlParams.has('bal')) {
+        const b = parseInt(urlParams.get('bal'));
+        if (!isNaN(b)) userState.balance = b;
+      }
       const savedBal = localStorage.getItem('user_balance');
       if (savedBal !== null && !isNaN(parseInt(savedBal))) {
         userState.balance = parseInt(savedBal);
-      } else if (urlParams.has('bal')) {
-        const b = parseInt(urlParams.get('bal'));
-        if (!isNaN(b)) userState.balance = b;
       }
 
       if (urlParams.has('uid')) {
@@ -3613,6 +3685,7 @@
       }
 
       renderDynamicPrices();
+      await ensureApiUrl();
       fetchFreshUserData();
       loadLeaderboard();
     }
@@ -3745,10 +3818,11 @@
       resMsg.innerHTML = '<span class="text-amber-400 animate-pulse">Baraban aylanmoqda... ⏳</span>';
 
       try {
+        const apiUrl = await ensureApiUrl();
         const username = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user)
           ? (window.Telegram.WebApp.initDataUnsafe.user.username || window.Telegram.WebApp.initDataUnsafe.user.first_name || "")
           : "";
-        const res = await fetch(`${prices.api}/api/spin_wheel`, {
+        const res = await fetch(`${apiUrl}/api/spin_wheel`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userState.userId, username: username })
@@ -3876,7 +3950,8 @@
       playSound('click');
 
       try {
-        const res = await fetch(`${prices.api}/api/redeem_promo`, {
+        const apiUrl = await ensureApiUrl();
+        const res = await fetch(`${apiUrl}/api/redeem_promo`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userState.userId, code: code })
