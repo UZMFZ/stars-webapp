@@ -524,19 +524,19 @@
         <button onclick="setRankingPeriod('all')" id="rank-tab-all" class="flex-1 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white" data-i18n="all_time">Hammasi</button>
       </div>
 
-      <!-- OLYMPIC PODIUM (Image 2 ga 100% mos shohsupa) -->
-      <div id="podium-section" class="pt-4 pb-2">
+      <!-- OLYMPIC PODIUM (Image 2 ga 100% mos shohsupa - faqat xaridlar bo'lganda ko'rinadi) -->
+      <div id="podium-section" class="hidden pt-4 pb-2">
         <div class="grid grid-cols-3 gap-2 items-end">
           
           <!-- 2-O'rin (Kumush) -->
           <div class="text-center space-y-1">
             <div class="relative inline-block">
               <div class="w-14 h-14 rounded-full bg-slate-800 border-2 border-slate-400/60 flex items-center justify-center font-black text-lg text-white mx-auto shadow-md" id="podium-2-avatar">
-                M
+                -
               </div>
               <span class="absolute -bottom-1 -right-1 bg-slate-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black border border-white/20">2</span>
             </div>
-            <div class="font-bold text-xs text-white truncate px-1" id="podium-2-name">Mijoz</div>
+            <div class="font-bold text-xs text-white truncate px-1" id="podium-2-name">-</div>
             <div class="font-black font-mono text-[11px] text-amber-400" id="podium-2-sum">0 so'm</div>
             <div class="text-[9px] text-gray-400" id="podium-2-orders">0 buyurtma</div>
             <!-- Shohsupa ustuni 2 -->
@@ -549,11 +549,11 @@
           <div class="text-center space-y-1">
             <div class="relative inline-block">
               <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-600 to-yellow-300 border-2 border-amber-300 flex items-center justify-center font-black text-xl text-gray-950 mx-auto shadow-xl shadow-amber-500/25 ring-4 ring-amber-500/20" id="podium-1-avatar">
-                S
+                -
               </div>
               <span class="absolute -bottom-1 -right-1 bg-amber-400 text-gray-950 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black border border-white/20">1</span>
             </div>
-            <div class="font-black text-xs text-amber-300 truncate px-1" id="podium-1-name">Sarvar</div>
+            <div class="font-black text-xs text-amber-300 truncate px-1" id="podium-1-name">-</div>
             <div class="font-black font-mono text-xs text-amber-300" id="podium-1-sum">0 so'm</div>
             <div class="text-[9px] text-gray-300" id="podium-1-orders">0 buyurtma</div>
             <!-- Shohsupa ustuni 1 -->
@@ -566,11 +566,11 @@
           <div class="text-center space-y-1">
             <div class="relative inline-block">
               <div class="w-14 h-14 rounded-full bg-orange-950 border-2 border-amber-700/60 flex items-center justify-center font-black text-lg text-amber-200 mx-auto shadow-md" id="podium-3-avatar">
-                J
+                -
               </div>
               <span class="absolute -bottom-1 -right-1 bg-amber-800 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-black border border-white/20">3</span>
             </div>
-            <div class="font-bold text-xs text-white truncate px-1" id="podium-3-name">Mijoz</div>
+            <div class="font-bold text-xs text-white truncate px-1" id="podium-3-name">-</div>
             <div class="font-black font-mono text-[11px] text-amber-400" id="podium-3-sum">0 so'm</div>
             <div class="text-[9px] text-gray-400" id="podium-3-orders">0 buyurtma</div>
             <!-- Shohsupa ustuni 3 -->
@@ -2002,6 +2002,7 @@
 
     async function loadLeaderboard() {
       const listEl = document.getElementById('ranking-list');
+      const podiumSection = document.getElementById('podium-section');
       if (!prices.api) return;
 
       try {
@@ -2009,17 +2010,44 @@
         const res = await fetch(`${prices.api}/api/top_spenders?user_id=${uid}&period=${currentRankingPeriod}`);
         const data = await res.json();
         if (data && data.success) {
+          // Reset podium elements helper
+          const resetPodiumSlot = (num) => {
+            const elName = document.getElementById(`podium-${num}-name`);
+            const elSum = document.getElementById(`podium-${num}-sum`);
+            const elOrders = document.getElementById(`podium-${num}-orders`);
+            const elAvatar = document.getElementById(`podium-${num}-avatar`);
+            if (elName) elName.innerText = '-';
+            if (elSum) elSum.innerText = "0 so'm";
+            if (elOrders) elOrders.innerText = '0 buyurtma';
+            if (elAvatar) elAvatar.innerText = '-';
+          };
+          [1, 2, 3].forEach(resetPodiumSlot);
+
           // My stats
-          if (data.my_stats) {
-            document.getElementById('my-rank-num').innerText = data.my_stats.rank || '-';
+          if (data.my_stats && data.my_stats.rank) {
+            document.getElementById('my-rank-num').innerText = data.my_stats.rank;
             document.getElementById('my-rank-title').innerText = `${data.my_stats.rank}-o'rinda (${data.my_stats.order_count} ta xarid)`;
             document.getElementById('my-rank-spent').innerText = `${data.my_stats.total_spent.toLocaleString('uz-UZ')} so'm`;
+          } else {
+            document.getElementById('my-rank-num').innerText = '-';
+            document.getElementById('my-rank-title').innerText = 'Hali xarid qilmadingiz';
+            document.getElementById('my-rank-spent').innerText = "0 so'm";
           }
 
           if (!data.top || data.top.length === 0) {
-            listEl.innerHTML = `<div class="glass-panel rounded-2xl p-6 text-center text-xs text-gray-400">Hozircha xaridlar mavjud emas. Birinchi bo'ling! 🚀</div>`;
+            if (podiumSection) podiumSection.classList.add('hidden');
+            listEl.innerHTML = `
+              <div class="glass-panel rounded-3xl p-6 text-center text-xs text-gray-400 border border-white/10 space-y-1">
+                <span class="text-3xl block mb-2">⏳</span>
+                <span class="font-black text-sm text-white block">Ushbu davrda hali hech kim xarid qilmadi</span>
+                <p class="text-[11px] text-gray-400">Reytingda 1-o'rinni egallash uchun birinchi bo'lib xarid qiling! 🚀</p>
+              </div>
+            `;
             return;
           }
+
+          // We have top spenders! Show podium
+          if (podiumSection) podiumSection.classList.remove('hidden');
 
           // Top 1, 2, 3 podium
           if (data.top[0]) {
@@ -2042,34 +2070,38 @@
           }
 
           // 4th+ list (Matching Image 2)
-          let html = '';
-          data.top.slice(3).forEach((u, idx) => {
-            const rank = idx + 4;
-            const isMe = u.telegram_id === userState.userId;
-            const meBadge = isMe ? ' <span class="text-[9px] bg-amber-500/25 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-black">Siz</span>' : '';
-            const borderCls = isMe ? 'border-amber-500/60 bg-amber-500/10' : 'border-white/10 bg-gray-900/40';
+          if (data.top.length <= 3) {
+            listEl.innerHTML = '';
+          } else {
+            let html = '';
+            data.top.slice(3).forEach((u, idx) => {
+              const rank = idx + 4;
+              const isMe = u.telegram_id === userState.userId;
+              const meBadge = isMe ? ' <span class="text-[9px] bg-amber-500/25 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-black">Siz</span>' : '';
+              const borderCls = isMe ? 'border-amber-500/60 bg-amber-500/10' : 'border-white/10 bg-gray-900/40';
 
-            html += `
-              <div class="glass-panel rounded-2xl p-3.5 border ${borderCls} flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                  <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-black font-mono text-gray-300">
-                    ${rank}
-                  </div>
-                  <div>
-                    <div class="flex items-center space-x-1.5">
-                      <span class="text-xs font-bold text-white">${u.name}</span>
-                      ${meBadge}
+              html += `
+                <div class="glass-panel rounded-2xl p-3.5 border ${borderCls} flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-xs font-black font-mono text-gray-300">
+                      ${rank}
                     </div>
-                    <span class="text-[10px] text-gray-400">${u.order_count} buyurtma</span>
+                    <div>
+                      <div class="flex items-center space-x-1.5">
+                        <span class="text-xs font-bold text-white">${u.name}</span>
+                        ${meBadge}
+                      </div>
+                      <span class="text-[10px] text-gray-400">${u.order_count} buyurtma</span>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-xs font-black font-mono text-amber-400">${u.total_spent.toLocaleString('uz-UZ')} so'm</span>
                   </div>
                 </div>
-                <div class="text-right">
-                  <span class="text-xs font-black font-mono text-amber-400">${u.total_spent.toLocaleString('uz-UZ')} so'm</span>
-                </div>
-              </div>
-            `;
-          });
-          listEl.innerHTML = html;
+              `;
+            });
+            listEl.innerHTML = html;
+          }
         }
       } catch (e) {}
     }
@@ -2372,6 +2404,7 @@
 
       renderDynamicPrices();
       fetchFreshUserData();
+      loadLeaderboard();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
