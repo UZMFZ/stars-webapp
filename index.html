@@ -3784,7 +3784,7 @@
       if (pEarn) pEarn.innerText = `${(stats.total_earned || 0).toLocaleString('uz-UZ')} so'm`;
 
       const inp = document.getElementById('ref-link-input');
-      const botU = (prices.bot || 'uzmfz_bot').replace('@', '');
+      const botU = (prices.bot || 'uzmfzstarsbot').replace('@', '');
       if (inp) inp.value = `https://t.me/${botU}?start=ref_${userState.userId}`;
     }
 
@@ -3794,7 +3794,7 @@
       const modal = document.getElementById('referral-modal');
       if (modal) modal.classList.remove('hidden');
       const inp = document.getElementById('ref-link-input');
-      const botU = (prices.bot || 'uzmfz_bot').replace('@', '');
+      const botU = (prices.bot || 'uzmfzstarsbot').replace('@', '');
       if (inp) inp.value = `https://t.me/${botU}?start=ref_${userState.userId}`;
       if (userState.referralStats) updateReferralUI(userState.referralStats);
     }
