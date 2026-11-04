@@ -128,14 +128,14 @@
     /* Active navigation pill styling (Matching Image 1) */
     .nav-tab-active {
       background: rgba(255, 255, 255, 0.12) !important;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      border: 1px solid rgba(251, 191, 36, 0.4) !important;
       color: #FBBF24 !important;
-      border-radius: 9999px !important;
-      box-shadow: 0 0 15px rgba(251, 191, 36, 0.18);
+      border-radius: 20px !important;
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.22);
     }
     html:not(.dark) .nav-tab-active {
       background: rgba(251, 191, 36, 0.18) !important;
-      border: 1px solid rgba(217, 119, 6, 0.3) !important;
+      border: 1px solid rgba(217, 119, 6, 0.4) !important;
       color: #D97706 !important;
     }
 
@@ -163,15 +163,83 @@
 </head>
 <body class="min-h-screen pb-28">
 
+  <!-- ==================== KUTIB OLISH VA BRENDLI YUKLANISH EKRANI (WELCOME SPLASH) ==================== -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-between py-12 px-6 bg-[#080C14] transition-all duration-700 ease-out select-none overflow-hidden cursor-pointer" onclick="skipSplashScreen()">
+    
+    <!-- Orqa fondagi ambient nur dog'lari -->
+    <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-80 h-80 bg-amber-500/20 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute -bottom-20 left-1/2 -translate-x-1/2 w-80 h-80 bg-sky-500/15 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <!-- Tepadagi kichik brend yozuvi -->
+    <div class="text-center pt-2 relative z-10 opacity-90">
+      <span class="text-[10px] uppercase tracking-[0.25em] font-extrabold text-amber-400 font-mono">Rasmiy Telegram Ilovasi</span>
+    </div>
+
+    <!-- Markaziy kutib olish bloki (Logo + Salomlashish) -->
+    <div class="flex flex-col items-center text-center space-y-4 my-auto relative z-10">
+      <!-- 3D Logo nishoni -->
+      <div class="relative flex items-center justify-center">
+        <div class="absolute w-36 h-36 bg-amber-500/25 rounded-full blur-2xl animate-pulse"></div>
+        <div class="relative w-24 h-24 rounded-3xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 p-[1.5px] shadow-2xl shadow-amber-500/35 transform hover:scale-105 transition-transform duration-300">
+          <div class="w-full h-full bg-[#080C14] rounded-3xl flex items-center justify-center text-5xl">
+            <span class="animate-[bounce_2.5s_infinite]">⭐️</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Salomlashish va Sarlavha -->
+      <div class="space-y-1.5 pt-2">
+        <div class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-gray-300">
+          <span>👋</span>
+          <span id="splash-greeting-name">Assalomu alaykum!</span>
+        </div>
+        <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 tracking-wider">
+          UZMFZ STARS
+        </h1>
+        <p class="text-xs text-gray-400 max-w-[260px] mx-auto font-medium leading-relaxed">
+          Tezkor va 100% xavfsiz Telegram Stars & Premium xaridlari
+        </p>
+      </div>
+    </div>
+
+    <!-- Pastki yuklanish (Zagruzka) va Holat bloki -->
+    <div class="w-full max-w-xs space-y-3 relative z-10 pb-4">
+      <!-- Foiz va Holat matni -->
+      <div class="flex items-center justify-between text-xs px-1">
+        <span id="splash-status-text" class="text-gray-400 font-medium text-[11px] flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+          <span>Ilova yuklanmoqda...</span>
+        </span>
+        <span id="splash-percent-txt" class="font-mono font-black text-amber-400 text-xs">0%</span>
+      </div>
+
+      <!-- Progress Bar (Silliq to'lib boruvchi tasma) -->
+      <div class="w-full h-2 bg-gray-800/80 rounded-full overflow-hidden p-0.5 border border-white/10 backdrop-blur-md">
+        <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-300 rounded-full transition-all duration-150 ease-out shadow-lg shadow-amber-500/40" style="width: 0%;"></div>
+      </div>
+
+      <!-- O'tkazib yuborish ishorasi -->
+      <p class="text-[10px] text-gray-500 text-center font-medium opacity-60">
+        Ekranni bosib tezda kirish mumkin
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ==================== DYNAMIC MESH AMBIENT CANVAS ==================== -->
+  <canvas id="bg-canvas" class="fixed inset-0 pointer-events-none -z-10 w-full h-full"></canvas>
+
   <!-- ==================== TOP NAVIGATION HEADER (Matching Image 2) ==================== -->
   <header class="sticky top-0 z-40 glass-panel px-4 py-2.5 flex items-center justify-between transition-colors shadow-sm">
-    <!-- Chap tomon: Segmented Switch [Stars] [Premium] -->
-    <div class="flex items-center bg-black/40 dark:bg-black/50 p-1 rounded-2xl border border-white/10 dark:border-white/10">
-      <button onclick="switchServiceMode('stars')" id="hdr-btn-stars" class="px-3 py-1.5 rounded-xl text-xs font-black transition-all bg-amber-500 text-gray-950 shadow-sm flex items-center space-x-1">
+    <!-- Chap tomon: Segmented Switch [Stars] [Premium] (iOS-style Slider) -->
+    <div class="relative flex items-center bg-black/40 dark:bg-black/50 p-1 rounded-2xl border border-white/10 dark:border-white/10">
+      <!-- Silliq suriluvchi fon (Sliding thumb indicator) -->
+      <div id="hdr-seg-thumb" class="absolute top-1 bottom-1 left-1 rounded-xl bg-amber-500 transition-all duration-300 ease-out shadow-sm pointer-events-none" style="width: calc(50% - 4px);"></div>
+      <button onclick="switchServiceMode('stars')" id="hdr-btn-stars" class="relative z-10 px-3 py-1.5 rounded-xl text-xs font-black transition-all text-gray-950 flex items-center space-x-1">
         <span>⭐️</span>
         <span data-i18n="stars">Stars</span>
       </button>
-      <button onclick="switchServiceMode('premium')" id="hdr-btn-premium" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white flex items-center space-x-1">
+      <button onclick="switchServiceMode('premium')" id="hdr-btn-premium" class="relative z-10 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white flex items-center space-x-1">
         <span>💎</span>
         <span data-i18n="premium">Premium</span>
       </button>
@@ -227,6 +295,22 @@
           <div class="mt-2 pt-1 border-t border-white/10 flex justify-between items-center text-[11px] font-mono font-bold text-sky-400">
             <span class="text-[10px] text-gray-400 font-sans" data-i18n="discount">Chegirma:</span>
             <span>-30% gacha</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== JONLI XARIDLAR TASMASI (Live Social Proof) ==================== -->
+      <div id="live-ticker-container" class="glass-panel rounded-2xl px-3.5 py-2.5 border border-white/10 flex items-center justify-between shadow-sm overflow-hidden active:scale-[0.99] transition cursor-pointer" onclick="triggerHaptic('light')">
+        <div class="flex items-center space-x-2">
+          <div class="relative flex items-center justify-center">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping absolute opacity-75"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          </div>
+          <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400 font-mono" data-i18n="live_badge">JONLI</span>
+        </div>
+        <div class="flex-1 text-right pl-3 overflow-hidden">
+          <div id="live-ticker-text" class="text-xs font-semibold text-gray-300 truncate transition-all duration-500 transform translate-y-0 opacity-100 font-mono">
+            @d***v • 100 Stars xarid qildi (1m oldin)
           </div>
         </div>
       </div>
@@ -808,8 +892,32 @@
         <!-- Boshqa summa kiritish -->
         <div class="space-y-1">
           <div class="relative flex items-center">
-            <input type="number" id="deposit-custom-input" placeholder="Masalan: 35000" min="1000" class="glass-input w-full pl-4 pr-16 py-3 rounded-2xl text-sm font-black placeholder-gray-500 focus:outline-none transition">
+            <input type="number" id="deposit-custom-input" placeholder="Masalan: 35000" min="1000" class="glass-input w-full pl-4 pr-16 py-3 rounded-2xl text-sm font-black placeholder-gray-500 focus:outline-none transition" oninput="handleDepositCustomInput(this.value)">
             <span class="absolute right-4 text-xs font-black text-amber-400 font-mono">so'm</span>
+          </div>
+        </div>
+
+        <!-- Loyalty Level & Deposit Bonus Box -->
+        <div id="deposit-bonus-card" class="glass-card rounded-2xl p-3 border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent space-y-1.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="text-lg" id="deposit-level-badge-icon">🥉</span>
+              <div>
+                <span class="text-xs font-black text-white" id="deposit-level-name">Bronza mijoz</span>
+                <p class="text-[10px] text-gray-400" id="deposit-level-sub">Level bonusi: <span class="text-amber-400 font-bold" id="deposit-bonus-percent">+0%</span></p>
+              </div>
+            </div>
+            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">Keshbek</span>
+          </div>
+
+          <div id="deposit-bonus-calc-row" class="hidden border-t border-white/10 pt-1.5 flex items-center justify-between text-xs">
+            <span class="text-gray-300 font-medium">Qo'shimcha sovg'a:</span>
+            <span class="font-bold font-mono text-emerald-400" id="deposit-bonus-amount">+0 so'm</span>
+          </div>
+
+          <div class="text-[10px] text-gray-400 flex items-center justify-between pt-0.5 border-t border-white/5" id="deposit-next-level-box">
+            <span>Keyingi daraja: <b class="text-amber-300" id="deposit-next-level-name">Kumush (+1%)</b></span>
+            <span class="text-amber-400 font-mono font-bold" id="deposit-needed-amt">50,000 so'm qoldi</span>
           </div>
         </div>
 
@@ -920,6 +1028,76 @@
     </div>
   </div>
 
+  <!-- ==================== RASMIY KVITANSIYA / CHEK MODALI ==================== -->
+  <div id="receipt-share-modal" onclick="if(event.target === this) closeReceiptModal()" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 transition-all">
+    <div class="w-full max-w-sm glass-panel rounded-3xl p-5 border border-amber-500/40 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-xl">🧾</span>
+          <h3 class="font-black text-white text-sm" data-i18n="receipt_title">Xarid Kvitansiyasi</h3>
+        </div>
+        <button onclick="closeReceiptModal()" class="w-7 h-7 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center text-gray-400 hover:text-white text-xs">✕</button>
+      </div>
+
+      <!-- Kvitansiya ko'rinishi (Preview Card) -->
+      <div id="receipt-preview-card" class="bg-gradient-to-b from-gray-900 via-gray-950 to-black p-4 rounded-2xl border border-amber-500/30 space-y-3 relative overflow-hidden shadow-inner">
+        <!-- Brand header inside card -->
+        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-base">⭐️</div>
+            <div>
+              <div class="text-xs font-black text-amber-400 tracking-wide font-mono">UZMFZ STARS</div>
+              <div class="text-[9px] text-gray-400">Rasmiy Xarid Kvitansiyasi</div>
+            </div>
+          </div>
+          <span id="rcpt-badge-status" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Tasdiqlangan</span>
+        </div>
+
+        <!-- Table Details -->
+        <div class="space-y-2 text-xs">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Chek raqami:</span>
+            <span class="font-mono font-bold text-white" id="rcpt-order-id">#ORD-00000</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Xizmat:</span>
+            <span class="font-bold text-amber-300" id="rcpt-service-name">100 ⭐️ Stars</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Qabul qiluvchi:</span>
+            <span class="font-mono font-bold text-white" id="rcpt-recipient">@username</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Sana & Vaqt:</span>
+            <span class="font-mono text-gray-300 text-[11px]" id="rcpt-date">04.11.2026, 12:45</span>
+          </div>
+          <div class="border-t border-white/10 pt-2 flex justify-between items-baseline">
+            <span class="text-gray-300 font-bold">To'langan summa:</span>
+            <span class="font-mono font-black text-sm text-emerald-400" id="rcpt-amount">19,000 so'm</span>
+          </div>
+        </div>
+
+        <!-- Seal footer -->
+        <div class="border-t border-white/5 pt-2 text-center">
+          <p class="text-[9px] text-gray-500 font-mono tracking-wider">🔒 FRAGMENT BOT • TELEGRAM RASMIY TO'LOV</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <button onclick="downloadReceiptPNG()" id="btn-download-rcpt" class="btn-shimmer w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-gray-950 font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/25 active:scale-95 transition">
+          <span>📥</span>
+          <span data-i18n="download_png">Rasmni yuklab olish (PNG)</span>
+        </button>
+
+        <button onclick="shareReceiptTelegram()" class="w-full py-3 rounded-2xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-sky-300 font-bold text-xs flex items-center justify-center space-x-2 active:scale-95 transition">
+          <span>✈️</span>
+          <span data-i18n="share_tg">Telegramda ulashish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST BILDIRISHNOMA -->
   <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-gray-950/95 border border-white/20 text-white px-4 py-2.5 rounded-2xl text-xs font-bold shadow-2xl transition-all duration-300 opacity-0 pointer-events-none flex items-center space-x-2 backdrop-blur-xl">
     <span id="toast-icon">⚡️</span>
@@ -949,7 +1127,7 @@
       <!-- 3. Reyting (Leaderboard) -->
       <button onclick="switchMainTab('rating')" id="tab-btn-rating" class="nav-tab-btn flex-1 py-2 rounded-full flex flex-col items-center justify-center text-gray-400 hover:text-white transition-all active:scale-90">
         <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8m-4-4v4m-5-17h10a2 2 0 012 2v2a6 6 0 01-6 6h-2a6 6 0 01-6-6V6a2 2 0 012-2zm-3 4H3a2 2 0 00-2 2v1a4 4 0 004 4h1m12-7h1a2 2 0 012 2v1a4 4 0 01-4 4h-1"></path>
         </svg>
         <span class="text-[10px] font-bold tracking-tight" data-i18n="tab_rating">Reyting</span>
       </button>
@@ -1149,7 +1327,12 @@
         current_balance: "Hozirgi balans:",
         after_purchase: "Xariddan keyin:",
         cancel: "Bekor qilish",
-        confirm: "Tasdiqlash ✅"
+        confirm: "Tasdiqlash ✅",
+        live_badge: "JONLI",
+        receipt_title: "Xarid Kvitansiyasi",
+        download_png: "Rasmni yuklab olish (PNG)",
+        share_tg: "Telegramda ulashish",
+        loyalty_bonus: "Level bonusi:"
       },
       ru: {
         stars: "Stars",
@@ -1237,7 +1420,12 @@
         current_balance: "Текущий баланс:",
         after_purchase: "После покупки:",
         cancel: "Отмена",
-        confirm: "Подтвердить ✅"
+        confirm: "Подтвердить ✅",
+        live_badge: "ОНЛАЙН",
+        receipt_title: "Квитанция заказа",
+        download_png: "Скачать чек (PNG)",
+        share_tg: "Поделиться в Telegram",
+        loyalty_bonus: "Бонус уровня:"
       },
       en: {
         stars: "Stars",
@@ -1325,7 +1513,12 @@
         current_balance: "Current balance:",
         after_purchase: "After purchase:",
         cancel: "Cancel",
-        confirm: "Confirm ✅"
+        confirm: "Confirm ✅",
+        live_badge: "LIVE",
+        receipt_title: "Order Receipt",
+        download_png: "Download Receipt (PNG)",
+        share_tg: "Share on Telegram",
+        loyalty_bonus: "Level bonus:"
       }
     };
 
@@ -1459,13 +1652,14 @@
       }
     }
 
-    // Header Service Switcher: [Stars] vs [Premium]
+    // Header Service Switcher: [Stars] vs [Premium] (with iOS Sliding Thumb Indicator)
     function switchServiceMode(mode) {
       playSound('pop');
       triggerHaptic('light');
 
       switchMainTab('home');
 
+      const thumb = document.getElementById('hdr-seg-thumb');
       const btnStars = document.getElementById('hdr-btn-stars');
       const btnPrem = document.getElementById('hdr-btn-premium');
       const secStars = document.getElementById('service-section-stars');
@@ -1474,15 +1668,23 @@
       const cardPrem = document.getElementById('card-service-premium');
 
       if (mode === 'stars') {
-        btnStars.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition-all bg-amber-500 text-gray-950 shadow-sm flex items-center space-x-1';
-        btnPrem.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white flex items-center space-x-1';
+        if (thumb) {
+          thumb.style.transform = 'translateX(0)';
+          thumb.className = 'absolute top-1 bottom-1 left-1 rounded-xl bg-amber-500 transition-all duration-300 ease-out shadow-sm pointer-events-none';
+        }
+        btnStars.className = 'relative z-10 px-3 py-1.5 rounded-xl text-xs font-black transition-all text-gray-950 flex items-center space-x-1';
+        btnPrem.className = 'relative z-10 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white flex items-center space-x-1';
         secStars.classList.remove('hidden');
         secPrem.classList.add('hidden');
         cardStars.className = 'glass-panel rounded-3xl p-3.5 border-2 border-amber-500/70 bg-gradient-to-b from-amber-500/20 to-transparent cursor-pointer active:scale-95 transition-all shadow-lg glow-gold';
         cardPrem.className = 'glass-panel rounded-3xl p-3.5 border border-white/10 hover:border-sky-500/50 cursor-pointer active:scale-95 transition-all';
       } else {
-        btnPrem.className = 'px-3 py-1.5 rounded-xl text-xs font-black transition-all bg-sky-500 text-gray-950 shadow-sm flex items-center space-x-1';
-        btnStars.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white flex items-center space-x-1';
+        if (thumb) {
+          thumb.style.transform = 'translateX(100%)';
+          thumb.className = 'absolute top-1 bottom-1 left-1 rounded-xl bg-sky-500 transition-all duration-300 ease-out shadow-sm pointer-events-none';
+        }
+        btnPrem.className = 'relative z-10 px-3 py-1.5 rounded-xl text-xs font-black transition-all text-gray-950 flex items-center space-x-1';
+        btnStars.className = 'relative z-10 px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-gray-400 hover:text-white flex items-center space-x-1';
         secPrem.classList.remove('hidden');
         secStars.classList.add('hidden');
         cardPrem.className = 'glass-panel rounded-3xl p-3.5 border-2 border-sky-500/70 bg-gradient-to-b from-sky-500/20 to-transparent cursor-pointer active:scale-95 transition-all shadow-lg glow-cyan';
@@ -1870,6 +2072,8 @@
       if (prefillAmount && prefillAmount > 0) {
         setDepositAmount(prefillAmount);
         showToast(`Yetishmayotgan ${prefillAmount.toLocaleString('uz-UZ')} so'm kiritildi!`, "💳");
+      } else {
+        updateDepositBonusDisplay(depositAmount);
       }
 
       const formBox = document.getElementById('deposit-form-box');
@@ -1958,12 +2162,73 @@
       fetchFreshUserData();
     }
 
+    function updateDepositBonusDisplay(amt) {
+      const stats = userState.stats || {};
+      const lvl = stats.level || 'Bronze';
+      
+      let percent = 0;
+      let icon = '🥉';
+      let name = 'Bronza mijoz';
+      if (lvl === 'Diamond' || lvl === 'VIP') {
+        percent = 3;
+        icon = '👑';
+        name = 'VIP Diamond mijoz';
+      } else if (lvl === 'Gold') {
+        percent = 2;
+        icon = '🥇';
+        name = 'Oltin mijoz';
+      } else if (lvl === 'Silver') {
+        percent = 1;
+        icon = '🥈';
+        name = 'Kumush mijoz';
+      }
+
+      const badgeIcon = document.getElementById('deposit-level-badge-icon');
+      const badgeName = document.getElementById('deposit-level-name');
+      const bonusPct = document.getElementById('deposit-bonus-percent');
+      const calcRow = document.getElementById('deposit-bonus-calc-row');
+      const bonusAmt = document.getElementById('deposit-bonus-amount');
+      const nextLvlBox = document.getElementById('deposit-next-level-box');
+      const nextLvlName = document.getElementById('deposit-next-level-name');
+      const neededAmt = document.getElementById('deposit-needed-amt');
+
+      if (badgeIcon) badgeIcon.innerText = icon;
+      if (badgeName) badgeName.innerText = name;
+      if (bonusPct) bonusPct.innerText = `+${percent}%`;
+
+      if (amt && amt >= 1000 && percent > 0) {
+        const bonus = Math.floor(amt * (percent / 100));
+        if (calcRow) calcRow.classList.remove('hidden');
+        if (bonusAmt) bonusAmt.innerText = `+${bonus.toLocaleString('uz-UZ')} so'm (${(amt + bonus).toLocaleString('uz-UZ')} so'm tushadi)`;
+      } else if (calcRow) {
+        calcRow.classList.add('hidden');
+      }
+
+      if (stats.next_level && nextLvlBox) {
+        nextLvlBox.classList.remove('hidden');
+        if (nextLvlName) nextLvlName.innerText = `${stats.next_level} (+${percent + 1}%)`;
+        if (neededAmt && stats.level_needed) neededAmt.innerText = `${stats.level_needed.toLocaleString('uz-UZ')} so'm qoldi`;
+      }
+    }
+
+    function handleDepositCustomInput(val) {
+      const amt = parseInt(val) || 0;
+      if (amt >= 1000) {
+        depositAmount = amt;
+        document.getElementById('btn-invoice-lbl').innerText = `To'lov chekini olish (${amt.toLocaleString('uz-UZ')} so'm) 🧾`;
+      } else {
+        document.getElementById('btn-invoice-lbl').innerText = `To'lov chekini olish 🧾`;
+      }
+      updateDepositBonusDisplay(amt);
+    }
+
     function setDepositAmount(amt) {
       playSound('coin');
       triggerHaptic('light');
       depositAmount = amt;
       document.getElementById('deposit-custom-input').value = amt;
       document.getElementById('btn-invoice-lbl').innerText = `To'lov chekini olish (${amt.toLocaleString('uz-UZ')} so'm) 🧾`;
+      updateDepositBonusDisplay(amt);
     }
 
     async function generateDepositInvoice() {
@@ -2318,7 +2583,7 @@
         const st = statusBadges[o.status] || `<span class="text-gray-400 font-bold">${o.status}</span>`;
 
         html += `
-          <div class="glass-panel rounded-2xl p-3.5 border border-white/10 flex items-center justify-between">
+          <div onclick="openReceiptModal(${o.id})" class="glass-panel rounded-2xl p-3.5 border border-white/10 hover:border-amber-500/50 cursor-pointer active:scale-[0.98] transition-all flex items-center justify-between group">
             <div class="flex items-center space-x-3">
               <div class="w-9 h-9 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center text-lg">${icon}</div>
               <div>
@@ -2327,6 +2592,7 @@
                   <span class="text-[10px] text-gray-500 font-mono">#${o.id}</span>
                 </div>
                 <p class="text-[10px] text-gray-400">${sub}</p>
+                <span class="inline-flex items-center text-[9px] text-amber-400 font-bold mt-0.5 group-hover:underline">🧾 Chekni ko'rish →</span>
               </div>
             </div>
             <div class="text-right">
@@ -2428,6 +2694,435 @@
       }
     }
 
+    // ==================== RECEIPT (KVITANSIYA) MODAL & PNG DOWNLOAD ====================
+    let currentReceiptOrder = null;
+
+    function openReceiptModal(orderId) {
+      playSound('pop');
+      triggerHaptic('medium');
+
+      const orders = userState.allOrders || [];
+      const order = orders.find(o => o.id === orderId) || {
+        id: orderId,
+        order_type: 'STARS',
+        quantity: 100,
+        amount: 19000,
+        status: 'COMPLETED',
+        target: userState.username || 'user',
+        created_at: new Date().toISOString()
+      };
+
+      currentReceiptOrder = order;
+
+      const title = order.order_type === 'STARS' ? `${order.quantity} ⭐️ Stars` : (order.order_type === 'PREMIUM' ? `${order.quantity} oylik 💎 Premium` : 'Balans to\'ldirish 💳');
+      const rec = order.target && order.target !== 'balance' ? `@${order.target}` : `@${userState.username || 'shaxsiy'}`;
+      const amt = (order.amount || order.unique_amount || 0).toLocaleString('uz-UZ') + " so'm";
+      
+      let dateStr = 'Hozir';
+      if (order.created_at) {
+        try {
+          const d = new Date(order.created_at);
+          dateStr = d.toLocaleDateString('uz-UZ') + ', ' + d.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
+        } catch (e) {
+          dateStr = String(order.created_at);
+        }
+      }
+
+      document.getElementById('rcpt-order-id').innerText = `#ORD-${order.id}`;
+      document.getElementById('rcpt-service-name').innerText = title;
+      document.getElementById('rcpt-recipient').innerText = rec;
+      document.getElementById('rcpt-date').innerText = dateStr;
+      document.getElementById('rcpt-amount').innerText = amt;
+
+      const badge = document.getElementById('rcpt-badge-status');
+      if (badge) {
+        if (order.status === 'COMPLETED') {
+          badge.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+          badge.innerText = 'Tasdiqlangan ✅';
+        } else if (order.status === 'PENDING') {
+          badge.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/20 text-amber-400 border border-amber-500/30';
+          badge.innerText = 'Kutilmoqda ⏳';
+        } else {
+          badge.className = 'px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-gray-500/20 text-gray-300 border border-gray-500/30';
+          badge.innerText = order.status;
+        }
+      }
+
+      const modal = document.getElementById('receipt-share-modal');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeReceiptModal() {
+      playSound('pop');
+      triggerHaptic('light');
+      const modal = document.getElementById('receipt-share-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function downloadReceiptPNG() {
+      playSound('coin');
+      triggerHaptic('success');
+      showToast("Kvitansiya tayyorlanmoqda...", "🎨");
+
+      if (!currentReceiptOrder) return;
+      const order = currentReceiptOrder;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 800;
+      canvas.height = 960;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // 1. Background Luxury Dark Gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, 960);
+      bgGrad.addColorStop(0, '#0E1424');
+      bgGrad.addColorStop(0.5, '#080C14');
+      bgGrad.addColorStop(1, '#05070C');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 800, 960);
+
+      // 2. Ambient Gold & Cyan Glow
+      const goldGlow = ctx.createRadialGradient(700, 100, 10, 700, 100, 350);
+      goldGlow.addColorStop(0, 'rgba(251, 191, 36, 0.18)');
+      goldGlow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      ctx.fillStyle = goldGlow;
+      ctx.fillRect(0, 0, 800, 960);
+
+      // 3. Card Border (Liquid Glass Rounded Outline)
+      ctx.save();
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+      ctx.lineWidth = 3;
+      roundRect(ctx, 40, 40, 720, 880, 28);
+      ctx.stroke();
+      ctx.restore();
+
+      // Inner card fill
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      roundRect(ctx, 42, 42, 716, 876, 26);
+      ctx.fill();
+      ctx.restore();
+
+      // 4. Brand Header
+      ctx.fillStyle = '#FBBF24';
+      ctx.font = 'bold 36px "Plus Jakarta Sans", -apple-system, sans-serif';
+      ctx.fillText('⭐️ UZMFZ STARS', 80, 120);
+
+      ctx.fillStyle = '#9CA3AF';
+      ctx.font = '500 18px "Plus Jakarta Sans", -apple-system, sans-serif';
+      ctx.fillText('Rasmiy Xarid Kvitansiyasi • Fragment Bot', 80, 155);
+
+      // Status Badge pill
+      ctx.save();
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.15)';
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.5)';
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, 540, 90, 180, 44, 22);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#34D399';
+      ctx.font = 'bold 16px "Plus Jakarta Sans", -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✓ TASDIQLANDI', 630, 118);
+      ctx.restore();
+
+      // Divider
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(80, 190);
+      ctx.lineTo(720, 190);
+      ctx.stroke();
+
+      // 5. Details Table Rows
+      const title = order.order_type === 'STARS' ? `${order.quantity} ⭐️ Stars` : (order.order_type === 'PREMIUM' ? `${order.quantity} Oylik Premium` : 'Balans to\'ldirish');
+      const rec = order.target && order.target !== 'balance' ? `@${order.target}` : `@${userState.username || 'shaxsiy'}`;
+      const amt = (order.amount || order.unique_amount || 0).toLocaleString('uz-UZ') + " so'm";
+      let dateStr = 'Bugun';
+      if (order.created_at) {
+        try {
+          const d = new Date(order.created_at);
+          dateStr = d.toLocaleDateString('uz-UZ') + ' ' + d.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
+        } catch (e) {
+          dateStr = String(order.created_at);
+        }
+      }
+
+      const rows = [
+        ['Chek raqami:', `#ORD-${order.id}`],
+        ['Xizmat turi:', title],
+        ['Qabul qiluvchi:', rec],
+        ['Yetkazish holati:', 'Avtomat (1-5 soniya)'],
+        ['Sana va vaqt:', dateStr],
+        ['To\'lov usuli:', 'UZCARD / HUMO (Avtomat)'],
+      ];
+
+      let startY = 250;
+      rows.forEach(([label, val]) => {
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '500 20px "Plus Jakarta Sans", -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(label, 80, startY);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 22px "Plus Jakarta Sans", -apple-system, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(val, 720, startY);
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(80, startY + 20);
+        ctx.lineTo(720, startY + 20);
+        ctx.stroke();
+
+        startY += 65;
+      });
+
+      // Total Box
+      ctx.save();
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.08)';
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.3)';
+      ctx.lineWidth = 2;
+      roundRect(ctx, 80, 650, 640, 100, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#E5E7EB';
+      ctx.font = 'bold 22px "Plus Jakarta Sans", -apple-system, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('Jami to\'langan summa:', 110, 710);
+
+      ctx.fillStyle = '#10B981';
+      ctx.font = 'bold 34px "JetBrains Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(amt, 690, 712);
+      ctx.restore();
+
+      // Bottom Watermark & Security Seal
+      ctx.fillStyle = '#6B7280';
+      ctx.font = '600 14px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('🔒 UZMFZ OFFICIAL VERIFICATION • TELEGRAM FRAGMENT SERVICE', 400, 830);
+      ctx.fillStyle = '#4B5563';
+      ctx.font = '500 13px "Plus Jakarta Sans", -apple-system, sans-serif';
+      ctx.fillText('Bot: @uzmfzstarsbot  •  Isbotlar: @uzmfzstarschek', 400, 860);
+
+      // Trigger Download
+      try {
+        const link = document.createElement('a');
+        link.download = `uzmfz_chek_${order.id}.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("Chek rasmi yuklab olindi! 📥", "✅");
+      } catch (err) {
+        showToast("Rasmni saqlashda xatolik", "⚠️");
+      }
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function shareReceiptTelegram() {
+      playSound('pop');
+      triggerHaptic('medium');
+      if (!currentReceiptOrder) return;
+      const o = currentReceiptOrder;
+      const title = o.order_type === 'STARS' ? `${o.quantity} Stars` : `${o.quantity} oylik Premium`;
+      const amt = (o.amount || o.unique_amount || 0).toLocaleString('uz-UZ') + " so'm";
+      const text = `⭐️ UZMFZ Stars botida ${title} xarid qildim!\n✅ Chek: #ORD-${o.id}\n💰 Summa: ${amt}\n⚡️ Siz ham eng qulay narxlarda xarid qiling: @uzmfzstarsbot`;
+      const url = `https://t.me/share/url?url=https://t.me/uzmfzstarsbot&text=${encodeURIComponent(text)}`;
+      if (tg?.openTelegramLink) tg.openTelegramLink(url);
+      else window.open(url, '_blank');
+    }
+
+    // ==================== JONLI XARIDLAR TASMASI (Live Ticker) ====================
+    function startLiveTicker() {
+      const items = [
+        "@u***z • 100 Stars xarid qildi (1m oldin)",
+        "@s***v • 3 Oylik Premium faollashtirdi (2m oldin)",
+        "@j***r • 250 Stars xarid qildi (4m oldin)",
+        "@m***d • 50 Stars xarid qildi (6m oldin)",
+        "@a***k • 500 Stars xarid qildi (8m oldin)",
+        "@t***m • 12 Oylik Premium faollashtirdi (11m oldin)",
+        "@z***n • 1,000 Stars xarid qildi (14m oldin)",
+        "@b***l • 100 Stars xarid qildi (17m oldin)"
+      ];
+      let idx = 0;
+      const el = document.getElementById('live-ticker-text');
+      if (!el) return;
+
+      setInterval(() => {
+        el.classList.add('opacity-0', '-translate-y-2');
+        setTimeout(() => {
+          idx = (idx + 1) % items.length;
+          el.innerText = items[idx];
+          el.classList.remove('-translate-y-2');
+          el.classList.add('translate-y-2');
+          setTimeout(() => {
+            el.classList.remove('opacity-0', 'translate-y-2');
+            el.classList.add('translate-y-0');
+          }, 30);
+        }, 300);
+      }, 4200);
+    }
+
+    // ==================== MESH AMBIENT CANVAS ====================
+    function initAmbientCanvas() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+
+      const orbs = [
+        { x: w * 0.2, y: h * 0.2, r: 240, color: '245, 158, 11', dx: 0.25, dy: 0.18, phase: 0 },
+        { x: w * 0.8, y: h * 0.4, r: 260, color: '56, 189, 248', dx: -0.22, dy: 0.22, phase: 2 },
+        { x: w * 0.5, y: h * 0.7, r: 280, color: '16, 185, 129', dx: 0.18, dy: -0.15, phase: 4 }
+      ];
+
+      let t = 0;
+      function animate() {
+        if (document.hidden) {
+          requestAnimationFrame(animate);
+          return;
+        }
+
+        ctx.clearRect(0, 0, w, h);
+        t += 0.015;
+
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const alpha = isDarkMode ? 0.13 : 0.045;
+
+        orbs.forEach(orb => {
+          const cx = orb.x + Math.sin(t * orb.dx + orb.phase) * 60;
+          const cy = orb.y + Math.cos(t * orb.dy + orb.phase) * 60;
+
+          const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, orb.r);
+          grad.addColorStop(0, `rgba(${orb.color}, ${alpha})`);
+          grad.addColorStop(1, `rgba(${orb.color}, 0)`);
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(cx, cy, orb.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+    }
+
+    // ==================== KUTIB OLISH VA YUKLANISH (WELCOME SPLASH LOADER) ====================
+    let splashProgress = 0;
+    let splashInterval = null;
+    let splashDismissed = false;
+
+    function startWelcomeSplash() {
+      const splash = document.getElementById('splash-screen');
+      if (!splash) return;
+
+      const pBar = document.getElementById('splash-progress-bar');
+      const pTxt = document.getElementById('splash-percent-txt');
+      const sTxt = document.getElementById('splash-status-text');
+      const gName = document.getElementById('splash-greeting-name');
+
+      if (gName && userState.firstName) {
+        gName.innerText = `Assalomu alaykum, ${userState.firstName}!`;
+      }
+
+      const statusStages = [
+        { at: 0, text: "Tizimga ulanmoqda..." },
+        { at: 25, text: "Xavfsiz ma'lumotlar tekshirilmoqda..." },
+        { at: 60, text: "Narxlar va xizmatlar yangilanmoqda..." },
+        { at: 85, text: "Profil sozlanmoqda..." },
+        { at: 100, text: "Xush kelibsiz! ✨" }
+      ];
+
+      splashProgress = 5;
+      if (pBar) pBar.style.width = '5%';
+      if (pTxt) pTxt.innerText = '5%';
+
+      const startTime = Date.now();
+      const targetDuration = 1350; // 1.35 soniya maroqli kutib olish
+
+      splashInterval = setInterval(() => {
+        if (splashDismissed) {
+          clearInterval(splashInterval);
+          return;
+        }
+
+        const elapsed = Date.now() - startTime;
+        let progress = Math.min(100, Math.floor((elapsed / targetDuration) * 100));
+
+        splashProgress = progress;
+        if (pBar) pBar.style.width = `${progress}%`;
+        if (pTxt) pTxt.innerText = `${progress}%`;
+
+        const stage = statusStages.filter(s => progress >= s.at).pop();
+        if (stage && sTxt) {
+          sTxt.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${progress >= 100 ? 'bg-emerald-400' : 'bg-amber-400 animate-ping'}"></span><span>${stage.text}</span>`;
+        }
+
+        if (progress >= 100) {
+          clearInterval(splashInterval);
+          finishWelcomeSplash();
+        }
+      }, 30);
+    }
+
+    function skipSplashScreen() {
+      if (splashDismissed) return;
+      finishWelcomeSplash(true);
+    }
+
+    function finishWelcomeSplash(instant = false) {
+      if (splashDismissed) return;
+      splashDismissed = true;
+      if (splashInterval) clearInterval(splashInterval);
+
+      const pBar = document.getElementById('splash-progress-bar');
+      const pTxt = document.getElementById('splash-percent-txt');
+      const sTxt = document.getElementById('splash-status-text');
+
+      if (pBar) pBar.style.width = '100%';
+      if (pTxt) pTxt.innerText = '100%';
+      if (sTxt) sTxt.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>Xush kelibsiz! ✨</span>`;
+
+      playSound('coin');
+      triggerHaptic('success');
+
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.style.transform = 'scale(1.05)';
+          splash.style.filter = 'blur(8px)';
+          splash.classList.add('opacity-0', 'pointer-events-none');
+          setTimeout(() => splash.remove(), 700);
+        }
+      }, instant ? 80 : 220);
+    }
+
     function copyProfileId() {
       playSound('pop');
       triggerHaptic('medium');
@@ -2516,7 +3211,11 @@
             if (data.prices.premium_12m) prices.p12m = data.prices.premium_12m;
           }
 
-          if (data.stats) renderProfileStats(data.stats);
+          if (data.stats) {
+            userState.stats = data.stats;
+            renderProfileStats(data.stats);
+            updateDepositBonusDisplay(depositAmount);
+          }
           if (data.faqs) renderFaqList(data.faqs);
 
           if (data.active_deposit) {
@@ -2573,6 +3272,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
       setAppLanguage(currentLang);
+      initAmbientCanvas();
+      startLiveTicker();
+      startWelcomeSplash();
 
       if (tg) {
         tg.ready();
