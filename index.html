@@ -2668,8 +2668,7 @@
       if (!apiUrl) return;
       try {
         const res = await fetch(`${apiUrl}/api/check_order?order_id=${orderId}&_t=${Date.now()}`, {
-          cache: 'no-store',
-          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+          cache: 'no-store'
         });
         const data = await res.json();
         if (data && data.success) {
@@ -2751,8 +2750,7 @@
       try {
         const uid = userState.userId || 0;
         const res = await fetch(`${apiUrl}/api/top_spenders?user_id=${uid}&period=${currentRankingPeriod}&_t=${Date.now()}`, {
-          cache: 'no-store',
-          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+          cache: 'no-store'
         });
         const data = await res.json();
         if (data && data.success) {
@@ -3519,8 +3517,7 @@
       if (!apiUrl) return;
       try {
         const res = await fetch(`${apiUrl}/api/user_info?user_id=${userState.userId}&_t=${Date.now()}`, {
-          cache: 'no-store',
-          headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+          cache: 'no-store'
         });
         const data = await res.json();
         if (data && (data.error === 'subscription_required' || data.is_subscribed === false)) {
