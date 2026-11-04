@@ -3453,16 +3453,15 @@
           headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
         });
         const data = await res.json();
+        if (data && (data.error === 'subscription_required' || data.is_subscribed === false)) {
+          showMandatorySubModal(data.unsubscribed || []);
+          return;
+        }
+
         if (data && data.success) {
+          hideMandatorySubModal();
           userState.balance = data.balance;
           localStorage.setItem('user_balance', data.balance);
-
-          // Majburiy obuna tekshiruvi
-          if (data.is_subscribed === false && data.unsubscribed && data.unsubscribed.length > 0) {
-            showMandatorySubModal(data.unsubscribed);
-          } else {
-            hideMandatorySubModal();
-          }
 
           if (data.detailed_orders) {
             userState.allOrders = data.detailed_orders;
