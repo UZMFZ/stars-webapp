@@ -310,7 +310,7 @@
         </div>
         <div class="flex-1 text-right pl-3 overflow-hidden">
           <div id="live-ticker-text" class="text-xs font-semibold text-gray-300 truncate transition-all duration-500 transform translate-y-0 opacity-100 font-mono">
-            @d***v • 100 Stars xarid qildi (1m oldin)
+            Jonli xaridlar yuklanmoqda...
           </div>
         </div>
       </div>
@@ -3271,27 +3271,75 @@
       else window.open(url, '_blank');
     }
 
-    // ==================== JONLI XARIDLAR TASMASI (Live Ticker) ====================
+    // ==================== JONLI XARIDLAR TASMASI (Real Live Ticker) ====================
+    let liveTickerItems = [];
+    let liveTickerIdx = 0;
+    let liveTickerTimer = null;
+
+    function formatTimeAgo(ts) {
+      if (!ts) return "hozirgina";
+      const now = Math.floor(Date.now() / 1000);
+      const diff = Math.max(0, now - Number(ts));
+      const mins = Math.floor(diff / 60);
+      const hours = Math.floor(mins / 60);
+      const days = Math.floor(hours / 24);
+
+      if (days > 0) return `${days} kun oldin`;
+      if (hours > 0) return `${hours} soat oldin`;
+      if (mins > 0) return `${mins} daqiqa oldin`;
+      return "hozirgina";
+    }
+
+    function cleanDisplayName(name) {
+      if (!name) return "Mijoz";
+      let n = name.trim();
+      if (n.length > 15) {
+        n = n.substring(0, 14) + "…";
+      }
+      return n;
+    }
+
+    async function fetchRecentPurchases() {
+      try {
+        const url = await ensureApiUrl();
+        const res = await fetch(`${url}/api/recent_purchases?limit=10`);
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.purchases) && data.purchases.length > 0) {
+          liveTickerItems = data.purchases.map(p => {
+            const name = cleanDisplayName(p.buyer_name);
+            const item = p.order_type === 'STARS' ? `${Number(p.quantity).toLocaleString('uz-UZ')} Stars` : `${p.quantity} oylik Premium`;
+            const action = p.order_type === 'STARS' ? "xarid qildi" : "faollashtirdi";
+            const timeAgo = formatTimeAgo(p.timestamp);
+            return `${name} • ${item} ${action} (${timeAgo})`;
+          });
+
+          const el = document.getElementById('live-ticker-text');
+          if (el && (el.innerText.includes('yuklanmoqda') || el.innerText.includes('@d***v'))) {
+            el.innerText = liveTickerItems[0];
+          }
+        }
+      } catch (e) {
+        console.warn("fetchRecentPurchases error:", e);
+      }
+    }
+
     function startLiveTicker() {
-      const items = [
-        "@u***z • 100 Stars xarid qildi (1m oldin)",
-        "@s***v • 3 Oylik Premium faollashtirdi (2m oldin)",
-        "@j***r • 250 Stars xarid qildi (4m oldin)",
-        "@m***d • 50 Stars xarid qildi (6m oldin)",
-        "@a***k • 500 Stars xarid qildi (8m oldin)",
-        "@t***m • 12 Oylik Premium faollashtirdi (11m oldin)",
-        "@z***n • 1,000 Stars xarid qildi (14m oldin)",
-        "@b***l • 100 Stars xarid qildi (17m oldin)"
-      ];
-      let idx = 0;
       const el = document.getElementById('live-ticker-text');
       if (!el) return;
 
-      setInterval(() => {
+      // Real xaridlarni yuklash
+      fetchRecentPurchases();
+      // Har 35 soniyada yangi xaridlarni tekshirish (Live Polling)
+      setInterval(fetchRecentPurchases, 35000);
+
+      // Har 4.2 soniyada navbatma-navbat aylantirish
+      if (liveTickerTimer) clearInterval(liveTickerTimer);
+      liveTickerTimer = setInterval(() => {
+        if (!liveTickerItems || liveTickerItems.length === 0) return;
         el.classList.add('opacity-0', '-translate-y-2');
         setTimeout(() => {
-          idx = (idx + 1) % items.length;
-          el.innerText = items[idx];
+          liveTickerIdx = (liveTickerIdx + 1) % liveTickerItems.length;
+          el.innerText = liveTickerItems[liveTickerIdx];
           el.classList.remove('-translate-y-2');
           el.classList.add('translate-y-2');
           setTimeout(() => {
