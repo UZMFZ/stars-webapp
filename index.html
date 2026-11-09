@@ -3569,11 +3569,55 @@
       fetchFreshUserData(true);
     }
 
+    // Foydalanuvchi ID sini ishonchli aniqlash (Telegram SDK, URL yoki localStorage)
+    function resolveCurrentUserId() {
+      if (userState.userId && userState.userId > 0) return userState.userId;
+      try {
+        if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
+          userState.userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+          if (!userState.username && window.Telegram.WebApp.initDataUnsafe.user.username) {
+            userState.username = window.Telegram.WebApp.initDataUnsafe.user.username;
+          }
+          if (window.Telegram.WebApp.initDataUnsafe.user.first_name) {
+            userState.firstName = window.Telegram.WebApp.initDataUnsafe.user.first_name;
+          }
+          localStorage.setItem('user_id', userState.userId);
+          return userState.userId;
+        }
+      } catch (e) {}
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('uid')) {
+        const u = parseInt(urlParams.get('uid'));
+        if (!isNaN(u) && u > 0) {
+          userState.userId = u;
+          localStorage.setItem('user_id', u);
+          return u;
+        }
+      }
+      const savedUid = localStorage.getItem('user_id');
+      if (savedUid && !isNaN(parseInt(savedUid))) {
+        userState.userId = parseInt(savedUid);
+        return userState.userId;
+      }
+      return 0;
+    }
+
     // 18. Jonli Ma'lumotlarni API orqali olish (Doimiy Keshdan himoyalangan)
+    let isFetchingUserData = false;
     async function fetchFreshUserData(manual = false) {
-      if (!userState.userId) return;
+      const uid = resolveCurrentUserId();
+      if (!uid) {
+        setTimeout(() => { if (!userState.userId) fetchFreshUserData(manual); }, 800);
+        return;
+      }
+      if (isFetchingUserData) return;
+      isFetchingUserData = true;
+
       const apiUrl = await ensureApiUrl();
-      if (!apiUrl) return;
+      if (!apiUrl) {
+        isFetchingUserData = false;
+        return;
+      }
       try {
         const res = await fetch(`${apiUrl}/api/user_info?user_id=${userState.userId}&_t=${Date.now()}`, {
           cache: 'no-store'
@@ -3581,18 +3625,36 @@
         const data = await res.json();
         if (data && (data.error === 'subscription_required' || data.is_subscribed === false)) {
           showMandatorySubModal(data.unsubscribed || []);
+          isFetchingUserData = false;
           return;
         }
 
         if (data && data.success) {
           hideMandatorySubModal();
-          userState.balance = data.balance;
-          localStorage.setItem('user_balance', data.balance);
 
-          if (data.detailed_orders) {
-            userState.allOrders = data.detailed_orders;
+          // 1. Balans o'zgarishini aniqlash va jonli xabar
+          const oldBal = userState.balance;
+          const newBal = data.balance !== undefined ? data.balance : oldBal;
+          userState.balance = newBal;
+          localStorage.setItem('user_balance', newBal);
+
+          if (oldBal !== undefined && oldBal !== null && newBal > oldBal && !manual) {
+            const diff = newBal - oldBal;
+            playSound('success');
+            triggerHaptic('success');
+            showToast(`+${diff.toLocaleString('uz-UZ')} so'm hisobingizga qo'shildi! 💰`, "🎉");
           }
 
+          // 2. Buyurtmalar tarixi
+          if (data.detailed_orders) {
+            userState.allOrders = data.detailed_orders;
+            const ordersTab = document.getElementById('orders-tab-content');
+            if (ordersTab && !ordersTab.classList.contains('hidden')) {
+              renderOrdersList();
+            }
+          }
+
+          // 3. Jonli tarif narxlari (Admin paneldan o'zgarsa darhol yangilanadi)
           if (data.prices) {
             if (data.prices.star_price) userState.starPrice = data.prices.star_price;
             if (data.prices.premium_1m) prices.p1m = data.prices.premium_1m;
@@ -3601,6 +3663,7 @@
             if (data.prices.premium_12m) prices.p12m = data.prices.premium_12m;
           }
 
+          // 4. Profil statistikasi
           if (data.stats) {
             userState.stats = data.stats;
             renderProfileStats(data.stats);
@@ -3608,15 +3671,19 @@
           }
           if (data.faqs) renderFaqList(data.faqs);
 
+          // 5. Omad barabani urinishlari va sozlamalari
           if (data.spins !== undefined) {
             userState.spins = data.spins;
             updateWheelUI(data.spins, data.wheel_settings);
           }
+
+          // 6. Referal statistikasi
           if (data.referral_stats) {
             userState.referralStats = data.referral_stats;
             updateReferralUI(data.referral_stats);
           }
 
+          // 7. Faol to'lov cheki
           if (data.active_deposit) {
             renderReceiptBox(data.active_deposit);
           } else if (currentOrderId) {
@@ -3628,6 +3695,8 @@
         }
       } catch (e) {
         console.warn("fetchFreshUserData xatosi:", e);
+      } finally {
+        isFetchingUserData = false;
       }
     }
 
@@ -3708,7 +3777,7 @@
         if (!isNaN(sp) && sp > 0) userState.starPrice = sp;
       }
 
-      // Kesh/URL muammosini yo'qotish: Dastlabki qiymat
+      // Dastlabki kesh qiymatlari (serverdan yangisi kelguncha tezkor ko'rsatish)
       if (urlParams.has('bal')) {
         const b = parseInt(urlParams.get('bal'));
         if (!isNaN(b)) userState.balance = b;
@@ -3718,10 +3787,7 @@
         userState.balance = parseInt(savedBal);
       }
 
-      if (urlParams.has('uid')) {
-        const u = parseInt(urlParams.get('uid'));
-        if (!isNaN(u) && u > 0) userState.userId = u;
-      }
+      resolveCurrentUserId();
 
       if (urlParams.has('p1m')) prices.p1m = parseInt(urlParams.get('p1m'));
       if (urlParams.has('p3m')) prices.p3m = parseInt(urlParams.get('p3m'));
@@ -3744,6 +3810,30 @@
       await ensureApiUrl();
       fetchFreshUserData();
       loadLeaderboard();
+
+      // ==================== JONLI AVTO-YANGILANISH (REAL-TIME AUTO-SYNC) ====================
+      // 1. Orqa fonda doimiy avto-polling (har 5 soniyada butun Web App holatini yangilab turish)
+      if (window._autoSyncInterval) clearInterval(window._autoSyncInterval);
+      window._autoSyncInterval = setInterval(() => {
+        fetchFreshUserData(false);
+      }, 5000);
+
+      // 2. Foydalanuvchi boshqa ilovadan (masalan Click/Payme'dan) qaytib kirganda DARHOL yangilash
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          fetchFreshUserData(false);
+          fetchRecentPurchases();
+          loadLeaderboard();
+        }
+      });
+      window.addEventListener('focus', () => {
+        fetchFreshUserData(false);
+      });
+      if (window.Telegram && window.Telegram.WebApp) {
+        try {
+          window.Telegram.WebApp.onEvent('viewportChanged', () => fetchFreshUserData(false));
+        } catch (e) {}
+      }
     }
 
     // ==================== 20. OMAD BARABANI (LUCKY WHEEL) LOGIKASI ====================
