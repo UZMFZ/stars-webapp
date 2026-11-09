@@ -3674,6 +3674,7 @@
           // 5. Omad barabani urinishlari va sozlamalari
           if (data.spins !== undefined) {
             userState.spins = data.spins;
+            localStorage.setItem('user_spins', data.spins);
             updateWheelUI(data.spins, data.wheel_settings);
           }
 
@@ -3785,6 +3786,19 @@
       const savedBal = localStorage.getItem('user_balance');
       if (savedBal !== null && !isNaN(parseInt(savedBal))) {
         userState.balance = parseInt(savedBal);
+      }
+
+      if (urlParams.has('spins')) {
+        const s = parseInt(urlParams.get('spins'));
+        if (!isNaN(s) && s >= 0) {
+          userState.spins = s;
+          updateWheelUI(s);
+        }
+      }
+      const savedSpins = localStorage.getItem('user_spins');
+      if (savedSpins !== null && !isNaN(parseInt(savedSpins)) && !urlParams.has('spins')) {
+        userState.spins = parseInt(savedSpins);
+        updateWheelUI(userState.spins);
       }
 
       resolveCurrentUserId();
