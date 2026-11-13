@@ -27,11 +27,21 @@
           },
           colors: {
             brand: {
-              gold: '#FBBF24',
-              goldDark: '#D97706',
-              cyan: '#38BDF8',
+              gold: '#F5B738',         /* Real 3D Metallic Champagne Gold from Logo */
+              goldLight: '#FFE58F',    /* Top highlight */
+              goldDark: '#D49520',     /* Deep burnished amber */
+              goldBronze: '#8A5C12',   /* Deep metallic shadow */
+              cyan: '#00D2FF',         /* Electric Neon Orbital Cyan from Logo */
+              cyanLight: '#70E1FF',    /* Bright flare */
+              cyanDark: '#0077FE',     /* Deep cosmic blue */
               emerald: '#10B981',
-              darkBg: '#080C14',
+              darkBg: '#060A14',       /* Deep Space Galactic Obsidian */
+              darkSurface: '#0B132B',  /* Deep Space Navy */
+              darkCard: '#111A35',     /* Frosted cosmic navy card */
+              lightBg: '#F3F6FA',      /* Platinum Pearl smooth background */
+              lightSurface: '#FFFFFF', /* Pure white glass */
+              lightCard: '#F8FAFD',    /* Ice silver card */
+              lightText: '#0B132B'     /* Deep navy readable text */
             }
           }
         }
@@ -57,86 +67,163 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* DARK THEME */
+    /* ========================================================
+       DARK THEME (Cosmic Luxury - Gold & Electric Neon Blue)
+       ======================================================== */
     html.dark body {
-      background-color: #080C14;
-      color: #F3F4F6;
+      background-color: #060A14;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 210, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 100% 40%, rgba(245, 183, 56, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 0% 80%, rgba(0, 119, 254, 0.08) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: #F8FAFC;
     }
     html.dark .glass-panel {
-      background: rgba(16, 23, 39, 0.75);
+      background: rgba(11, 19, 43, 0.78);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(0, 210, 255, 0.16);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.40);
     }
     html.dark .glass-card {
-      background: rgba(22, 31, 52, 0.65);
+      background: rgba(17, 26, 53, 0.65);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(245, 183, 56, 0.14);
     }
     html.dark .glass-nav {
-      background: rgba(10, 14, 26, 0.85);
+      background: rgba(6, 10, 20, 0.88);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(0, 210, 255, 0.18);
+      box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.60);
     }
     html.dark .glass-input {
-      background: rgba(9, 13, 23, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(8, 14, 28, 0.90);
+      border: 1px solid rgba(0, 210, 255, 0.20);
       color: #FFFFFF;
     }
+    html.dark .glass-input:focus {
+      border-color: #00D2FF;
+      box-shadow: 0 0 14px rgba(0, 210, 255, 0.35);
+    }
 
-    /* LIGHT THEME */
+    /* ========================================================
+       LIGHT THEME (Platinum Pearl & Royal Blue / Gold)
+       ======================================================== */
     html:not(.dark) body {
-      background-color: #F8FAFC;
-      color: #0F172A;
+      background-color: #F3F6FA;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 119, 254, 0.06) 0%, transparent 60%),
+        radial-gradient(circle at 100% 40%, rgba(212, 175, 55, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: #0B132B;
     }
     html:not(.dark) .glass-panel {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.24);
+      box-shadow: 0 10px 30px -4px rgba(11, 19, 43, 0.07);
+      color: #0B132B;
     }
     html:not(.dark) .glass-card {
-      background: rgba(241, 245, 249, 0.85);
+      background: rgba(248, 250, 253, 0.94);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 119, 254, 0.14);
+      box-shadow: 0 4px 16px -2px rgba(11, 19, 43, 0.05);
+      color: #0B132B;
     }
     html:not(.dark) .glass-nav {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.26);
+      box-shadow: 0 -4px 20px rgba(11, 19, 43, 0.08);
     }
     html:not(.dark) .glass-input {
       background: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      color: #0F172A;
+      border: 1px solid rgba(11, 19, 43, 0.16);
+      color: #0B132B;
+    }
+    html:not(.dark) .glass-input:focus {
+      border-color: #0284C7;
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.25);
     }
 
-    /* Glowing accents */
+    /* Light mode typography contrast protection:
+       Prevents invisible white text on bright cards */
+    html:not(.dark) .glass-panel h1,
+    html:not(.dark) .glass-panel h2,
+    html:not(.dark) .glass-panel h3,
+    html:not(.dark) .glass-panel h4,
+    html:not(.dark) .glass-card h1,
+    html:not(.dark) .glass-card h2,
+    html:not(.dark) .glass-card h3,
+    html:not(.dark) .glass-card h4 {
+      color: #0B132B !important;
+    }
+    html:not(.dark) .star-preset-card .font-black {
+      color: #0B132B !important;
+    }
+    html:not(.dark) .glass-card.text-white {
+      color: #0B132B !important;
+    }
+    html:not(.dark) .text-gray-300:not(button, [class*="bg-"]) {
+      color: #334155 !important;
+    }
+    html:not(.dark) .text-gray-400:not(button, [class*="bg-"]) {
+      color: #64748B !important;
+    }
+
+    /* Glowing accents matching Logo */
     .glow-gold {
-      box-shadow: 0 0 25px -4px rgba(245, 158, 11, 0.35);
+      box-shadow: 0 0 25px -3px rgba(245, 183, 56, 0.40);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px -3px rgba(0, 210, 255, 0.40);
+    }
+    .glow-orbital {
+      box-shadow: 0 0 28px rgba(0, 210, 255, 0.35), inset 0 0 15px rgba(245, 183, 56, 0.20);
     }
     .glow-emerald {
       box-shadow: 0 0 25px -4px rgba(16, 185, 129, 0.35);
     }
 
-    /* Active navigation pill styling (Matching Image 1) */
+    /* Active navigation pill styling (Matching Logo Orbital Ring) */
     .nav-tab-active {
-      background: rgba(255, 255, 255, 0.12) !important;
-      border: 1px solid rgba(251, 191, 36, 0.4) !important;
-      color: #FBBF24 !important;
+      background: rgba(0, 210, 255, 0.14) !important;
+      border: 1px solid rgba(0, 210, 255, 0.55) !important;
+      color: #00D2FF !important;
       border-radius: 20px !important;
-      box-shadow: 0 0 16px rgba(251, 191, 36, 0.22);
+      box-shadow: 0 0 16px rgba(0, 210, 255, 0.30);
     }
     html:not(.dark) .nav-tab-active {
-      background: rgba(251, 191, 36, 0.18) !important;
-      border: 1px solid rgba(217, 119, 6, 0.4) !important;
-      color: #D97706 !important;
+      background: rgba(0, 119, 254, 0.12) !important;
+      border: 1px solid rgba(0, 119, 254, 0.45) !important;
+      color: #0066CC !important;
+      border-radius: 20px !important;
+      box-shadow: 0 0 12px rgba(0, 119, 254, 0.18);
+    }
+
+    /* 3D Metallic Gold CTA Button */
+    .btn-gold-3d {
+      background: linear-gradient(135deg, #FFE79A 0%, #F5B738 50%, #C98A1B 100%);
+      color: #060A14 !important;
+      font-weight: 900;
+      box-shadow: 0 4px 18px rgba(245, 183, 56, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* 3D Orbital Cyan CTA Button */
+    .btn-cyan-3d {
+      background: linear-gradient(135deg, #70E1FF 0%, #00D2FF 50%, #0077FE 100%);
+      color: #060A14 !important;
+      font-weight: 900;
+      box-shadow: 0 4px 18px rgba(0, 210, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     /* Shimmer effect button */
@@ -151,7 +238,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.30), transparent);
       transform: rotate(30deg);
       animation: shimmer 3s infinite;
     }
@@ -177,13 +264,12 @@
 
     <!-- Markaziy kutib olish bloki (Logo + Salomlashish) -->
     <div class="flex flex-col items-center text-center space-y-4 my-auto relative z-10">
-      <!-- 3D Logo nishoni -->
+      <!-- 3D Logo nishoni with Orbital Cyan Ring and Gold Glow -->
       <div class="relative flex items-center justify-center">
-        <div class="absolute w-36 h-36 bg-amber-500/25 rounded-full blur-2xl animate-pulse"></div>
-        <div class="relative w-24 h-24 rounded-3xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-200 p-[1.5px] shadow-2xl shadow-amber-500/35 transform hover:scale-105 transition-transform duration-300">
-          <div class="w-full h-full bg-[#080C14] rounded-3xl flex items-center justify-center text-5xl">
-            <span class="animate-[bounce_2.5s_infinite]">⭐️</span>
-          </div>
+        <div class="absolute w-36 h-36 bg-cyan-500/25 rounded-full blur-2xl animate-pulse"></div>
+        <div class="absolute w-32 h-32 bg-amber-500/20 rounded-full blur-xl animate-pulse delay-500"></div>
+        <div class="relative w-28 h-28 rounded-3xl p-[2px] bg-gradient-to-tr from-cyan-400 via-amber-400 to-yellow-200 shadow-2xl shadow-cyan-500/35 transform hover:scale-105 transition-transform duration-300 overflow-hidden">
+          <img src="logo.jpg" alt="UZMFZ STARS" class="w-full h-full object-cover rounded-3xl" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/UZMFZ/stars-webapp/main/logo.jpg';">
         </div>
       </div>
 
@@ -193,7 +279,7 @@
           <span>👋</span>
           <span id="splash-greeting-name">Assalomu alaykum!</span>
         </div>
-        <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 tracking-wider">
+        <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-cyan-300 to-yellow-200 tracking-wider">
           UZMFZ STARS
         </h1>
         <p class="text-xs text-gray-400 max-w-[260px] mx-auto font-medium leading-relaxed">
@@ -232,7 +318,7 @@
   <!-- ==================== TOP NAVIGATION HEADER (Matching Image 2) ==================== -->
   <header class="sticky top-0 z-40 glass-panel px-4 py-2.5 flex items-center justify-between transition-colors shadow-sm">
     <!-- Chap tomon: Segmented Switch [Stars] [Premium] (iOS-style Slider) -->
-    <div class="relative flex items-center bg-black/40 dark:bg-black/50 p-1 rounded-2xl border border-white/10 dark:border-white/10">
+    <div class="relative flex items-center bg-slate-200/70 dark:bg-black/50 p-1 rounded-2xl border border-slate-300/80 dark:border-white/10">
       <!-- Silliq suriluvchi fon (Sliding thumb indicator) -->
       <div id="hdr-seg-thumb" class="absolute top-1 bottom-1 left-1 rounded-xl bg-amber-500 transition-all duration-300 ease-out shadow-sm pointer-events-none" style="width: calc(50% - 4px);"></div>
       <button onclick="switchServiceMode('stars')" id="hdr-btn-stars" class="relative z-10 px-3 py-1.5 rounded-xl text-xs font-black transition-all text-gray-950 flex items-center space-x-1">
@@ -248,7 +334,7 @@
     <!-- O'ng tomon: Balans Kapsulasi + Refresh (Matching Image 2) -->
     <div class="flex items-center space-x-2">
       <!-- Balans Kapsulasi (Bosganda to'lov modalini ochadi) -->
-      <button onclick="openDepositModal()" class="flex items-center space-x-2 bg-black/40 dark:bg-black/50 hover:bg-black/60 border border-amber-500/40 px-3.5 py-1.5 rounded-2xl transition-all active:scale-95 shadow-sm">
+      <button onclick="openDepositModal()" class="flex items-center space-x-2 bg-slate-200/70 dark:bg-black/50 hover:bg-slate-300/70 dark:hover:bg-black/60 border border-amber-500/40 px-3.5 py-1.5 rounded-2xl transition-all active:scale-95 shadow-sm">
         <span class="text-xs">💳</span>
         <span class="text-xs font-black font-mono text-amber-400 tracking-tight" id="header-balance">0 so'm</span>
       </button>
@@ -1797,14 +1883,14 @@
         document.documentElement.classList.add('dark');
         document.getElementById('theme-icon').innerText = '🌙';
         document.getElementById('theme-lbl').innerText = 'Tungi rejim';
-        if (tg?.setHeaderColor) tg.setHeaderColor('#080C14');
-        if (tg?.setBackgroundColor) tg.setBackgroundColor('#080C14');
+        if (tg?.setHeaderColor) tg.setHeaderColor('#060A14');
+        if (tg?.setBackgroundColor) tg.setBackgroundColor('#060A14');
       } else {
         document.documentElement.classList.remove('dark');
         document.getElementById('theme-icon').innerText = '☀️';
         document.getElementById('theme-lbl').innerText = 'Kunduzgi rejim';
-        if (tg?.setHeaderColor) tg.setHeaderColor('#F8FAFC');
-        if (tg?.setBackgroundColor) tg.setBackgroundColor('#F8FAFC');
+        if (tg?.setHeaderColor) tg.setHeaderColor('#F3F6FA');
+        if (tg?.setBackgroundColor) tg.setBackgroundColor('#F3F6FA');
       }
     }
 
@@ -3383,9 +3469,9 @@
       });
 
       const orbs = [
-        { x: w * 0.2, y: h * 0.2, r: 240, color: '245, 158, 11', dx: 0.25, dy: 0.18, phase: 0 },
-        { x: w * 0.8, y: h * 0.4, r: 260, color: '56, 189, 248', dx: -0.22, dy: 0.22, phase: 2 },
-        { x: w * 0.5, y: h * 0.7, r: 280, color: '16, 185, 129', dx: 0.18, dy: -0.15, phase: 4 }
+        { x: w * 0.2, y: h * 0.2, r: 260, color: '245, 183, 56', dx: 0.22, dy: 0.16, phase: 0 }, // 3D Logo Gold
+        { x: w * 0.8, y: h * 0.35, r: 280, color: '0, 210, 255', dx: -0.20, dy: 0.18, phase: 2 }, // Orbital Neon Cyan
+        { x: w * 0.5, y: h * 0.75, r: 260, color: '0, 119, 254', dx: 0.16, dy: -0.14, phase: 4 }  // Deep Cosmic Blue
       ];
 
       let t = 0;
