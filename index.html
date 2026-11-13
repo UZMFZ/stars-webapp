@@ -2389,10 +2389,15 @@
         updateDepositBonusDisplay(depositAmount);
       }
 
+      fetchFreshUserData(false);
+
       const formBox = document.getElementById('deposit-form-box');
       const box = document.getElementById('receipt-box');
 
-      if (currentOrderId) {
+      if (currentOrderId || userState.activeDeposit) {
+        if (userState.activeDeposit && !currentOrderId) {
+          renderReceiptBox(userState.activeDeposit);
+        }
         if (formBox) formBox.classList.add('hidden');
         if (box) box.classList.remove('hidden');
       } else {
@@ -2471,6 +2476,7 @@
         } catch (e) {}
       }
 
+      userState.activeDeposit = null;
       resetDepositFormState();
       showToast("To'lov cheki bekor qilindi ❌", "ℹ️");
       fetchFreshUserData();
@@ -3686,9 +3692,13 @@
 
           // 7. Faol to'lov cheki
           if (data.active_deposit) {
+            userState.activeDeposit = data.active_deposit;
             renderReceiptBox(data.active_deposit);
-          } else if (currentOrderId) {
-            resetDepositFormState();
+          } else {
+            userState.activeDeposit = null;
+            if (currentOrderId) {
+              resetDepositFormState();
+            }
           }
 
           renderDynamicPrices();
